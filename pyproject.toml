@@ -1,0 +1,80 @@
+# WORTH monorepo — uv workspace root.
+#
+# This root is a *virtual* workspace: it ships no code of its own. It exists to
+# pin the toolchain, hold the single shared lockfile, and own the lint/type
+# configuration so every package in the workspace is held to the same bar.
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.11",
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+# --------------------------------------------------------------------------
+# ruff — lint + format
+# --------------------------------------------------------------------------
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "F",    # pyflakes
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # bugbear
+    "A",    # builtin shadowing
+    "C4",   # comprehensions
+    "SIM",  # simplify
+    "TC",   # type-checking blocks
+    "PTH",  # prefer pathlib
+    "RET",  # return consistency
+    "ARG",  # unused arguments
+    "ANN",  # missing annotations
+    "RUF",  # ruff-specific
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+# TC003 wants stdlib types like Decimal, Path and date hidden behind
+# `if TYPE_CHECKING`. They are the domain vocabulary here and appear as
+# dataclass field types; deferring them buys nothing at runtime and makes the
+# modules harder to read.
+"*" = ["TC003"]
+
+[tool.ruff.lint.per-file-ignores]
+"packages/*/tests/*" = ["ANN201"]  # test functions need no return annotation
+
+[tool.ruff.format]
+docstring-code-format = true
+
+# --------------------------------------------------------------------------
+# mypy — strict, on worth-fees
+# --------------------------------------------------------------------------
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_unreachable = true
+files = [
+    "packages/worth-fees/worth_fees",
+    "packages/worth-fees/tests",
+]
+
+# --------------------------------------------------------------------------
+# pytest
+# --------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+testpaths = ["packages/worth-fees/tests"]
+addopts = "-q --strict-markers --strict-config"
+markers = [
+    "network: hits cms.gov; deselected by default and never run in CI",
+]
