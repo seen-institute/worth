@@ -1,0 +1,39 @@
+# Local Postgres for looking at fee schedule data. Development only.
+#
+# Nothing in this repository needs a database: the demo, the tests and CI all
+# run offline against the committed fixtures. This exists so you can point a
+# GUI at the schema without installing Postgres on your machine.
+#
+#   just db-up      start it, schema applied automatically
+#   just db-load    load the committed fixture   (--full for all ~19k rows)
+#   just db-reset   throw it away and start over
+#   just db-down    stop it
+
+name: worth
+
+services:
+  db:
+    # Pinned deliberately. The point of this repo is that everyone gets the
+    # same answer; that includes the server the SQL runs on. Bump to match
+    # whatever RDS runs when there is an RDS.
+    image: postgres:16
+    environment:
+      POSTGRES_USER: worth
+      POSTGRES_PASSWORD: worth
+      POSTGRES_DB: worth
+    ports:
+      # 55432, not 5432, so this cannot collide with a Postgres you install
+      # later and you always know which server your GUI is talking to.
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Applied automatically the first time the volume is empty.
+      - ./packages/worth-fees/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U worth -d worth"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  pgdata:

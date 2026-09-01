@@ -1,0 +1,24 @@
+[project]
+name = "worth-fees"
+version = "0.1.0"
+description = "Reproducible Medicare Physician Fee Schedule allowed amounts, with a full derivation trace and source provenance."
+readme = "README.md"
+requires-python = ">=3.13"
+license = "Apache-2.0"
+authors = [{ name = "Seen Institute" }]
+
+# No runtime dependencies, deliberately. The numeric path is standard library
+# only so that results are bit-identical across architectures and so a hospital
+# security review has nothing to audit but this repo.
+dependencies = []
+
+[project.scripts]
+worth-fees = "worth_fees.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.8,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "worth_fees"
+module-root = ""

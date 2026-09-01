@@ -1,0 +1,7 @@
+# Fixtures are byte-exact derivatives of CMS source files. Their sha256 is part
+# of the provenance chain, so git must not normalise line endings or rewrite
+# them in any way. Diffs are suppressed because they are data, not prose.
+packages/worth-fees/worth_fees/fixtures/** -text -diff
+
+# Lockfile: linguist-generated, no CRLF translation.
+uv.lock -text -diff linguist-generated
