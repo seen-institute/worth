@@ -1,0 +1,1384 @@
+log_id|provider_id|role|specialty|panel_seq
+88228907|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88228907|A00494|Anesthesiologist|Anesthesiology|
+88228907|N01169|Circulating Nurse|Nursing|
+88251923|S03370|Primary Surgeon|Urology|1
+88251923|S09031|Assistant Surgeon|General Surgery|2
+88251923|A00415|Anesthesiologist|Anesthesiology|
+88251923|N01161|Circulating Nurse|Nursing|
+88223838|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88223838|S09026|Assistant Surgeon|Obstetrics & Gynecology|2
+88223838|A00410|Anesthesiologist|Anesthesiology|
+88223838|N01191|Circulating Nurse|Nursing|
+88243703|S02901|Primary Surgeon|General Surgery|1
+88243703|A00569|Anesthesiologist|Anesthesiology|
+88243703|N01060|Circulating Nurse|Nursing|
+88253293|S03318|Primary Surgeon|Urology|1
+88253293|S09014|Assistant Surgeon|General Surgery|2
+88253293|S09051|Assistant Surgeon|Colon & Rectal Surgery|3
+88253293|A00595|Anesthesiologist|Anesthesiology|
+88253293|N01013|Circulating Nurse|Nursing|
+88236442|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88236442|S09033|Assistant Surgeon|Obstetrics & Gynecology|2
+88236442|A00488|Anesthesiologist|Anesthesiology|
+88236442|N01199|Circulating Nurse|Nursing|
+88231784|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88231784|A00488|Anesthesiologist|Anesthesiology|
+88231784|N01085|Circulating Nurse|Nursing|
+88232195|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88232195|A00540|Anesthesiologist|Anesthesiology|
+88232195|N01126|Circulating Nurse|Nursing|
+88202740|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88202740|A00578|Anesthesiologist|Anesthesiology|
+88202740|N01103|Circulating Nurse|Nursing|
+88204932|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88204932|A00560|Anesthesiologist|Anesthesiology|
+88204932|N01123|Circulating Nurse|Nursing|
+88251649|S03370|Primary Surgeon|Urology|1
+88251649|S09013|Assistant Surgeon|General Surgery|2
+88251649|A00401|Anesthesiologist|Anesthesiology|
+88251649|N01007|Circulating Nurse|Nursing|
+88214659|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88214659|A00400|Anesthesiologist|Anesthesiology|
+88214659|N01022|Circulating Nurse|Nursing|
+88201096|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88201096|A00516|Anesthesiologist|Anesthesiology|
+88201096|N01017|Circulating Nurse|Nursing|
+88212467|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88212467|A00586|Anesthesiologist|Anesthesiology|
+88212467|N01067|Circulating Nurse|Nursing|
+88237401|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88237401|A00426|Anesthesiologist|Anesthesiology|
+88237401|N01182|Circulating Nurse|Nursing|
+88236579|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88236579|S09019|Assistant Surgeon|Colon & Rectal Surgery|2
+88236579|A00454|Anesthesiologist|Anesthesiology|
+88236579|N01082|Circulating Nurse|Nursing|
+88211097|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88211097|A00552|Anesthesiologist|Anesthesiology|
+88211097|N01120|Circulating Nurse|Nursing|
+88245621|S02955|Primary Surgeon|General Surgery|1
+88245621|A00551|Anesthesiologist|Anesthesiology|
+88245621|N01084|Circulating Nurse|Nursing|
+88221372|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88221372|A00514|Anesthesiologist|Anesthesiology|
+88221372|N01148|Circulating Nurse|Nursing|
+88234935|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88234935|A00505|Anesthesiologist|Anesthesiology|
+88234935|N01163|Circulating Nurse|Nursing|
+88214933|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88214933|A00533|Anesthesiologist|Anesthesiology|
+88214933|N01150|Circulating Nurse|Nursing|
+88231373|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88231373|S09017|Assistant Surgeon|Colon & Rectal Surgery|2
+88231373|A00413|Anesthesiologist|Anesthesiology|
+88231373|N01020|Circulating Nurse|Nursing|
+88239045|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88239045|S09064|Assistant Surgeon|Obstetrics & Gynecology|2
+88239045|A00552|Anesthesiologist|Anesthesiology|
+88239045|N01100|Circulating Nurse|Nursing|
+88207398|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88207398|A00541|Anesthesiologist|Anesthesiology|
+88207398|N01099|Circulating Nurse|Nursing|
+88228496|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88228496|A00582|Anesthesiologist|Anesthesiology|
+88228496|N01041|Circulating Nurse|Nursing|
+88204795|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88204795|A00505|Anesthesiologist|Anesthesiology|
+88204795|N01141|Circulating Nurse|Nursing|
+88205069|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88205069|A00581|Anesthesiologist|Anesthesiology|
+88205069|N01087|Circulating Nurse|Nursing|
+88233565|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88233565|A00583|Anesthesiologist|Anesthesiology|
+88233565|N01105|Circulating Nurse|Nursing|
+88225345|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88225345|S09029|Assistant Surgeon|Obstetrics & Gynecology|2
+88225345|A00441|Anesthesiologist|Anesthesiology|
+88225345|N01088|Circulating Nurse|Nursing|
+88200822|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88200822|A00464|Anesthesiologist|Anesthesiology|
+88200822|N01054|Circulating Nurse|Nursing|
+88246580|S02901|Primary Surgeon|General Surgery|1
+88246580|A00497|Anesthesiologist|Anesthesiology|
+88246580|N01035|Circulating Nurse|Nursing|
+88232880|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88232880|A00457|Anesthesiologist|Anesthesiology|
+88232880|N01082|Circulating Nurse|Nursing|
+88229455|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88229455|A00455|Anesthesiologist|Anesthesiology|
+88229455|N01043|Circulating Nurse|Nursing|
+88234661|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88234661|S09019|Assistant Surgeon|Obstetrics & Gynecology|2
+88234661|A00471|Anesthesiologist|Anesthesiology|
+88234661|N01155|Circulating Nurse|Nursing|
+88235483|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88235483|S09027|Assistant Surgeon|Obstetrics & Gynecology|2
+88235483|A00411|Anesthesiologist|Anesthesiology|
+88235483|N01049|Circulating Nurse|Nursing|
+88207124|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88207124|A00486|Anesthesiologist|Anesthesiology|
+88207124|N01069|Circulating Nurse|Nursing|
+88209453|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88209453|A00545|Anesthesiologist|Anesthesiology|
+88209453|N01015|Circulating Nurse|Nursing|
+88225893|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88225893|S09040|Assistant Surgeon|Colon & Rectal Surgery|2
+88225893|A00581|Anesthesiologist|Anesthesiology|
+88225893|N01194|Circulating Nurse|Nursing|
+88231236|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88231236|S09051|Assistant Surgeon|Colon & Rectal Surgery|2
+88231236|A00455|Anesthesiologist|Anesthesiology|
+88231236|N01132|Circulating Nurse|Nursing|
+88240278|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88240278|S09065|Assistant Surgeon|Obstetrics & Gynecology|2
+88240278|A00538|Anesthesiologist|Anesthesiology|
+88240278|N01134|Circulating Nurse|Nursing|
+88224249|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88224249|A00421|Anesthesiologist|Anesthesiology|
+88224249|N01193|Circulating Nurse|Nursing|
+88232606|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88232606|A00463|Anesthesiologist|Anesthesiology|
+88232606|N01096|Circulating Nurse|Nursing|
+88218084|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88218084|S09065|Assistant Surgeon|Obstetrics & Gynecology|2
+88218084|A00417|Anesthesiologist|Anesthesiology|
+88218084|N01019|Circulating Nurse|Nursing|
+88250690|S04188|Primary Surgeon|Orthopaedic Surgery|1
+88250690|S09000|Assistant Surgeon|Plastic Surgery|2
+88250690|A00572|Anesthesiologist|Anesthesiology|
+88250690|N01006|Circulating Nurse|Nursing|
+88240415|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88240415|A00543|Anesthesiologist|Anesthesiology|
+88240415|N01044|Circulating Nurse|Nursing|
+88200274|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88200274|A00497|Anesthesiologist|Anesthesiology|
+88200274|N01175|Circulating Nurse|Nursing|
+88228222|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88228222|S09073|Assistant Surgeon|Colon & Rectal Surgery|2
+88228222|S09110|Assistant Surgeon|Obstetrics & Gynecology|3
+88228222|A00563|Anesthesiologist|Anesthesiology|
+88228222|N01144|Circulating Nurse|Nursing|
+88250964|S04188|Primary Surgeon|Orthopaedic Surgery|1
+88250964|S09008|Assistant Surgeon|Orthopaedic Surgery|2
+88250964|A00473|Anesthesiologist|Anesthesiology|
+88250964|N01157|Circulating Nurse|Nursing|
+88211919|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88211919|A00561|Anesthesiologist|Anesthesiology|
+88211919|N01168|Circulating Nurse|Nursing|
+88223701|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88223701|S09002|Assistant Surgeon|Obstetrics & Gynecology|2
+88223701|A00452|Anesthesiologist|Anesthesiology|
+88223701|N01010|Circulating Nurse|Nursing|
+88218906|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88218906|A00571|Anesthesiologist|Anesthesiology|
+88218906|N01070|Circulating Nurse|Nursing|
+88250142|S04188|Primary Surgeon|Orthopaedic Surgery|1
+88250142|S09057|Assistant Surgeon|Orthopaedic Surgery|2
+88250142|A00451|Anesthesiologist|Anesthesiology|
+88250142|N01166|Circulating Nurse|Nursing|
+88221509|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88221509|A00412|Anesthesiologist|Anesthesiology|
+88221509|N01036|Circulating Nurse|Nursing|
+88222331|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88222331|A00561|Anesthesiologist|Anesthesiology|
+88222331|N01030|Circulating Nurse|Nursing|
+88204658|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88204658|A00575|Anesthesiologist|Anesthesiology|
+88204658|N01114|Circulating Nurse|Nursing|
+88213426|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88213426|A00406|Anesthesiologist|Anesthesiology|
+88213426|N01198|Circulating Nurse|Nursing|
+88230277|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88230277|A00413|Anesthesiologist|Anesthesiology|
+88230277|N01056|Circulating Nurse|Nursing|
+88247265|S02901|Primary Surgeon|General Surgery|1
+88247265|A00532|Anesthesiologist|Anesthesiology|
+88247265|N01073|Circulating Nurse|Nursing|
+88221098|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88221098|S09026|Assistant Surgeon|Obstetrics & Gynecology|2
+88221098|A00446|Anesthesiologist|Anesthesiology|
+88221098|N01033|Circulating Nurse|Nursing|
+88201918|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88201918|A00419|Anesthesiologist|Anesthesiology|
+88201918|N01028|Circulating Nurse|Nursing|
+88218221|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88218221|S09020|Assistant Surgeon|Obstetrics & Gynecology|2
+88218221|A00519|Anesthesiologist|Anesthesiology|
+88218221|N01157|Circulating Nurse|Nursing|
+88218769|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88218769|S09031|Assistant Surgeon|Obstetrics & Gynecology|2
+88218769|A00474|Anesthesiologist|Anesthesiology|
+88218769|N01193|Circulating Nurse|Nursing|
+88235620|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88235620|S09010|Assistant Surgeon|Colon & Rectal Surgery|2
+88235620|S09047|Assistant Surgeon|Obstetrics & Gynecology|3
+88235620|A00454|Anesthesiologist|Anesthesiology|
+88235620|N01036|Circulating Nurse|Nursing|
+88208905|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88208905|A00586|Anesthesiologist|Anesthesiology|
+88208905|N01109|Circulating Nurse|Nursing|
+88252882|S03318|Primary Surgeon|Urology|1
+88252882|S09053|Assistant Surgeon|General Surgery|2
+88252882|S09090|Assistant Surgeon|Urology|3
+88252882|A00459|Anesthesiologist|Anesthesiology|
+88252882|N01058|Circulating Nurse|Nursing|
+88206850|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88206850|A00452|Anesthesiologist|Anesthesiology|
+88206850|N01047|Circulating Nurse|Nursing|
+88209179|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88209179|A00519|Anesthesiologist|Anesthesiology|
+88209179|N01160|Circulating Nurse|Nursing|
+88201781|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88201781|A00507|Anesthesiologist|Anesthesiology|
+88201781|N01119|Circulating Nurse|Nursing|
+88238771|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88238771|S09018|Assistant Surgeon|Obstetrics & Gynecology|2
+88238771|A00524|Anesthesiologist|Anesthesiology|
+88238771|N01011|Circulating Nurse|Nursing|
+88252060|S03370|Primary Surgeon|Urology|1
+88252060|S09027|Assistant Surgeon|General Surgery|2
+88252060|S09064|Assistant Surgeon|Urology|3
+88252060|A00557|Anesthesiologist|Anesthesiology|
+88252060|N01188|Circulating Nurse|Nursing|
+88205480|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88205480|A00529|Anesthesiologist|Anesthesiology|
+88205480|N01182|Circulating Nurse|Nursing|
+88214111|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88214111|A00498|Anesthesiologist|Anesthesiology|
+88214111|N01095|Circulating Nurse|Nursing|
+88243018|S02955|Primary Surgeon|General Surgery|1
+88243018|A00581|Anesthesiologist|Anesthesiology|
+88243018|N01157|Circulating Nurse|Nursing|
+88251101|S03318|Primary Surgeon|Urology|1
+88251101|S09064|Assistant Surgeon|General Surgery|2
+88251101|A00573|Anesthesiologist|Anesthesiology|
+88251101|N01083|Circulating Nurse|Nursing|
+88206165|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88206165|A00538|Anesthesiologist|Anesthesiology|
+88206165|N01182|Circulating Nurse|Nursing|
+88246306|S02901|Primary Surgeon|General Surgery|1
+88246306|A00461|Anesthesiologist|Anesthesiology|
+88246306|N01027|Circulating Nurse|Nursing|
+88235209|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88235209|S09010|Assistant Surgeon|Colon & Rectal Surgery|2
+88235209|A00538|Anesthesiologist|Anesthesiology|
+88235209|N01081|Circulating Nurse|Nursing|
+88230414|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88230414|A00548|Anesthesiologist|Anesthesiology|
+88230414|N01099|Circulating Nurse|Nursing|
+88244525|S02901|Primary Surgeon|General Surgery|1
+88244525|A00481|Anesthesiologist|Anesthesiology|
+88244525|N01094|Circulating Nurse|Nursing|
+88205343|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88205343|A00512|Anesthesiologist|Anesthesiology|
+88205343|N01126|Circulating Nurse|Nursing|
+88246717|S02901|Primary Surgeon|General Surgery|1
+88246717|A00414|Anesthesiologist|Anesthesiology|
+88246717|N01081|Circulating Nurse|Nursing|
+88247950|S03370|Primary Surgeon|Urology|1
+88247950|S09067|Assistant Surgeon|Urology|2
+88247950|A00545|Anesthesiologist|Anesthesiology|
+88247950|N01131|Circulating Nurse|Nursing|
+88249731|S04188|Primary Surgeon|Orthopaedic Surgery|1
+88249731|S09072|Assistant Surgeon|Orthopaedic Surgery|2
+88249731|A00523|Anesthesiologist|Anesthesiology|
+88249731|N01100|Circulating Nurse|Nursing|
+88240963|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88240963|S09065|Assistant Surgeon|Colon & Rectal Surgery|2
+88240963|A00551|Anesthesiologist|Anesthesiology|
+88240963|N01073|Circulating Nurse|Nursing|
+88207261|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88207261|A00594|Anesthesiologist|Anesthesiology|
+88207261|N01108|Circulating Nurse|Nursing|
+88210549|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88210549|A00567|Anesthesiologist|Anesthesiology|
+88210549|N01008|Circulating Nurse|Nursing|
+88226167|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88226167|A00534|Anesthesiologist|Anesthesiology|
+88226167|N01149|Circulating Nurse|Nursing|
+88222605|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88222605|A00587|Anesthesiologist|Anesthesiology|
+88222605|N01132|Circulating Nurse|Nursing|
+88250279|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88250279|S09057|Assistant Surgeon|Orthopaedic Surgery|2
+88250279|A00427|Anesthesiologist|Anesthesiology|
+88250279|N01069|Circulating Nurse|Nursing|
+88204247|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88204247|A00537|Anesthesiologist|Anesthesiology|
+88204247|N01130|Circulating Nurse|Nursing|
+88249868|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88249868|S09025|Assistant Surgeon|Orthopaedic Surgery|2
+88249868|A00564|Anesthesiologist|Anesthesiology|
+88249868|N01172|Circulating Nurse|Nursing|
+88213015|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88213015|A00461|Anesthesiologist|Anesthesiology|
+88213015|N01132|Circulating Nurse|Nursing|
+88220413|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88220413|A00436|Anesthesiologist|Anesthesiology|
+88220413|N01167|Circulating Nurse|Nursing|
+88223153|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88223153|A00583|Anesthesiologist|Anesthesiology|
+88223153|N01046|Circulating Nurse|Nursing|
+88252197|S03318|Primary Surgeon|Urology|1
+88252197|S09065|Assistant Surgeon|General Surgery|2
+88252197|A00517|Anesthesiologist|Anesthesiology|
+88252197|N01114|Circulating Nurse|Nursing|
+88250553|S04188|Primary Surgeon|Orthopaedic Surgery|1
+88250553|S09008|Assistant Surgeon|Plastic Surgery|2
+88250553|A00429|Anesthesiologist|Anesthesiology|
+88250553|N01109|Circulating Nurse|Nursing|
+88214796|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88214796|A00552|Anesthesiologist|Anesthesiology|
+88214796|N01139|Circulating Nurse|Nursing|
+88241648|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88241648|A00575|Anesthesiologist|Anesthesiology|
+88241648|N01053|Circulating Nurse|Nursing|
+88201233|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88201233|A00445|Anesthesiologist|Anesthesiology|
+88201233|N01070|Circulating Nurse|Nursing|
+88230688|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88230688|S09082|Assistant Surgeon|Colon & Rectal Surgery|2
+88230688|S09119|Assistant Surgeon|Urology|3
+88230688|A00466|Anesthesiologist|Anesthesiology|
+88230688|N01040|Circulating Nurse|Nursing|
+88236031|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88236031|S09035|Assistant Surgeon|Colon & Rectal Surgery|2
+88236031|A00567|Anesthesiologist|Anesthesiology|
+88236031|N01172|Circulating Nurse|Nursing|
+88250416|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88250416|S09059|Assistant Surgeon|Orthopaedic Surgery|2
+88250416|A00586|Anesthesiologist|Anesthesiology|
+88250416|N01074|Circulating Nurse|Nursing|
+88219180|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88219180|A00521|Anesthesiologist|Anesthesiology|
+88219180|N01000|Circulating Nurse|Nursing|
+88234524|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88234524|S09075|Assistant Surgeon|Obstetrics & Gynecology|2
+88234524|A00493|Anesthesiologist|Anesthesiology|
+88234524|N01110|Circulating Nurse|Nursing|
+88206713|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88206713|A00494|Anesthesiologist|Anesthesiology|
+88206713|N01193|Circulating Nurse|Nursing|
+88226578|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88226578|S09000|Assistant Surgeon|Obstetrics & Gynecology|2
+88226578|A00448|Anesthesiologist|Anesthesiology|
+88226578|N01122|Circulating Nurse|Nursing|
+88249183|S03318|Primary Surgeon|Urology|1
+88249183|S09072|Assistant Surgeon|Urology|2
+88249183|A00512|Anesthesiologist|Anesthesiology|
+88249183|N01052|Circulating Nurse|Nursing|
+88231647|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88231647|S09053|Assistant Surgeon|Obstetrics & Gynecology|2
+88231647|A00534|Anesthesiologist|Anesthesiology|
+88231647|N01093|Circulating Nurse|Nursing|
+88200548|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88200548|A00561|Anesthesiologist|Anesthesiology|
+88200548|N01057|Circulating Nurse|Nursing|
+88222742|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88222742|A00458|Anesthesiologist|Anesthesiology|
+88222742|N01064|Circulating Nurse|Nursing|
+88215892|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88215892|A00590|Anesthesiologist|Anesthesiology|
+88215892|N01189|Circulating Nurse|Nursing|
+88220276|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88220276|S09027|Assistant Surgeon|Obstetrics & Gynecology|2
+88220276|A00490|Anesthesiologist|Anesthesiology|
+88220276|N01003|Circulating Nurse|Nursing|
+88225071|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88225071|S09037|Assistant Surgeon|Obstetrics & Gynecology|2
+88225071|A00538|Anesthesiologist|Anesthesiology|
+88225071|N01180|Circulating Nurse|Nursing|
+88244114|S02901|Primary Surgeon|General Surgery|1
+88244114|A00589|Anesthesiologist|Anesthesiology|
+88244114|N01027|Circulating Nurse|Nursing|
+88237812|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88237812|S09072|Assistant Surgeon|Colon & Rectal Surgery|2
+88237812|A00436|Anesthesiologist|Anesthesiology|
+88237812|N01156|Circulating Nurse|Nursing|
+88252334|S03370|Primary Surgeon|Urology|1
+88252334|S09063|Assistant Surgeon|General Surgery|2
+88252334|A00409|Anesthesiologist|Anesthesiology|
+88252334|N01119|Circulating Nurse|Nursing|
+88216577|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88216577|A00457|Anesthesiologist|Anesthesiology|
+88216577|N01100|Circulating Nurse|Nursing|
+88249046|S03370|Primary Surgeon|Urology|1
+88249046|S09066|Assistant Surgeon|Urology|2
+88249046|A00556|Anesthesiologist|Anesthesiology|
+88249046|N01168|Circulating Nurse|Nursing|
+88239182|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88239182|S09004|Assistant Surgeon|Colon & Rectal Surgery|2
+88239182|S09041|Assistant Surgeon|Obstetrics & Gynecology|3
+88239182|A00533|Anesthesiologist|Anesthesiology|
+88239182|N01112|Circulating Nurse|Nursing|
+88219728|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88219728|S09086|Assistant Surgeon|Obstetrics & Gynecology|2
+88219728|A00463|Anesthesiologist|Anesthesiology|
+88219728|N01151|Circulating Nurse|Nursing|
+88241785|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88241785|A00521|Anesthesiologist|Anesthesiology|
+88241785|N01155|Circulating Nurse|Nursing|
+88227948|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88227948|S09023|Assistant Surgeon|Obstetrics & Gynecology|2
+88227948|A00588|Anesthesiologist|Anesthesiology|
+88227948|N01152|Circulating Nurse|Nursing|
+88215481|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88215481|A00443|Anesthesiologist|Anesthesiology|
+88215481|N01044|Circulating Nurse|Nursing|
+88200411|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88200411|A00586|Anesthesiologist|Anesthesiology|
+88200411|N01061|Circulating Nurse|Nursing|
+88210823|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88210823|A00535|Anesthesiologist|Anesthesiology|
+88210823|N01068|Circulating Nurse|Nursing|
+88223564|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88223564|A00567|Anesthesiologist|Anesthesiology|
+88223564|N01077|Circulating Nurse|Nursing|
+88207672|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88207672|A00493|Anesthesiologist|Anesthesiology|
+88207672|N01062|Circulating Nurse|Nursing|
+88248087|S03370|Primary Surgeon|Urology|1
+88248087|S09087|Assistant Surgeon|Urology|2
+88248087|A00412|Anesthesiologist|Anesthesiology|
+88248087|N01149|Circulating Nurse|Nursing|
+88245895|S02901|Primary Surgeon|General Surgery|1
+88245895|A00512|Anesthesiologist|Anesthesiology|
+88245895|N01033|Circulating Nurse|Nursing|
+88229592|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88229592|S09023|Assistant Surgeon|Colon & Rectal Surgery|2
+88229592|S09060|Assistant Surgeon|Urology|3
+88229592|S09097|Assistant Surgeon|Obstetrics & Gynecology|4
+88229592|A00421|Anesthesiologist|Anesthesiology|
+88229592|N01043|Circulating Nurse|Nursing|
+88240552|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88240552|A00470|Anesthesiologist|Anesthesiology|
+88240552|N01109|Circulating Nurse|Nursing|
+88237675|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88237675|S09037|Assistant Surgeon|Obstetrics & Gynecology|2
+88237675|A00411|Anesthesiologist|Anesthesiology|
+88237675|N01131|Circulating Nurse|Nursing|
+88223975|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88223975|S09008|Assistant Surgeon|Obstetrics & Gynecology|2
+88223975|A00578|Anesthesiologist|Anesthesiology|
+88223975|N01070|Circulating Nurse|Nursing|
+88245073|S02901|Primary Surgeon|General Surgery|1
+88245073|A00515|Anesthesiologist|Anesthesiology|
+88245073|N01014|Circulating Nurse|Nursing|
+88220002|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88220002|A00563|Anesthesiologist|Anesthesiology|
+88220002|N01035|Circulating Nurse|Nursing|
+88216851|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88216851|S09084|Assistant Surgeon|Obstetrics & Gynecology|2
+88216851|A00597|Anesthesiologist|Anesthesiology|
+88216851|N01080|Circulating Nurse|Nursing|
+88211645|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88211645|A00443|Anesthesiologist|Anesthesiology|
+88211645|N01195|Circulating Nurse|Nursing|
+88216714|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88216714|A00513|Anesthesiologist|Anesthesiology|
+88216714|N01175|Circulating Nurse|Nursing|
+88246032|S02901|Primary Surgeon|General Surgery|1
+88246032|A00442|Anesthesiologist|Anesthesiology|
+88246032|N01187|Circulating Nurse|Nursing|
+88247813|S03370|Primary Surgeon|Urology|1
+88247813|S09030|Assistant Surgeon|Urology|2
+88247813|A00597|Anesthesiologist|Anesthesiology|
+88247813|N01082|Circulating Nurse|Nursing|
+88227674|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88227674|A00459|Anesthesiologist|Anesthesiology|
+88227674|N01016|Circulating Nurse|Nursing|
+88235894|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88235894|S09067|Assistant Surgeon|Colon & Rectal Surgery|2
+88235894|A00593|Anesthesiologist|Anesthesiology|
+88235894|N01161|Circulating Nurse|Nursing|
+88239593|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88239593|S09036|Assistant Surgeon|Colon & Rectal Surgery|2
+88239593|A00502|Anesthesiologist|Anesthesiology|
+88239593|N01020|Circulating Nurse|Nursing|
+88246991|S02955|Primary Surgeon|General Surgery|1
+88246991|A00516|Anesthesiologist|Anesthesiology|
+88246991|N01197|Circulating Nurse|Nursing|
+88203836|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88203836|A00448|Anesthesiologist|Anesthesiology|
+88203836|N01099|Circulating Nurse|Nursing|
+88242333|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88242333|A00451|Anesthesiologist|Anesthesiology|
+88242333|N01181|Circulating Nurse|Nursing|
+88228633|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88228633|A00462|Anesthesiologist|Anesthesiology|
+88228633|N01131|Circulating Nurse|Nursing|
+88253978|S03370|Primary Surgeon|Urology|1
+88253978|S09075|Assistant Surgeon|General Surgery|2
+88253978|S09112|Assistant Surgeon|Colon & Rectal Surgery|3
+88253978|A00475|Anesthesiologist|Anesthesiology|
+88253978|N01123|Circulating Nurse|Nursing|
+88205754|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88205754|A00406|Anesthesiologist|Anesthesiology|
+88205754|N01039|Circulating Nurse|Nursing|
+88231510|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88231510|S09042|Assistant Surgeon|Colon & Rectal Surgery|2
+88231510|S09079|Assistant Surgeon|Urology|3
+88231510|S09116|Assistant Surgeon|Obstetrics & Gynecology|4
+88231510|A00449|Anesthesiologist|Anesthesiology|
+88231510|N01043|Circulating Nurse|Nursing|
+88208220|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88208220|A00424|Anesthesiologist|Anesthesiology|
+88208220|N01012|Circulating Nurse|Nursing|
+88209864|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88209864|A00435|Anesthesiologist|Anesthesiology|
+88209864|N01116|Circulating Nurse|Nursing|
+88217947|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88217947|S09046|Assistant Surgeon|Obstetrics & Gynecology|2
+88217947|A00528|Anesthesiologist|Anesthesiology|
+88217947|N01164|Circulating Nurse|Nursing|
+88217262|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88217262|S09069|Assistant Surgeon|Obstetrics & Gynecology|2
+88217262|A00502|Anesthesiologist|Anesthesiology|
+88217262|N01006|Circulating Nurse|Nursing|
+88248635|S03318|Primary Surgeon|Urology|1
+88248635|S09034|Assistant Surgeon|Urology|2
+88248635|A00520|Anesthesiologist|Anesthesiology|
+88248635|N01182|Circulating Nurse|Nursing|
+88202603|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88202603|A00548|Anesthesiologist|Anesthesiology|
+88202603|N01065|Circulating Nurse|Nursing|
+88247539|S02901|Primary Surgeon|General Surgery|1
+88247539|A00439|Anesthesiologist|Anesthesiology|
+88247539|N01196|Circulating Nurse|Nursing|
+88211371|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88211371|A00450|Anesthesiologist|Anesthesiology|
+88211371|N01151|Circulating Nurse|Nursing|
+88212330|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88212330|A00462|Anesthesiologist|Anesthesiology|
+88212330|N01040|Circulating Nurse|Nursing|
+88249320|S03370|Primary Surgeon|Urology|1
+88249320|A00493|Anesthesiologist|Anesthesiology|
+88249320|N01118|Circulating Nurse|Nursing|
+88209042|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88209042|A00573|Anesthesiologist|Anesthesiology|
+88209042|N01093|Circulating Nurse|Nursing|
+88235346|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88235346|A00434|Anesthesiologist|Anesthesiology|
+88235346|N01095|Circulating Nurse|Nursing|
+88224523|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88224523|S09018|Assistant Surgeon|Obstetrics & Gynecology|2
+88224523|A00439|Anesthesiologist|Anesthesiology|
+88224523|N01125|Circulating Nurse|Nursing|
+88226989|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88226989|S09020|Assistant Surgeon|Colon & Rectal Surgery|2
+88226989|A00526|Anesthesiologist|Anesthesiology|
+88226989|N01064|Circulating Nurse|Nursing|
+88203014|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88203014|A00420|Anesthesiologist|Anesthesiology|
+88203014|N01181|Circulating Nurse|Nursing|
+88229318|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88229318|S09063|Assistant Surgeon|Colon & Rectal Surgery|2
+88229318|A00436|Anesthesiologist|Anesthesiology|
+88229318|N01152|Circulating Nurse|Nursing|
+88233976|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88233976|S09004|Assistant Surgeon|Obstetrics & Gynecology|2
+88233976|A00523|Anesthesiologist|Anesthesiology|
+88233976|N01025|Circulating Nurse|Nursing|
+88240004|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88240004|S09075|Assistant Surgeon|Colon & Rectal Surgery|2
+88240004|A00536|Anesthesiologist|Anesthesiology|
+88240004|N01139|Circulating Nurse|Nursing|
+88201370|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88201370|A00511|Anesthesiologist|Anesthesiology|
+88201370|N01173|Circulating Nurse|Nursing|
+88214385|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88214385|A00455|Anesthesiologist|Anesthesiology|
+88214385|N01185|Circulating Nurse|Nursing|
+88206028|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88206028|A00554|Anesthesiologist|Anesthesiology|
+88206028|N01026|Circulating Nurse|Nursing|
+88221646|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88221646|A00413|Anesthesiologist|Anesthesiology|
+88221646|N01022|Circulating Nurse|Nursing|
+88214248|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88214248|A00428|Anesthesiologist|Anesthesiology|
+88214248|N01027|Circulating Nurse|Nursing|
+88218632|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88218632|S09033|Assistant Surgeon|Obstetrics & Gynecology|2
+88218632|A00447|Anesthesiologist|Anesthesiology|
+88218632|N01034|Circulating Nurse|Nursing|
+88245347|S02955|Primary Surgeon|General Surgery|1
+88245347|A00460|Anesthesiologist|Anesthesiology|
+88245347|N01104|Circulating Nurse|Nursing|
+88203562|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88203562|A00518|Anesthesiologist|Anesthesiology|
+88203562|N01038|Circulating Nurse|Nursing|
+88210686|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88210686|A00477|Anesthesiologist|Anesthesiology|
+88210686|N01139|Circulating Nurse|Nursing|
+88231099|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88231099|S09013|Assistant Surgeon|Colon & Rectal Surgery|2
+88231099|A00476|Anesthesiologist|Anesthesiology|
+88231099|N01095|Circulating Nurse|Nursing|
+88241922|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88241922|A00464|Anesthesiologist|Anesthesiology|
+88241922|N01158|Circulating Nurse|Nursing|
+88203699|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88203699|A00495|Anesthesiologist|Anesthesiology|
+88203699|N01128|Circulating Nurse|Nursing|
+88212193|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88212193|A00579|Anesthesiologist|Anesthesiology|
+88212193|N01136|Circulating Nurse|Nursing|
+88215344|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88215344|A00478|Anesthesiologist|Anesthesiology|
+88215344|N01002|Circulating Nurse|Nursing|
+88234250|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88234250|A00563|Anesthesiologist|Anesthesiology|
+88234250|N01092|Circulating Nurse|Nursing|
+88219043|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88219043|S09084|Assistant Surgeon|Obstetrics & Gynecology|2
+88219043|A00557|Anesthesiologist|Anesthesiology|
+88219043|N01094|Circulating Nurse|Nursing|
+88219865|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88219865|S09004|Assistant Surgeon|Obstetrics & Gynecology|2
+88219865|A00500|Anesthesiologist|Anesthesiology|
+88219865|N01142|Circulating Nurse|Nursing|
+88200137|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88200137|A00503|Anesthesiologist|Anesthesiology|
+88200137|N01199|Circulating Nurse|Nursing|
+88205891|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88205891|A00428|Anesthesiologist|Anesthesiology|
+88205891|N01115|Circulating Nurse|Nursing|
+88228085|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88228085|S09069|Assistant Surgeon|Obstetrics & Gynecology|2
+88228085|A00509|Anesthesiologist|Anesthesiology|
+88228085|N01004|Circulating Nurse|Nursing|
+88233839|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88233839|S09060|Assistant Surgeon|Obstetrics & Gynecology|2
+88233839|A00445|Anesthesiologist|Anesthesiology|
+88233839|N01088|Circulating Nurse|Nursing|
+88251512|S03370|Primary Surgeon|Urology|1
+88251512|S09016|Assistant Surgeon|General Surgery|2
+88251512|S09053|Assistant Surgeon|Urology|3
+88251512|A00489|Anesthesiologist|Anesthesiology|
+88251512|N01061|Circulating Nurse|Nursing|
+88208083|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88208083|A00548|Anesthesiologist|Anesthesiology|
+88208083|N01195|Circulating Nurse|Nursing|
+88213563|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88213563|A00566|Anesthesiologist|Anesthesiology|
+88213563|N01031|Circulating Nurse|Nursing|
+88220961|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88220961|A00530|Anesthesiologist|Anesthesiology|
+88220961|N01169|Circulating Nurse|Nursing|
+88236305|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88236305|S09062|Assistant Surgeon|Colon & Rectal Surgery|2
+88236305|S09099|Assistant Surgeon|Obstetrics & Gynecology|3
+88236305|A00405|Anesthesiologist|Anesthesiology|
+88236305|N01048|Circulating Nurse|Nursing|
+88213837|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88213837|A00568|Anesthesiologist|Anesthesiology|
+88213837|N01099|Circulating Nurse|Nursing|
+88236168|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88236168|A00439|Anesthesiologist|Anesthesiology|
+88236168|N01080|Circulating Nurse|Nursing|
+88212604|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88212604|A00452|Anesthesiologist|Anesthesiology|
+88212604|N01127|Circulating Nurse|Nursing|
+88247128|S02955|Primary Surgeon|General Surgery|1
+88247128|A00440|Anesthesiologist|Anesthesiology|
+88247128|N01120|Circulating Nurse|Nursing|
+88247676|S02955|Primary Surgeon|General Surgery|1
+88247676|A00523|Anesthesiologist|Anesthesiology|
+88247676|N01180|Circulating Nurse|Nursing|
+88226304|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88226304|A00554|Anesthesiologist|Anesthesiology|
+88226304|N01183|Circulating Nurse|Nursing|
+88253156|S03318|Primary Surgeon|Urology|1
+88253156|S09089|Assistant Surgeon|General Surgery|2
+88253156|S09126|Assistant Surgeon|Colon & Rectal Surgery|3
+88253156|A00490|Anesthesiologist|Anesthesiology|
+88253156|N01044|Circulating Nurse|Nursing|
+88246169|S02901|Primary Surgeon|General Surgery|1
+88246169|A00593|Anesthesiologist|Anesthesiology|
+88246169|N01183|Circulating Nurse|Nursing|
+88212056|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88212056|A00455|Anesthesiologist|Anesthesiology|
+88212056|N01178|Circulating Nurse|Nursing|
+88208768|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88208768|A00572|Anesthesiologist|Anesthesiology|
+88208768|N01100|Circulating Nurse|Nursing|
+88216440|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88216440|A00427|Anesthesiologist|Anesthesiology|
+88216440|N01155|Circulating Nurse|Nursing|
+88219591|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88219591|S09041|Assistant Surgeon|Obstetrics & Gynecology|2
+88219591|A00434|Anesthesiologist|Anesthesiology|
+88219591|N01194|Circulating Nurse|Nursing|
+88242470|S04188|Primary Surgeon|Orthopaedic Surgery|1
+88242470|A00514|Anesthesiologist|Anesthesiology|
+88242470|N01153|Circulating Nurse|Nursing|
+88244936|S02901|Primary Surgeon|General Surgery|1
+88244936|A00446|Anesthesiologist|Anesthesiology|
+88244936|N01180|Circulating Nurse|Nursing|
+88246443|S02955|Primary Surgeon|General Surgery|1
+88246443|A00587|Anesthesiologist|Anesthesiology|
+88246443|N01194|Circulating Nurse|Nursing|
+88201644|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88201644|A00411|Anesthesiologist|Anesthesiology|
+88201644|N01049|Circulating Nurse|Nursing|
+88203425|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88203425|A00527|Anesthesiologist|Anesthesiology|
+88203425|N01107|Circulating Nurse|Nursing|
+88202877|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88202877|A00476|Anesthesiologist|Anesthesiology|
+88202877|N01135|Circulating Nurse|Nursing|
+88219317|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88219317|A00567|Anesthesiologist|Anesthesiology|
+88219317|N01016|Circulating Nurse|Nursing|
+88204521|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88204521|A00534|Anesthesiologist|Anesthesiology|
+88204521|N01045|Circulating Nurse|Nursing|
+88226852|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88226852|S09078|Assistant Surgeon|Colon & Rectal Surgery|2
+88226852|A00489|Anesthesiologist|Anesthesiology|
+88226852|N01033|Circulating Nurse|Nursing|
+88211782|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88211782|A00512|Anesthesiologist|Anesthesiology|
+88211782|N01144|Circulating Nurse|Nursing|
+88248909|S03318|Primary Surgeon|Urology|1
+88248909|A00422|Anesthesiologist|Anesthesiology|
+88248909|N01141|Circulating Nurse|Nursing|
+88224386|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88224386|S09030|Assistant Surgeon|Obstetrics & Gynecology|2
+88224386|A00530|Anesthesiologist|Anesthesiology|
+88224386|N01170|Circulating Nurse|Nursing|
+88232469|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88232469|S09032|Assistant Surgeon|Colon & Rectal Surgery|2
+88232469|S09069|Assistant Surgeon|Obstetrics & Gynecology|3
+88232469|A00555|Anesthesiologist|Anesthesiology|
+88232469|N01069|Circulating Nurse|Nursing|
+88209316|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88209316|A00410|Anesthesiologist|Anesthesiology|
+88209316|N01160|Circulating Nurse|Nursing|
+88226715|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88226715|S09059|Assistant Surgeon|Colon & Rectal Surgery|2
+88226715|A00492|Anesthesiologist|Anesthesiology|
+88226715|N01022|Circulating Nurse|Nursing|
+88237949|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88237949|S09049|Assistant Surgeon|Colon & Rectal Surgery|2
+88237949|S09086|Assistant Surgeon|Obstetrics & Gynecology|3
+88237949|A00499|Anesthesiologist|Anesthesiology|
+88237949|N01044|Circulating Nurse|Nursing|
+88215755|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88215755|A00423|Anesthesiologist|Anesthesiology|
+88215755|N01066|Circulating Nurse|Nursing|
+88217125|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88217125|S09065|Assistant Surgeon|Obstetrics & Gynecology|2
+88217125|A00582|Anesthesiologist|Anesthesiology|
+88217125|N01082|Circulating Nurse|Nursing|
+88242059|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88242059|A00594|Anesthesiologist|Anesthesiology|
+88242059|N01121|Circulating Nurse|Nursing|
+88225208|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88225208|A00490|Anesthesiologist|Anesthesiology|
+88225208|N01070|Circulating Nurse|Nursing|
+88252745|S03318|Primary Surgeon|Urology|1
+88252745|S09030|Assistant Surgeon|General Surgery|2
+88252745|S09067|Assistant Surgeon|Urology|3
+88252745|A00585|Anesthesiologist|Anesthesiology|
+88252745|N01096|Circulating Nurse|Nursing|
+88225619|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88225619|A00547|Anesthesiologist|Anesthesiology|
+88225619|N01049|Circulating Nurse|Nursing|
+88223016|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88223016|S09039|Assistant Surgeon|Obstetrics & Gynecology|2
+88223016|A00529|Anesthesiologist|Anesthesiology|
+88223016|N01072|Circulating Nurse|Nursing|
+88202466|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88202466|A00544|Anesthesiologist|Anesthesiology|
+88202466|N01044|Circulating Nurse|Nursing|
+88203288|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88203288|A00409|Anesthesiologist|Anesthesiology|
+88203288|N01131|Circulating Nurse|Nursing|
+88243566|S02955|Primary Surgeon|General Surgery|1
+88243566|A00449|Anesthesiologist|Anesthesiology|
+88243566|N01120|Circulating Nurse|Nursing|
+88247402|S02901|Primary Surgeon|General Surgery|1
+88247402|S09040|Assistant Surgeon|General Surgery|2
+88247402|A00511|Anesthesiologist|Anesthesiology|
+88247402|N01173|Circulating Nurse|Nursing|
+88225482|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88225482|S09078|Assistant Surgeon|Colon & Rectal Surgery|2
+88225482|S09115|Assistant Surgeon|Obstetrics & Gynecology|3
+88225482|A00566|Anesthesiologist|Anesthesiology|
+88225482|N01163|Circulating Nurse|Nursing|
+88212741|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88212741|A00586|Anesthesiologist|Anesthesiology|
+88212741|N01010|Circulating Nurse|Nursing|
+88217399|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88217399|S09020|Assistant Surgeon|Obstetrics & Gynecology|2
+88217399|A00498|Anesthesiologist|Anesthesiology|
+88217399|N01013|Circulating Nurse|Nursing|
+88227537|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88227537|S09048|Assistant Surgeon|Colon & Rectal Surgery|2
+88227537|S09085|Assistant Surgeon|Urology|3
+88227537|A00412|Anesthesiologist|Anesthesiology|
+88227537|N01173|Circulating Nurse|Nursing|
+88211508|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88211508|A00570|Anesthesiologist|Anesthesiology|
+88211508|N01019|Circulating Nurse|Nursing|
+88219454|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88219454|A00521|Anesthesiologist|Anesthesiology|
+88219454|N01113|Circulating Nurse|Nursing|
+88231921|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88231921|S09031|Assistant Surgeon|Obstetrics & Gynecology|2
+88231921|A00413|Anesthesiologist|Anesthesiology|
+88231921|N01049|Circulating Nurse|Nursing|
+88233154|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88233154|A00508|Anesthesiologist|Anesthesiology|
+88233154|N01047|Circulating Nurse|Nursing|
+88237127|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88237127|A00422|Anesthesiologist|Anesthesiology|
+88237127|N01080|Circulating Nurse|Nursing|
+88239730|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88239730|S09062|Assistant Surgeon|Colon & Rectal Surgery|2
+88239730|S09099|Assistant Surgeon|Obstetrics & Gynecology|3
+88239730|A00513|Anesthesiologist|Anesthesiology|
+88239730|N01000|Circulating Nurse|Nursing|
+88220687|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88220687|A00526|Anesthesiologist|Anesthesiology|
+88220687|N01133|Circulating Nurse|Nursing|
+88245210|S02955|Primary Surgeon|General Surgery|1
+88245210|A00424|Anesthesiologist|Anesthesiology|
+88245210|N01156|Circulating Nurse|Nursing|
+88249457|S04188|Primary Surgeon|Orthopaedic Surgery|1
+88249457|S09083|Assistant Surgeon|Plastic Surgery|2
+88249457|A00526|Anesthesiologist|Anesthesiology|
+88249457|N01177|Circulating Nurse|Nursing|
+88222468|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88222468|A00541|Anesthesiologist|Anesthesiology|
+88222468|N01145|Circulating Nurse|Nursing|
+88234798|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88234798|S09054|Assistant Surgeon|Obstetrics & Gynecology|2
+88234798|A00456|Anesthesiologist|Anesthesiology|
+88234798|N01177|Circulating Nurse|Nursing|
+88206576|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88206576|A00448|Anesthesiologist|Anesthesiology|
+88206576|N01059|Circulating Nurse|Nursing|
+88238086|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88238086|S09049|Assistant Surgeon|Obstetrics & Gynecology|2
+88238086|A00581|Anesthesiologist|Anesthesiology|
+88238086|N01103|Circulating Nurse|Nursing|
+88252471|S03370|Primary Surgeon|Urology|1
+88252471|S09028|Assistant Surgeon|General Surgery|2
+88252471|A00521|Anesthesiologist|Anesthesiology|
+88252471|N01030|Circulating Nurse|Nursing|
+88230551|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88230551|S09016|Assistant Surgeon|Colon & Rectal Surgery|2
+88230551|A00472|Anesthesiologist|Anesthesiology|
+88230551|N01196|Circulating Nurse|Nursing|
+88227263|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88227263|S09015|Assistant Surgeon|Colon & Rectal Surgery|2
+88227263|A00498|Anesthesiologist|Anesthesiology|
+88227263|N01146|Circulating Nurse|Nursing|
+88239456|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88239456|S09033|Assistant Surgeon|Obstetrics & Gynecology|2
+88239456|A00545|Anesthesiologist|Anesthesiology|
+88239456|N01181|Circulating Nurse|Nursing|
+88232058|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88232058|A00597|Anesthesiologist|Anesthesiology|
+88232058|N01090|Circulating Nurse|Nursing|
+88240689|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88240689|S09053|Assistant Surgeon|Colon & Rectal Surgery|2
+88240689|S09090|Assistant Surgeon|Obstetrics & Gynecology|3
+88240689|A00431|Anesthesiologist|Anesthesiology|
+88240689|N01046|Circulating Nurse|Nursing|
+88224934|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88224934|S09025|Assistant Surgeon|Colon & Rectal Surgery|2
+88224934|S09062|Assistant Surgeon|Urology|3
+88224934|A00552|Anesthesiologist|Anesthesiology|
+88224934|N01094|Circulating Nurse|Nursing|
+88226441|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88226441|A00504|Anesthesiologist|Anesthesiology|
+88226441|N01089|Circulating Nurse|Nursing|
+88213152|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88213152|A00562|Anesthesiologist|Anesthesiology|
+88213152|N01003|Circulating Nurse|Nursing|
+88207809|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88207809|A00413|Anesthesiologist|Anesthesiology|
+88207809|N01072|Circulating Nurse|Nursing|
+88240141|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88240141|A00575|Anesthesiologist|Anesthesiology|
+88240141|N01056|Circulating Nurse|Nursing|
+88230003|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88230003|S09055|Assistant Surgeon|Obstetrics & Gynecology|2
+88230003|A00590|Anesthesiologist|Anesthesiology|
+88230003|N01040|Circulating Nurse|Nursing|
+88244251|S02955|Primary Surgeon|General Surgery|1
+88244251|A00598|Anesthesiologist|Anesthesiology|
+88244251|N01105|Circulating Nurse|Nursing|
+88217810|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88217810|S09012|Assistant Surgeon|Obstetrics & Gynecology|2
+88217810|A00400|Anesthesiologist|Anesthesiology|
+88217810|N01151|Circulating Nurse|Nursing|
+88242744|S04188|Primary Surgeon|Orthopaedic Surgery|1
+88242744|A00407|Anesthesiologist|Anesthesiology|
+88242744|N01124|Circulating Nurse|Nursing|
+88236853|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88236853|S09061|Assistant Surgeon|Colon & Rectal Surgery|2
+88236853|A00563|Anesthesiologist|Anesthesiology|
+88236853|N01014|Circulating Nurse|Nursing|
+88208631|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88208631|A00583|Anesthesiologist|Anesthesiology|
+88208631|N01022|Circulating Nurse|Nursing|
+88214522|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88214522|A00467|Anesthesiologist|Anesthesiology|
+88214522|N01044|Circulating Nurse|Nursing|
+88227400|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88227400|S09065|Assistant Surgeon|Obstetrics & Gynecology|2
+88227400|A00499|Anesthesiologist|Anesthesiology|
+88227400|N01185|Circulating Nurse|Nursing|
+88200685|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88200685|A00451|Anesthesiologist|Anesthesiology|
+88200685|N01161|Circulating Nurse|Nursing|
+88241511|S04188|Primary Surgeon|Orthopaedic Surgery|1
+88241511|A00530|Anesthesiologist|Anesthesiology|
+88241511|N01002|Circulating Nurse|Nursing|
+88243429|S02955|Primary Surgeon|General Surgery|1
+88243429|A00428|Anesthesiologist|Anesthesiology|
+88243429|N01047|Circulating Nurse|Nursing|
+88250005|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88250005|S09042|Assistant Surgeon|Plastic Surgery|2
+88250005|A00592|Anesthesiologist|Anesthesiology|
+88250005|N01110|Circulating Nurse|Nursing|
+88210960|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88210960|A00492|Anesthesiologist|Anesthesiology|
+88210960|N01018|Circulating Nurse|Nursing|
+88202192|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88202192|A00500|Anesthesiologist|Anesthesiology|
+88202192|N01182|Circulating Nurse|Nursing|
+88216166|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88216166|A00449|Anesthesiologist|Anesthesiology|
+88216166|N01108|Circulating Nurse|Nursing|
+88226030|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88226030|S09075|Assistant Surgeon|Colon & Rectal Surgery|2
+88226030|S09112|Assistant Surgeon|Urology|3
+88226030|S09149|Assistant Surgeon|Obstetrics & Gynecology|4
+88226030|A00432|Anesthesiologist|Anesthesiology|
+88226030|N01196|Circulating Nurse|Nursing|
+88234387|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88234387|S09069|Assistant Surgeon|Obstetrics & Gynecology|2
+88234387|A00469|Anesthesiologist|Anesthesiology|
+88234387|N01197|Circulating Nurse|Nursing|
+88254252|S03318|Primary Surgeon|Urology|1
+88254252|S09014|Assistant Surgeon|General Surgery|2
+88254252|S09051|Assistant Surgeon|Urology|3
+88254252|A00556|Anesthesiologist|Anesthesiology|
+88254252|N01153|Circulating Nurse|Nursing|
+88206439|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88206439|A00495|Anesthesiologist|Anesthesiology|
+88206439|N01065|Circulating Nurse|Nursing|
+88235757|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88235757|S09026|Assistant Surgeon|Obstetrics & Gynecology|2
+88235757|A00486|Anesthesiologist|Anesthesiology|
+88235757|N01006|Circulating Nurse|Nursing|
+88239867|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88239867|A00406|Anesthesiologist|Anesthesiology|
+88239867|N01176|Circulating Nurse|Nursing|
+88213700|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88213700|A00415|Anesthesiologist|Anesthesiology|
+88213700|N01159|Circulating Nurse|Nursing|
+88236716|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88236716|S09085|Assistant Surgeon|Obstetrics & Gynecology|2
+88236716|A00465|Anesthesiologist|Anesthesiology|
+88236716|N01119|Circulating Nurse|Nursing|
+88205206|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88205206|A00564|Anesthesiologist|Anesthesiology|
+88205206|N01006|Circulating Nurse|Nursing|
+88218358|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88218358|S09056|Assistant Surgeon|Obstetrics & Gynecology|2
+88218358|A00581|Anesthesiologist|Anesthesiology|
+88218358|N01068|Circulating Nurse|Nursing|
+88223427|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88223427|A00448|Anesthesiologist|Anesthesiology|
+88223427|N01022|Circulating Nurse|Nursing|
+88224112|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88224112|A00427|Anesthesiologist|Anesthesiology|
+88224112|N01098|Circulating Nurse|Nursing|
+88243977|S02955|Primary Surgeon|General Surgery|1
+88243977|A00521|Anesthesiologist|Anesthesiology|
+88243977|N01070|Circulating Nurse|Nursing|
+88248361|S03318|Primary Surgeon|Urology|1
+88248361|S09081|Assistant Surgeon|Urology|2
+88248361|A00588|Anesthesiologist|Anesthesiology|
+88248361|N01036|Circulating Nurse|Nursing|
+88228770|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88228770|S09071|Assistant Surgeon|Colon & Rectal Surgery|2
+88228770|S09108|Assistant Surgeon|Urology|3
+88228770|S09145|Assistant Surgeon|Obstetrics & Gynecology|4
+88228770|A00518|Anesthesiologist|Anesthesiology|
+88228770|N01093|Circulating Nurse|Nursing|
+88229729|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88229729|A00555|Anesthesiologist|Anesthesiology|
+88229729|N01167|Circulating Nurse|Nursing|
+88243292|S02901|Primary Surgeon|General Surgery|1
+88243292|A00597|Anesthesiologist|Anesthesiology|
+88243292|N01111|Circulating Nurse|Nursing|
+88245758|S02955|Primary Surgeon|General Surgery|1
+88245758|A00579|Anesthesiologist|Anesthesiology|
+88245758|N01018|Circulating Nurse|Nursing|
+88207535|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88207535|A00500|Anesthesiologist|Anesthesiology|
+88207535|N01092|Circulating Nurse|Nursing|
+88222057|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88222057|A00436|Anesthesiologist|Anesthesiology|
+88222057|N01035|Circulating Nurse|Nursing|
+88237264|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88237264|S09037|Assistant Surgeon|Obstetrics & Gynecology|2
+88237264|A00564|Anesthesiologist|Anesthesiology|
+88237264|N01050|Circulating Nurse|Nursing|
+88210275|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88210275|A00408|Anesthesiologist|Anesthesiology|
+88210275|N01125|Circulating Nurse|Nursing|
+88217673|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88217673|A00410|Anesthesiologist|Anesthesiology|
+88217673|N01174|Circulating Nurse|Nursing|
+88204384|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88204384|A00543|Anesthesiologist|Anesthesiology|
+88204384|N01026|Circulating Nurse|Nursing|
+88215207|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88215207|A00509|Anesthesiologist|Anesthesiology|
+88215207|N01186|Circulating Nurse|Nursing|
+88241237|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88241237|A00527|Anesthesiologist|Anesthesiology|
+88241237|N01042|Circulating Nurse|Nursing|
+88205617|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88205617|A00401|Anesthesiologist|Anesthesiology|
+88205617|N01109|Circulating Nurse|Nursing|
+88209727|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88209727|A00408|Anesthesiologist|Anesthesiology|
+88209727|N01033|Circulating Nurse|Nursing|
+88235072|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88235072|A00447|Anesthesiologist|Anesthesiology|
+88235072|N01010|Circulating Nurse|Nursing|
+88224660|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88224660|S09073|Assistant Surgeon|Obstetrics & Gynecology|2
+88224660|A00570|Anesthesiologist|Anesthesiology|
+88224660|N01128|Circulating Nurse|Nursing|
+88225756|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88225756|S09048|Assistant Surgeon|Colon & Rectal Surgery|2
+88225756|S09085|Assistant Surgeon|Obstetrics & Gynecology|3
+88225756|A00410|Anesthesiologist|Anesthesiology|
+88225756|N01000|Circulating Nurse|Nursing|
+88230140|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88230140|A00528|Anesthesiologist|Anesthesiology|
+88230140|N01068|Circulating Nurse|Nursing|
+88232743|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88232743|A00487|Anesthesiologist|Anesthesiology|
+88232743|N01067|Circulating Nurse|Nursing|
+88251375|S03318|Primary Surgeon|Urology|1
+88251375|S09037|Assistant Surgeon|General Surgery|2
+88251375|A00562|Anesthesiologist|Anesthesiology|
+88251375|N01093|Circulating Nurse|Nursing|
+88211234|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88211234|A00409|Anesthesiologist|Anesthesiology|
+88211234|N01143|Circulating Nurse|Nursing|
+88215070|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88215070|A00512|Anesthesiologist|Anesthesiology|
+88215070|N01172|Circulating Nurse|Nursing|
+88239319|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88239319|S09022|Assistant Surgeon|Colon & Rectal Surgery|2
+88239319|A00463|Anesthesiologist|Anesthesiology|
+88239319|N01126|Circulating Nurse|Nursing|
+88208357|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88208357|A00581|Anesthesiologist|Anesthesiology|
+88208357|N01115|Circulating Nurse|Nursing|
+88227811|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88227811|S09019|Assistant Surgeon|Colon & Rectal Surgery|2
+88227811|A00542|Anesthesiologist|Anesthesiology|
+88227811|N01051|Circulating Nurse|Nursing|
+88240826|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88240826|S09025|Assistant Surgeon|Colon & Rectal Surgery|2
+88240826|S09062|Assistant Surgeon|Obstetrics & Gynecology|3
+88240826|A00401|Anesthesiologist|Anesthesiology|
+88240826|N01047|Circulating Nurse|Nursing|
+88251786|S03318|Primary Surgeon|Urology|1
+88251786|S09039|Assistant Surgeon|General Surgery|2
+88251786|A00525|Anesthesiologist|Anesthesiology|
+88251786|N01073|Circulating Nurse|Nursing|
+88238497|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88238497|A00408|Anesthesiologist|Anesthesiology|
+88238497|N01128|Circulating Nurse|Nursing|
+88209590|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88209590|A00443|Anesthesiologist|Anesthesiology|
+88209590|N01045|Circulating Nurse|Nursing|
+88213289|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88213289|A00443|Anesthesiologist|Anesthesiology|
+88213289|N01078|Circulating Nurse|Nursing|
+88216029|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88216029|A00545|Anesthesiologist|Anesthesiology|
+88216029|N01038|Circulating Nurse|Nursing|
+88201507|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88201507|A00567|Anesthesiologist|Anesthesiology|
+88201507|N01063|Circulating Nurse|Nursing|
+88253019|S03370|Primary Surgeon|Urology|1
+88253019|S09035|Assistant Surgeon|General Surgery|2
+88253019|S09072|Assistant Surgeon|Colon & Rectal Surgery|3
+88253019|A00480|Anesthesiologist|Anesthesiology|
+88253019|N01014|Circulating Nurse|Nursing|
+88248498|S03370|Primary Surgeon|Urology|1
+88248498|S09081|Assistant Surgeon|Urology|2
+88248498|A00598|Anesthesiologist|Anesthesiology|
+88248498|N01150|Circulating Nurse|Nursing|
+88248772|S03318|Primary Surgeon|Urology|1
+88248772|S09052|Assistant Surgeon|Urology|2
+88248772|A00436|Anesthesiologist|Anesthesiology|
+88248772|N01048|Circulating Nurse|Nursing|
+88229044|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88229044|A00425|Anesthesiologist|Anesthesiology|
+88229044|N01112|Circulating Nurse|Nursing|
+88220824|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88220824|A00519|Anesthesiologist|Anesthesiology|
+88220824|N01178|Circulating Nurse|Nursing|
+88234113|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88234113|A00453|Anesthesiologist|Anesthesiology|
+88234113|N01074|Circulating Nurse|Nursing|
+88200959|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88200959|A00466|Anesthesiologist|Anesthesiology|
+88200959|N01129|Circulating Nurse|Nursing|
+88236990|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88236990|A00445|Anesthesiologist|Anesthesiology|
+88236990|N01026|Circulating Nurse|Nursing|
+88217536|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88217536|A00513|Anesthesiologist|Anesthesiology|
+88217536|N01083|Circulating Nurse|Nursing|
+88203973|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88203973|A00417|Anesthesiologist|Anesthesiology|
+88203973|N01146|Circulating Nurse|Nursing|
+88243155|S02901|Primary Surgeon|General Surgery|1
+88243155|A00583|Anesthesiologist|Anesthesiology|
+88243155|N01070|Circulating Nurse|Nursing|
+88253430|S03318|Primary Surgeon|Urology|1
+88253430|S09059|Assistant Surgeon|General Surgery|2
+88253430|A00416|Anesthesiologist|Anesthesiology|
+88253430|N01012|Circulating Nurse|Nursing|
+88241374|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88241374|A00455|Anesthesiologist|Anesthesiology|
+88241374|N01128|Circulating Nurse|Nursing|
+88242881|S02901|Primary Surgeon|General Surgery|1
+88242881|A00581|Anesthesiologist|Anesthesiology|
+88242881|N01046|Circulating Nurse|Nursing|
+88206987|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88206987|A00402|Anesthesiologist|Anesthesiology|
+88206987|N01061|Circulating Nurse|Nursing|
+88220139|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88220139|S09066|Assistant Surgeon|Obstetrics & Gynecology|2
+88220139|A00492|Anesthesiologist|Anesthesiology|
+88220139|N01140|Circulating Nurse|Nursing|
+88233428|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88233428|S09003|Assistant Surgeon|Colon & Rectal Surgery|2
+88233428|A00574|Anesthesiologist|Anesthesiology|
+88233428|N01131|Circulating Nurse|Nursing|
+88218495|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88218495|A00552|Anesthesiologist|Anesthesiology|
+88218495|N01144|Circulating Nurse|Nursing|
+88238908|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88238908|A00423|Anesthesiologist|Anesthesiology|
+88238908|N01038|Circulating Nurse|Nursing|
+88244662|S02901|Primary Surgeon|General Surgery|1
+88244662|A00450|Anesthesiologist|Anesthesiology|
+88244662|N01112|Circulating Nurse|Nursing|
+88206302|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88206302|A00401|Anesthesiologist|Anesthesiology|
+88206302|N01124|Circulating Nurse|Nursing|
+88210412|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88210412|A00407|Anesthesiologist|Anesthesiology|
+88210412|N01007|Circulating Nurse|Nursing|
+88229181|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88229181|S09037|Assistant Surgeon|Colon & Rectal Surgery|2
+88229181|S09074|Assistant Surgeon|Urology|3
+88229181|S09111|Assistant Surgeon|Obstetrics & Gynecology|4
+88229181|A00486|Anesthesiologist|Anesthesiology|
+88229181|N01077|Circulating Nurse|Nursing|
+88230825|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88230825|S09000|Assistant Surgeon|Colon & Rectal Surgery|2
+88230825|A00595|Anesthesiologist|Anesthesiology|
+88230825|N01060|Circulating Nurse|Nursing|
+88253567|S03318|Primary Surgeon|Urology|1
+88253567|S09002|Assistant Surgeon|General Surgery|2
+88253567|S09039|Assistant Surgeon|Colon & Rectal Surgery|3
+88253567|A00445|Anesthesiologist|Anesthesiology|
+88253567|N01053|Circulating Nurse|Nursing|
+88221235|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88221235|S09044|Assistant Surgeon|Obstetrics & Gynecology|2
+88221235|A00465|Anesthesiologist|Anesthesiology|
+88221235|N01162|Circulating Nurse|Nursing|
+88221783|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88221783|S09041|Assistant Surgeon|Obstetrics & Gynecology|2
+88221783|A00489|Anesthesiologist|Anesthesiology|
+88221783|N01051|Circulating Nurse|Nursing|
+88233017|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88233017|S09039|Assistant Surgeon|Colon & Rectal Surgery|2
+88233017|A00582|Anesthesiologist|Anesthesiology|
+88233017|N01179|Circulating Nurse|Nursing|
+88249594|S04188|Primary Surgeon|Orthopaedic Surgery|1
+88249594|S09022|Assistant Surgeon|Orthopaedic Surgery|2
+88249594|A00530|Anesthesiologist|Anesthesiology|
+88249594|N01082|Circulating Nurse|Nursing|
+88250827|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88250827|S09034|Assistant Surgeon|Plastic Surgery|2
+88250827|A00424|Anesthesiologist|Anesthesiology|
+88250827|N01097|Circulating Nurse|Nursing|
+88210001|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88210001|A00516|Anesthesiologist|Anesthesiology|
+88210001|N01110|Circulating Nurse|Nursing|
+88238634|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88238634|S09030|Assistant Surgeon|Colon & Rectal Surgery|2
+88238634|S09067|Assistant Surgeon|Obstetrics & Gynecology|3
+88238634|A00531|Anesthesiologist|Anesthesiology|
+88238634|N01170|Circulating Nurse|Nursing|
+88212878|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88212878|A00553|Anesthesiologist|Anesthesiology|
+88212878|N01009|Circulating Nurse|Nursing|
+88254115|S03370|Primary Surgeon|Urology|1
+88254115|S09026|Assistant Surgeon|General Surgery|2
+88254115|S09063|Assistant Surgeon|Urology|3
+88254115|A00400|Anesthesiologist|Anesthesiology|
+88254115|N01085|Circulating Nurse|Nursing|
+88244799|S02901|Primary Surgeon|General Surgery|1
+88244799|A00423|Anesthesiologist|Anesthesiology|
+88244799|N01131|Circulating Nurse|Nursing|
+88229866|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88229866|S09070|Assistant Surgeon|Colon & Rectal Surgery|2
+88229866|S09107|Assistant Surgeon|Obstetrics & Gynecology|3
+88229866|A00598|Anesthesiologist|Anesthesiology|
+88229866|N01199|Circulating Nurse|Nursing|
+88233291|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88233291|A00411|Anesthesiologist|Anesthesiology|
+88233291|N01119|Circulating Nurse|Nursing|
+88243840|S02901|Primary Surgeon|General Surgery|1
+88243840|A00481|Anesthesiologist|Anesthesiology|
+88243840|N01166|Circulating Nurse|Nursing|
+88215618|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88215618|A00573|Anesthesiologist|Anesthesiology|
+88215618|N01068|Circulating Nurse|Nursing|
+88227126|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88227126|A00412|Anesthesiologist|Anesthesiology|
+88227126|N01112|Circulating Nurse|Nursing|
+88253704|S03370|Primary Surgeon|Urology|1
+88253704|S09062|Assistant Surgeon|General Surgery|2
+88253704|S09099|Assistant Surgeon|Colon & Rectal Surgery|3
+88253704|A00518|Anesthesiologist|Anesthesiology|
+88253704|N01070|Circulating Nurse|Nursing|
+88232332|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88232332|S09036|Assistant Surgeon|Colon & Rectal Surgery|2
+88232332|S09073|Assistant Surgeon|Urology|3
+88232332|A00507|Anesthesiologist|Anesthesiology|
+88232332|N01104|Circulating Nurse|Nursing|
+88238360|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88238360|S09052|Assistant Surgeon|Colon & Rectal Surgery|2
+88238360|A00515|Anesthesiologist|Anesthesiology|
+88238360|N01137|Circulating Nurse|Nursing|
+88246854|S02955|Primary Surgeon|General Surgery|1
+88246854|A00446|Anesthesiologist|Anesthesiology|
+88246854|N01156|Circulating Nurse|Nursing|
+88248224|S03370|Primary Surgeon|Urology|1
+88248224|A00459|Anesthesiologist|Anesthesiology|
+88248224|N01046|Circulating Nurse|Nursing|
+88208494|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88208494|A00413|Anesthesiologist|Anesthesiology|
+88208494|N01013|Circulating Nurse|Nursing|
+88224797|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88224797|A00431|Anesthesiologist|Anesthesiology|
+88224797|N01178|Circulating Nurse|Nursing|
+88204110|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88204110|A00565|Anesthesiologist|Anesthesiology|
+88204110|N01119|Circulating Nurse|Nursing|
+88210138|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88210138|A00423|Anesthesiologist|Anesthesiology|
+88210138|N01106|Circulating Nurse|Nursing|
+88245484|S02955|Primary Surgeon|General Surgery|1
+88245484|A00466|Anesthesiologist|Anesthesiology|
+88245484|N01045|Circulating Nurse|Nursing|
+88207946|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88207946|A00543|Anesthesiologist|Anesthesiology|
+88207946|N01173|Circulating Nurse|Nursing|
+88216303|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88216303|A00481|Anesthesiologist|Anesthesiology|
+88216303|N01093|Circulating Nurse|Nursing|
+88223290|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88223290|A00493|Anesthesiologist|Anesthesiology|
+88223290|N01116|Circulating Nurse|Nursing|
+88241100|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88241100|A00440|Anesthesiologist|Anesthesiology|
+88241100|N01003|Circulating Nurse|Nursing|
+88251238|S03318|Primary Surgeon|Urology|1
+88251238|S09029|Assistant Surgeon|General Surgery|2
+88251238|S09066|Assistant Surgeon|Urology|3
+88251238|A00471|Anesthesiologist|Anesthesiology|
+88251238|N01144|Circulating Nurse|Nursing|
+88203151|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88203151|A00478|Anesthesiologist|Anesthesiology|
+88203151|N01025|Circulating Nurse|Nursing|
+88222194|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88222194|A00549|Anesthesiologist|Anesthesiology|
+88222194|N01182|Circulating Nurse|Nursing|
+88202329|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88202329|A00423|Anesthesiologist|Anesthesiology|
+88202329|N01094|Circulating Nurse|Nursing|
+88220550|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88220550|A00461|Anesthesiologist|Anesthesiology|
+88220550|N01157|Circulating Nurse|Nursing|
+88228359|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88228359|S09063|Assistant Surgeon|Colon & Rectal Surgery|2
+88228359|S09100|Assistant Surgeon|Urology|3
+88228359|S09137|Assistant Surgeon|Obstetrics & Gynecology|4
+88228359|A00537|Anesthesiologist|Anesthesiology|
+88228359|N01078|Circulating Nurse|Nursing|
+88237538|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88237538|S09054|Assistant Surgeon|Obstetrics & Gynecology|2
+88237538|A00485|Anesthesiologist|Anesthesiology|
+88237538|N01034|Circulating Nurse|Nursing|
+88253841|S03370|Primary Surgeon|Urology|1
+88253841|S09019|Assistant Surgeon|General Surgery|2
+88253841|S09056|Assistant Surgeon|Urology|3
+88253841|A00516|Anesthesiologist|Anesthesiology|
+88253841|N01137|Circulating Nurse|Nursing|
+88213974|S01402|Primary Surgeon|Obstetrics & Gynecology|1
+88213974|A00527|Anesthesiologist|Anesthesiology|
+88213974|N01065|Circulating Nurse|Nursing|
+88216988|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88216988|A00560|Anesthesiologist|Anesthesiology|
+88216988|N01006|Circulating Nurse|Nursing|
+88222879|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88222879|S09010|Assistant Surgeon|Obstetrics & Gynecology|2
+88222879|A00554|Anesthesiologist|Anesthesiology|
+88222879|N01014|Circulating Nurse|Nursing|
+88202055|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88202055|A00450|Anesthesiologist|Anesthesiology|
+88202055|N01040|Circulating Nurse|Nursing|
+88252608|S03370|Primary Surgeon|Urology|1
+88252608|S09067|Assistant Surgeon|General Surgery|2
+88252608|S09104|Assistant Surgeon|Urology|3
+88252608|A00534|Anesthesiologist|Anesthesiology|
+88252608|N01055|Circulating Nurse|Nursing|
+88221920|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88221920|S09058|Assistant Surgeon|Obstetrics & Gynecology|2
+88221920|A00449|Anesthesiologist|Anesthesiology|
+88221920|N01073|Circulating Nurse|Nursing|
+88230962|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88230962|A00505|Anesthesiologist|Anesthesiology|
+88230962|N01093|Circulating Nurse|Nursing|
+88242196|S04120|Primary Surgeon|Orthopaedic Surgery|1
+88242196|A00460|Anesthesiologist|Anesthesiology|
+88242196|N01033|Circulating Nurse|Nursing|
+88244388|S02901|Primary Surgeon|General Surgery|1
+88244388|A00515|Anesthesiologist|Anesthesiology|
+88244388|N01177|Circulating Nurse|Nursing|
+88233702|S01244|Primary Surgeon|Obstetrics & Gynecology|1
+88233702|S09043|Assistant Surgeon|Colon & Rectal Surgery|2
+88233702|A00440|Anesthesiologist|Anesthesiology|
+88233702|N01085|Circulating Nurse|Nursing|
+88242607|S04188|Primary Surgeon|Orthopaedic Surgery|1
+88242607|A00437|Anesthesiologist|Anesthesiology|
+88242607|N01135|Circulating Nurse|Nursing|
+88238223|S00817|Primary Surgeon|Obstetrics & Gynecology|1
+88238223|A00412|Anesthesiologist|Anesthesiology|
+88238223|N01011|Circulating Nurse|Nursing|

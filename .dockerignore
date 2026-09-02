@@ -1,0 +1,15 @@
+# The image is built from the repository root so the workspace packages are in
+# context. Nothing below is needed to build it.
+.git
+.venv
+.cache
+**/__pycache__
+**/*.py[cod]
+.mypy_cache
+.pytest_cache
+.ruff_cache
+app
+infra
+node_modules
+*.md
+!packages/**/README.md

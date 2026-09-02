@@ -1,0 +1,29 @@
+MOUNT SINAI HEALTH SYSTEM
+OPERATIVE NOTE
+
+PATIENT: Z0006135
+DATE OF SERVICE: 05/05/2026
+SURGEON: S04120
+SERVICE: ORTHO
+ASA CLASS: 2
+
+PREOPERATIVE DIAGNOSIS:
+M17.11
+
+PROCEDURE PERFORMED:
+Arthroscopic partial meniscectomy.
+
+INDICATION:
+She has a history of appendectomy and a prior cystotomy repair, both without complication. There is no prior operative diagnosis on file.
+
+FINDINGS:
+Arthroscopic partial meniscectomy was undertaken. There was no evidence of diaphragmatic involvement.
+
+DESCRIPTION OF PROCEDURE:
+The patient was placed in the standard position and prepped and draped in the usual sterile fashion. Access was obtained and the abdomen inspected systematically. Haemostasis was confirmed and instruments were removed under direct vision.
+
+ESTIMATED BLOOD LOSS: 10 mL
+TOTAL OPERATIVE TIME: 36 minutes
+COMPLICATIONS: None.
+SPECIMENS: Sent to pathology.
+DISPOSITION: The patient was taken to recovery in stable condition.

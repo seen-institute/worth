@@ -1,4 +1,4 @@
-# WORTH — task runner. `just --list` for everything.
+# WORTH task runner. `just --list` for everything.
 
 default:
     @just --list
@@ -10,6 +10,71 @@ demo *ARGS:
 # Price one code: just price 99213 CA18 2026-03-14
 price CODE PLACE DATE *ARGS:
     uv run worth-fees price {{CODE}} {{PLACE}} {{DATE}} {{ARGS}}
+
+# Layer A scores, Method 0 slopes and adequacy ratios on the synthetic dataset.
+complexity-demo *ARGS:
+    uv run worth-complexity demo {{ARGS}}
+
+# One encounter's complexity derivation and its adequacy arithmetic.
+complexity-encounter ID *ARGS:
+    uv run worth-complexity encounter {{ID}} {{ARGS}}
+
+# Every study encounter: score, operative minutes, realized payment, ratio.
+complexity-cases *ARGS:
+    uv run worth-complexity cases {{ARGS}}
+
+# Synthesize the AWS stacks without deploying. Needs no credentials.
+infra-synth:
+    npm --prefix infra install
+    npm --prefix infra run synth -- --quiet
+
+# Deploy the API stack. Needs AWS credentials and Docker.
+infra-deploy:
+    npm --prefix infra install
+    npm --prefix infra run deploy
+
+# Regenerate the console's TypeScript types from the API's OpenAPI document.
+types:
+    uv run worth-api-openapi > app/src/api/openapi.json
+    npm --prefix app run types
+
+# The backend, in development, against the compose Postgres. http://localhost:8000/api/docs
+api-dev: db-up
+    DATABASE_URL=postgresql://worth:worth@127.0.0.1:55432/worth \
+      uv run uvicorn worth_api.main:create_app --factory --reload --reload-dir packages --port 8000
+
+# The backend without a database: prices from the committed fixture.
+api-dev-offline:
+    uv run uvicorn worth_api.main:create_app --factory --reload --reload-dir packages --port 8000
+
+# The tests that need Postgres, against the compose database.
+test-db: db-up
+    DATABASE_URL=postgresql://worth:worth@127.0.0.1:55432/worth uv run pytest -q -m db
+
+# Backend and Postgres together, in containers. http://localhost:8000/api/health
+up:
+    docker compose up -d --build --wait
+
+down:
+    docker compose down
+
+# The console, in development. http://localhost:5173, proxies /api to :8000
+app-dev:
+    npm --prefix app install
+    npm --prefix app run dev
+
+# Production build of the console into app/dist. Writes files; serves nothing.
+app-build:
+    npm --prefix app ci
+    npm --prefix app run build
+
+# Build, then serve app/dist exactly as Amplify will. http://localhost:4173
+app-preview: app-build
+    npm --prefix app run preview -- --port 4173 --strictPort
+
+# Rebuild the synthetic partner dataset. Second argument scales the cohort.
+build-dataset DIR="packages/worth-complexity/worth_complexity/fixtures/mssm-synthetic" SCALE="1":
+    uv run python packages/worth-complexity/tools/make_synthetic_dataset.py {{DIR}} {{SCALE}}
 
 test:
     uv run pytest
@@ -39,9 +104,9 @@ vintages:
 export-sql *ARGS:
     uv run worth-fees export-sql {{ARGS}}
 
-# Start local Postgres. The schema is applied on first boot.
+# Start local Postgres only. The schema is applied on first boot.
 db-up:
-    docker compose up -d --wait
+    docker compose up -d --wait db
     @echo "postgres://worth:worth@127.0.0.1:55432/worth"
 
 # Load a vintage (--full for all ~19k rows). Uses psql inside the container.

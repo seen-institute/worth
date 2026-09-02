@@ -1,0 +1,29 @@
+MOUNT SINAI HEALTH SYSTEM
+OPERATIVE NOTE
+
+PATIENT: Z0005239
+DATE OF SERVICE: 02/18/2026
+SURGEON: S00817
+SERVICE: GYN
+ASA CLASS: 2
+
+PREOPERATIVE DIAGNOSIS:
+N80.531
+
+PROCEDURE PERFORMED:
+Laparoscopic removal of adnexal structures.
+
+INDICATION:
+She has a history of appendectomy and a prior cystotomy repair, both without complication. There is no prior operative diagnosis on file.
+
+FINDINGS:
+Laparoscopic removal of adnexal structures was undertaken. The rectosigmoid colon was involved by infiltrating disease along the anterior serosa. Filmy adhesions were noted in the right adnexal region. There was no evidence of diaphragmatic involvement.
+
+DESCRIPTION OF PROCEDURE:
+The patient was placed in the standard position and prepped and draped in the usual sterile fashion. Access was obtained and the abdomen inspected systematically. Haemostasis was confirmed and instruments were removed under direct vision.
+
+ESTIMATED BLOOD LOSS: 150 mL
+TOTAL OPERATIVE TIME: 100 minutes
+COMPLICATIONS: None.
+SPECIMENS: Sent to pathology.
+DISPOSITION: The patient was taken to recovery in stable condition.

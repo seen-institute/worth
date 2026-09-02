@@ -1,0 +1,24 @@
+{
+  "name": "worth-infra",
+  "private": true,
+  "version": "0.1.0",
+  "description": "The AWS stacks behind the console: the API on App Runner with Postgres on RDS, and the Amplify app that serves the console in front of it.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy WorthApi --require-approval never",
+    "diff": "cdk diff"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-apprunner-alpha": "^2.268.0-alpha.0",
+    "aws-cdk-lib": "^2.268.0",
+    "constructs": "^10.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "aws-cdk": "^2.1139.0",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,2295 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "worth-api",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dataset": {
+      "get": {
+        "summary": "Dataset",
+        "operationId": "dataset_api_dataset_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dataset"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dataset/files/{name}": {
+      "get": {
+        "summary": "Dataset File",
+        "operationId": "dataset_file_api_dataset_files__name__get",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveredFile"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dataset/archive": {
+      "get": {
+        "summary": "Dataset Archive",
+        "description": "The whole dataset as a zip, with a SHA256SUMS list inside.",
+        "operationId": "dataset_archive_api_dataset_archive_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dataset/raw/{path}": {
+      "get": {
+        "summary": "Dataset Raw",
+        "operationId": "dataset_raw_api_dataset_raw__path__get",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Path"
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Download"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/rulepack": {
+      "get": {
+        "summary": "Rulepack",
+        "operationId": "rulepack_api_rulepack_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Scoring"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/runs": {
+      "post": {
+        "summary": "Create Run",
+        "operationId": "create_run_api_runs_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/runs/latest": {
+      "get": {
+        "summary": "Latest Run",
+        "operationId": "latest_run_api_runs_latest_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fees/vintages": {
+      "get": {
+        "summary": "Fee Vintages",
+        "operationId": "fee_vintages_api_fees_vintages_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VintageInfo"
+                  },
+                  "type": "array",
+                  "title": "Response Fee Vintages Api Fees Vintages Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fees/localities": {
+      "get": {
+        "summary": "Fee Localities",
+        "operationId": "fee_localities_api_fees_localities_get",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "today",
+              "title": "Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Locality"
+                  },
+                  "title": "Response Fee Localities Api Fees Localities Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fees/price": {
+      "post": {
+        "summary": "Fee Price",
+        "operationId": "fee_price_api_fees_price_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PriceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Derivation"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BundleSummary": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "notes",
+              "edi"
+            ],
+            "title": "Kind"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "blurb": {
+            "type": "string",
+            "title": "Blurb"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "bytes": {
+            "type": "integer",
+            "title": "Bytes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "name",
+          "blurb",
+          "count",
+          "bytes"
+        ],
+        "title": "BundleSummary"
+      },
+      "Dataset": {
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/FileSummary"
+            },
+            "type": "array",
+            "title": "Files"
+          },
+          "encounters": {
+            "type": "integer",
+            "title": "Encounters"
+          },
+          "study": {
+            "type": "integer",
+            "title": "Study"
+          },
+          "comparator": {
+            "type": "integer",
+            "title": "Comparator"
+          },
+          "codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Codes"
+          },
+          "periodStart": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Periodstart"
+          },
+          "periodEnd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Periodend"
+          },
+          "contentHash": {
+            "type": "string",
+            "title": "Contenthash"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "files",
+          "encounters",
+          "study",
+          "comparator",
+          "codes",
+          "periodStart",
+          "periodEnd",
+          "contentHash"
+        ],
+        "title": "Dataset",
+        "description": "The manifest, plus the cohort counts every page needs before any run."
+      },
+      "DeliveredFile": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/TableFile"
+          },
+          {
+            "$ref": "#/components/schemas/NoteBundle"
+          },
+          {
+            "$ref": "#/components/schemas/EdiBundle"
+          }
+        ]
+      },
+      "DeniedLine": {
+        "properties": {
+          "cpt": {
+            "type": "string",
+            "title": "Cpt"
+          },
+          "codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Codes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "cpt",
+          "codes"
+        ],
+        "title": "DeniedLine"
+      },
+      "Derivation": {
+        "properties": {
+          "amount": {
+            "type": "string",
+            "title": "Amount"
+          },
+          "currency": {
+            "type": "string",
+            "const": "USD",
+            "title": "Currency",
+            "default": "USD"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "modifier": {
+            "type": "string",
+            "title": "Modifier"
+          },
+          "modifiers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Modifiers"
+          },
+          "locality": {
+            "type": "string",
+            "title": "Locality"
+          },
+          "localityName": {
+            "type": "string",
+            "title": "Localityname"
+          },
+          "placeOfService": {
+            "type": "string",
+            "title": "Placeofservice"
+          },
+          "ruleYear": {
+            "type": "integer",
+            "title": "Ruleyear"
+          },
+          "quarter": {
+            "type": "integer",
+            "title": "Quarter"
+          },
+          "paymentBasis": {
+            "type": "string",
+            "title": "Paymentbasis"
+          },
+          "inputs": {
+            "$ref": "#/components/schemas/DerivationInputs"
+          },
+          "adjustedRvuTotal": {
+            "type": "string",
+            "title": "Adjustedrvutotal"
+          },
+          "trace": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Trace"
+          },
+          "source": {
+            "$ref": "#/components/schemas/DerivationSource"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "amount",
+          "code",
+          "modifier",
+          "modifiers",
+          "locality",
+          "localityName",
+          "placeOfService",
+          "ruleYear",
+          "quarter",
+          "paymentBasis",
+          "inputs",
+          "adjustedRvuTotal",
+          "trace",
+          "source"
+        ],
+        "title": "Derivation",
+        "description": "A priced answer with its arithmetic and its receipts. Mirrors ``worth-fees price --json``."
+      },
+      "DerivationInputs": {
+        "properties": {
+          "workRvu": {
+            "type": "string",
+            "title": "Workrvu"
+          },
+          "peRvu": {
+            "type": "string",
+            "title": "Pervu"
+          },
+          "mpRvu": {
+            "type": "string",
+            "title": "Mprvu"
+          },
+          "workGpci": {
+            "type": "string",
+            "title": "Workgpci"
+          },
+          "peGpci": {
+            "type": "string",
+            "title": "Pegpci"
+          },
+          "mpGpci": {
+            "type": "string",
+            "title": "Mpgpci"
+          },
+          "conversionFactor": {
+            "type": "string",
+            "title": "Conversionfactor"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "workRvu",
+          "peRvu",
+          "mpRvu",
+          "workGpci",
+          "peGpci",
+          "mpGpci",
+          "conversionFactor"
+        ],
+        "title": "DerivationInputs",
+        "description": "Every input as a decimal string. Strings, because a float is not money."
+      },
+      "DerivationSource": {
+        "properties": {
+          "release": {
+            "type": "string",
+            "title": "Release"
+          },
+          "releaseDate": {
+            "type": "string",
+            "title": "Releasedate"
+          },
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/SourceLink"
+            },
+            "type": "array",
+            "title": "Files"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "release",
+          "releaseDate",
+          "files"
+        ],
+        "title": "DerivationSource"
+      },
+      "Distribution": {
+        "properties": {
+          "n": {
+            "type": "integer",
+            "title": "N"
+          },
+          "min": {
+            "type": "number",
+            "title": "Min"
+          },
+          "q1": {
+            "type": "number",
+            "title": "Q1"
+          },
+          "median": {
+            "type": "number",
+            "title": "Median"
+          },
+          "q3": {
+            "type": "number",
+            "title": "Q3"
+          },
+          "max": {
+            "type": "number",
+            "title": "Max"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "n",
+          "min",
+          "q1",
+          "median",
+          "q3",
+          "max"
+        ],
+        "title": "Distribution"
+      },
+      "EdiBundle": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "edi",
+            "title": "Kind"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "blurb": {
+            "type": "string",
+            "title": "Blurb"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "bytes": {
+            "type": "integer",
+            "title": "Bytes"
+          },
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/EdiFile"
+            },
+            "type": "array",
+            "title": "Files"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "name",
+          "blurb",
+          "count",
+          "bytes",
+          "files"
+        ],
+        "title": "EdiBundle"
+      },
+      "EdiFile": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "bytes": {
+            "type": "integer",
+            "title": "Bytes"
+          },
+          "claims": {
+            "type": "integer",
+            "title": "Claims"
+          },
+          "lines": {
+            "type": "integer",
+            "title": "Lines"
+          },
+          "segments": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Segments"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "bytes",
+          "claims",
+          "lines",
+          "segments"
+        ],
+        "title": "EdiFile"
+      },
+      "Encounter": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "account": {
+            "type": "string",
+            "title": "Account"
+          },
+          "cpt": {
+            "type": "string",
+            "title": "Cpt"
+          },
+          "procedures": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Procedures"
+          },
+          "cohort": {
+            "type": "string",
+            "title": "Cohort"
+          },
+          "specialty": {
+            "type": "string",
+            "title": "Specialty"
+          },
+          "date": {
+            "type": "string",
+            "title": "Date"
+          },
+          "payer": {
+            "type": "string",
+            "title": "Payer"
+          },
+          "score": {
+            "type": "integer",
+            "title": "Score"
+          },
+          "minutes": {
+            "type": "number",
+            "title": "Minutes"
+          },
+          "realized": {
+            "type": "number",
+            "title": "Realized"
+          },
+          "realizedClaim": {
+            "type": "number",
+            "title": "Realizedclaim"
+          },
+          "increasedService": {
+            "type": "boolean",
+            "title": "Increasedservice"
+          },
+          "scheduleExpected": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scheduleexpected"
+          },
+          "expected": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected"
+          },
+          "ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ratio"
+          },
+          "pfs": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PfsAmounts"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "denied": {
+            "items": {
+              "$ref": "#/components/schemas/DeniedLine"
+            },
+            "type": "array",
+            "title": "Denied"
+          },
+          "markers": {
+            "items": {
+              "$ref": "#/components/schemas/MarkerRow"
+            },
+            "type": "array",
+            "title": "Markers"
+          },
+          "superseded": {
+            "items": {
+              "$ref": "#/components/schemas/SupersededMarker"
+            },
+            "type": "array",
+            "title": "Superseded"
+          },
+          "adequacyTrace": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Adequacytrace"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "account",
+          "cpt",
+          "procedures",
+          "cohort",
+          "specialty",
+          "date",
+          "payer",
+          "score",
+          "minutes",
+          "realized",
+          "realizedClaim",
+          "increasedService",
+          "scheduleExpected",
+          "expected",
+          "ratio",
+          "pfs",
+          "denied",
+          "markers",
+          "superseded",
+          "adequacyTrace"
+        ],
+        "title": "Encounter"
+      },
+      "FileSummary": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/TableSummary"
+          },
+          {
+            "$ref": "#/components/schemas/BundleSummary"
+          }
+        ]
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Health": {
+        "properties": {
+          "api": {
+            "type": "string",
+            "title": "Api"
+          },
+          "worthComplexity": {
+            "type": "string",
+            "title": "Worthcomplexity"
+          },
+          "worthFees": {
+            "type": "string",
+            "title": "Worthfees"
+          },
+          "rulePack": {
+            "$ref": "#/components/schemas/RulePackRef"
+          },
+          "datasetDir": {
+            "type": "string",
+            "title": "Datasetdir"
+          },
+          "locality": {
+            "type": "string",
+            "title": "Locality"
+          },
+          "setting": {
+            "type": "string",
+            "title": "Setting"
+          },
+          "database": {
+            "type": "string",
+            "title": "Database"
+          },
+          "fees": {
+            "items": {
+              "$ref": "#/components/schemas/VintageInfo"
+            },
+            "type": "array",
+            "title": "Fees"
+          },
+          "latestRun": {
+            "type": "boolean",
+            "title": "Latestrun"
+          }
+        },
+        "type": "object",
+        "required": [
+          "api",
+          "worthComplexity",
+          "worthFees",
+          "rulePack",
+          "datasetDir",
+          "locality",
+          "setting",
+          "database",
+          "fees",
+          "latestRun"
+        ],
+        "title": "Health",
+        "description": "What this instance is, and what it is pointed at."
+      },
+      "IndexRecord": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "institution": {
+            "type": "string",
+            "title": "Institution"
+          },
+          "periodStart": {
+            "type": "string",
+            "title": "Periodstart"
+          },
+          "periodEnd": {
+            "type": "string",
+            "title": "Periodend"
+          },
+          "n": {
+            "type": "integer",
+            "title": "N"
+          },
+          "distribution": {
+            "$ref": "#/components/schemas/Distribution"
+          },
+          "slopes": {
+            "items": {
+              "$ref": "#/components/schemas/SlopeStratum"
+            },
+            "type": "array",
+            "title": "Slopes"
+          },
+          "adequacy": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Adequacy"
+          },
+          "adequacyCiLow": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Adequacycilow"
+          },
+          "adequacyCiHigh": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Adequacycihigh"
+          },
+          "scored": {
+            "type": "integer",
+            "title": "Scored"
+          },
+          "excluded": {
+            "type": "integer",
+            "title": "Excluded"
+          },
+          "locality": {
+            "type": "string",
+            "title": "Locality"
+          },
+          "setting": {
+            "type": "string",
+            "title": "Setting"
+          },
+          "referenceRelease": {
+            "type": "string",
+            "title": "Referencerelease"
+          },
+          "suppressed": {
+            "type": "boolean",
+            "title": "Suppressed"
+          },
+          "suppressionReason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Suppressionreason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "institution",
+          "periodStart",
+          "periodEnd",
+          "n",
+          "distribution",
+          "slopes",
+          "adequacy",
+          "adequacyCiLow",
+          "adequacyCiHigh",
+          "scored",
+          "excluded",
+          "locality",
+          "setting",
+          "referenceRelease",
+          "suppressed",
+          "suppressionReason"
+        ],
+        "title": "IndexRecord"
+      },
+      "Locality": {
+        "properties": {
+          "locality": {
+            "type": "string",
+            "title": "Locality"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "mac": {
+            "type": "string",
+            "title": "Mac"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "locality",
+          "name",
+          "mac"
+        ],
+        "title": "Locality"
+      },
+      "MarkerRow": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "provenance": {
+            "type": "string",
+            "title": "Provenance"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value"
+          },
+          "low": {
+            "type": "number",
+            "title": "Low"
+          },
+          "high": {
+            "type": "number",
+            "title": "High"
+          },
+          "norm": {
+            "type": "number",
+            "title": "Norm"
+          },
+          "weight": {
+            "type": "number",
+            "title": "Weight"
+          },
+          "contribution": {
+            "type": "number",
+            "title": "Contribution"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "provenance",
+          "value",
+          "low",
+          "high",
+          "norm",
+          "weight",
+          "contribution",
+          "source",
+          "evidence"
+        ],
+        "title": "MarkerRow"
+      },
+      "MarkerRule": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "provenance": {
+            "type": "string",
+            "title": "Provenance"
+          },
+          "weight": {
+            "type": "number",
+            "title": "Weight"
+          },
+          "anchorLow": {
+            "type": "number",
+            "title": "Anchorlow"
+          },
+          "anchorHigh": {
+            "type": "number",
+            "title": "Anchorhigh"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "aggregate": {
+            "type": "string",
+            "title": "Aggregate"
+          },
+          "noteTypes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Notetypes"
+          },
+          "sections": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Sections"
+          },
+          "excludedSections": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Excludedsections"
+          },
+          "patterns": {
+            "items": {
+              "$ref": "#/components/schemas/RulePattern"
+            },
+            "type": "array",
+            "title": "Patterns"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "provenance",
+          "weight",
+          "anchorLow",
+          "anchorHigh",
+          "note",
+          "aggregate",
+          "noteTypes",
+          "sections",
+          "excludedSections",
+          "patterns"
+        ],
+        "title": "MarkerRule"
+      },
+      "MultiplierRow": {
+        "properties": {
+          "payer": {
+            "type": "string",
+            "title": "Payer"
+          },
+          "n": {
+            "type": "integer",
+            "title": "N"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value"
+          },
+          "q1": {
+            "type": "number",
+            "title": "Q1"
+          },
+          "q3": {
+            "type": "number",
+            "title": "Q3"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "payer",
+          "n",
+          "value",
+          "q1",
+          "q3"
+        ],
+        "title": "MultiplierRow",
+        "description": "A payer's multiple of the schedule. Partner-only: never in an index record."
+      },
+      "NoteBundle": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "notes",
+            "title": "Kind"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "blurb": {
+            "type": "string",
+            "title": "Blurb"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "bytes": {
+            "type": "integer",
+            "title": "Bytes"
+          },
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/NoteFile"
+            },
+            "type": "array",
+            "title": "Files"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "name",
+          "blurb",
+          "count",
+          "bytes",
+          "files"
+        ],
+        "title": "NoteBundle"
+      },
+      "NoteEngine": {
+        "properties": {
+          "header": {
+            "type": "string",
+            "title": "Header"
+          },
+          "negation": {
+            "type": "string",
+            "title": "Negation"
+          },
+          "historical": {
+            "type": "string",
+            "title": "Historical"
+          },
+          "terminator": {
+            "type": "string",
+            "title": "Terminator"
+          },
+          "lookback": {
+            "type": "integer",
+            "title": "Lookback"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "header",
+          "negation",
+          "historical",
+          "terminator",
+          "lookback"
+        ],
+        "title": "NoteEngine"
+      },
+      "NoteFile": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "encounter": {
+            "type": "string",
+            "title": "Encounter"
+          },
+          "noteType": {
+            "type": "string",
+            "title": "Notetype"
+          },
+          "author": {
+            "type": "string",
+            "title": "Author"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256"
+          },
+          "bytes": {
+            "type": "integer",
+            "title": "Bytes"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "encounter",
+          "noteType",
+          "author",
+          "sha256",
+          "bytes",
+          "text"
+        ],
+        "title": "NoteFile"
+      },
+      "PfsAmounts": {
+        "properties": {
+          "release": {
+            "type": "string",
+            "title": "Release"
+          },
+          "amount": {
+            "type": "number",
+            "title": "Amount"
+          },
+          "referenceRelease": {
+            "type": "string",
+            "title": "Referencerelease"
+          },
+          "referenceAmount": {
+            "type": "number",
+            "title": "Referenceamount"
+          },
+          "archiveSha256": {
+            "type": "string",
+            "title": "Archivesha256"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "release",
+          "amount",
+          "referenceRelease",
+          "referenceAmount",
+          "archiveSha256"
+        ],
+        "title": "PfsAmounts",
+        "description": "A comparator encounter's fee-schedule amounts, the denominator's inputs."
+      },
+      "PriceRequest": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "locality": {
+            "type": "string",
+            "title": "Locality"
+          },
+          "date": {
+            "type": "string",
+            "title": "Date",
+            "default": "today"
+          },
+          "setting": {
+            "type": "string",
+            "enum": [
+              "facility",
+              "non-facility"
+            ],
+            "title": "Setting",
+            "default": "non-facility"
+          },
+          "modifiers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Modifiers"
+          },
+          "paymentBasis": {
+            "type": "string",
+            "enum": [
+              "non-qualifying-apm",
+              "qualifying-apm"
+            ],
+            "title": "Paymentbasis",
+            "default": "non-qualifying-apm"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "locality"
+        ],
+        "title": "PriceRequest"
+      },
+      "RulePack": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "digest": {
+            "type": "string",
+            "title": "Digest"
+          },
+          "markers": {
+            "items": {
+              "$ref": "#/components/schemas/MarkerRule"
+            },
+            "type": "array",
+            "title": "Markers"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "version",
+          "status",
+          "digest",
+          "markers"
+        ],
+        "title": "RulePack"
+      },
+      "RulePackRef": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "digest": {
+            "type": "string",
+            "title": "Digest"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "digest",
+          "status"
+        ],
+        "title": "RulePackRef"
+      },
+      "RulePattern": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "regex": {
+            "type": "string",
+            "title": "Regex"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "scale": {
+            "type": "number",
+            "title": "Scale"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "regex",
+          "value",
+          "scale"
+        ],
+        "title": "RulePattern"
+      },
+      "RunMeta": {
+        "properties": {
+          "package": {
+            "type": "string",
+            "title": "Package"
+          },
+          "rulePack": {
+            "type": "string",
+            "title": "Rulepack"
+          },
+          "digest": {
+            "type": "string",
+            "title": "Digest"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "filter": {
+            "type": "string",
+            "title": "Filter"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "package",
+          "rulePack",
+          "digest",
+          "status",
+          "filter"
+        ],
+        "title": "RunMeta"
+      },
+      "RunResult": {
+        "properties": {
+          "run": {
+            "$ref": "#/components/schemas/RunMeta"
+          },
+          "rulePack": {
+            "$ref": "#/components/schemas/RulePack"
+          },
+          "noteEngine": {
+            "$ref": "#/components/schemas/NoteEngine"
+          },
+          "steps": {
+            "items": {
+              "$ref": "#/components/schemas/Step"
+            },
+            "type": "array",
+            "title": "Steps"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/components/schemas/IndexRecord"
+            },
+            "type": "array",
+            "title": "Records"
+          },
+          "encounters": {
+            "items": {
+              "$ref": "#/components/schemas/Encounter"
+            },
+            "type": "array",
+            "title": "Encounters"
+          },
+          "scheduleCurve": {
+            "$ref": "#/components/schemas/ScheduleCurve"
+          },
+          "multipliers": {
+            "items": {
+              "$ref": "#/components/schemas/MultiplierRow"
+            },
+            "type": "array",
+            "title": "Multipliers"
+          },
+          "thinPayers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Thinpayers"
+          },
+          "thinStrata": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Thinstrata"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/Summary"
+          },
+          "timings": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Timings"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run",
+          "rulePack",
+          "noteEngine",
+          "steps",
+          "records",
+          "encounters",
+          "scheduleCurve",
+          "multipliers",
+          "thinPayers",
+          "thinStrata",
+          "summary",
+          "timings"
+        ],
+        "title": "RunResult",
+        "description": "Everything one run computed. No file contents: those are served separately."
+      },
+      "ScheduleCurve": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "n": {
+            "type": "integer",
+            "title": "N"
+          },
+          "slope": {
+            "type": "number",
+            "title": "Slope"
+          },
+          "intercept": {
+            "type": "number",
+            "title": "Intercept"
+          },
+          "r2": {
+            "type": "number",
+            "title": "R2"
+          },
+          "xMin": {
+            "type": "number",
+            "title": "Xmin"
+          },
+          "xMax": {
+            "type": "number",
+            "title": "Xmax"
+          },
+          "release": {
+            "type": "string",
+            "title": "Release"
+          },
+          "archiveSha256": {
+            "type": "string",
+            "title": "Archivesha256"
+          },
+          "locality": {
+            "type": "string",
+            "title": "Locality"
+          },
+          "localityName": {
+            "type": "string",
+            "title": "Localityname"
+          },
+          "setting": {
+            "type": "string",
+            "title": "Setting"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "n",
+          "slope",
+          "intercept",
+          "r2",
+          "xMin",
+          "xMax",
+          "release",
+          "archiveSha256",
+          "locality",
+          "localityName",
+          "setting"
+        ],
+        "title": "ScheduleCurve",
+        "description": "The fee schedule's complexity relation, fitted on the comparator cohort.\n\nMedicare PFS dollars against Layer A score, no payer in it."
+      },
+      "Scoring": {
+        "properties": {
+          "rulePack": {
+            "$ref": "#/components/schemas/RulePack"
+          },
+          "noteEngine": {
+            "$ref": "#/components/schemas/NoteEngine"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "rulePack",
+          "noteEngine"
+        ],
+        "title": "Scoring",
+        "description": "The formula and the reader, served without a run: the Score tab needs no numbers."
+      },
+      "SlopeStratum": {
+        "properties": {
+          "payer": {
+            "type": "string",
+            "title": "Payer"
+          },
+          "n": {
+            "type": "integer",
+            "title": "N"
+          },
+          "slope": {
+            "type": "number",
+            "title": "Slope"
+          },
+          "ciLow": {
+            "type": "number",
+            "title": "Cilow"
+          },
+          "ciHigh": {
+            "type": "number",
+            "title": "Cihigh"
+          },
+          "r2": {
+            "type": "number",
+            "title": "R2"
+          },
+          "differentiates": {
+            "type": "boolean",
+            "title": "Differentiates"
+          },
+          "suppressed": {
+            "type": "boolean",
+            "title": "Suppressed"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "payer",
+          "n",
+          "slope",
+          "ciLow",
+          "ciHigh",
+          "r2",
+          "differentiates",
+          "suppressed"
+        ],
+        "title": "SlopeStratum"
+      },
+      "SourceLink": {
+        "properties": {
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "releaseDate": {
+            "type": "string",
+            "title": "Releasedate"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "filename",
+          "sha256",
+          "role",
+          "releaseDate",
+          "note"
+        ],
+        "title": "SourceLink"
+      },
+      "Step": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          },
+          "result": {
+            "type": "string",
+            "title": "Result"
+          },
+          "stage": {
+            "type": "string",
+            "title": "Stage"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "label",
+          "detail",
+          "result",
+          "stage"
+        ],
+        "title": "Step"
+      },
+      "Summary": {
+        "properties": {
+          "linkageRate": {
+            "type": "number",
+            "title": "Linkagerate"
+          },
+          "study": {
+            "type": "integer",
+            "title": "Study"
+          },
+          "comparator": {
+            "type": "integer",
+            "title": "Comparator"
+          },
+          "scored": {
+            "type": "integer",
+            "title": "Scored"
+          },
+          "excluded": {
+            "type": "integer",
+            "title": "Excluded"
+          },
+          "codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Codes"
+          },
+          "institution": {
+            "type": "string",
+            "title": "Institution"
+          },
+          "periodStart": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Periodstart"
+          },
+          "periodEnd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Periodend"
+          },
+          "suppressedStrata": {
+            "type": "integer",
+            "title": "Suppressedstrata"
+          },
+          "strata": {
+            "type": "integer",
+            "title": "Strata"
+          },
+          "locality": {
+            "type": "string",
+            "title": "Locality"
+          },
+          "localityName": {
+            "type": "string",
+            "title": "Localityname"
+          },
+          "setting": {
+            "type": "string",
+            "title": "Setting"
+          },
+          "referenceRelease": {
+            "type": "string",
+            "title": "Referencerelease"
+          },
+          "unmultiplied": {
+            "type": "integer",
+            "title": "Unmultiplied"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "linkageRate",
+          "study",
+          "comparator",
+          "scored",
+          "excluded",
+          "codes",
+          "institution",
+          "periodStart",
+          "periodEnd",
+          "suppressedStrata",
+          "strata",
+          "locality",
+          "localityName",
+          "setting",
+          "referenceRelease",
+          "unmultiplied"
+        ],
+        "title": "Summary"
+      },
+      "SupersededMarker": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "provenance": {
+            "type": "string",
+            "title": "Provenance"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "provenance",
+          "value",
+          "source",
+          "evidence"
+        ],
+        "title": "SupersededMarker"
+      },
+      "TableFile": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "table",
+            "title": "Kind"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "blurb": {
+            "type": "string",
+            "title": "Blurb"
+          },
+          "bytes": {
+            "type": "integer",
+            "title": "Bytes"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256"
+          },
+          "columns": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Columns"
+          },
+          "rows": {
+            "items": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "name",
+          "blurb",
+          "bytes",
+          "sha256",
+          "columns",
+          "rows"
+        ],
+        "title": "TableFile"
+      },
+      "TableSummary": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "table",
+            "title": "Kind"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "blurb": {
+            "type": "string",
+            "title": "Blurb"
+          },
+          "bytes": {
+            "type": "integer",
+            "title": "Bytes"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256"
+          },
+          "rows": {
+            "type": "integer",
+            "title": "Rows"
+          },
+          "columns": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Columns"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "name",
+          "blurb",
+          "bytes",
+          "sha256",
+          "rows",
+          "columns"
+        ],
+        "title": "TableSummary"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VintageInfo": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "ruleYear": {
+            "type": "integer",
+            "title": "Ruleyear"
+          },
+          "quarter": {
+            "type": "integer",
+            "title": "Quarter"
+          },
+          "effectiveFrom": {
+            "type": "string",
+            "title": "Effectivefrom"
+          },
+          "effectiveTo": {
+            "type": "string",
+            "title": "Effectiveto"
+          },
+          "releasedOn": {
+            "type": "string",
+            "title": "Releasedon"
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "database",
+              "fixture"
+            ],
+            "title": "Origin"
+          },
+          "coverage": {
+            "type": "string",
+            "enum": [
+              "archive",
+              "fixture"
+            ],
+            "title": "Coverage"
+          },
+          "codes": {
+            "type": "integer",
+            "title": "Codes"
+          },
+          "localities": {
+            "type": "integer",
+            "title": "Localities"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "ruleYear",
+          "quarter",
+          "effectiveFrom",
+          "effectiveTo",
+          "releasedOn",
+          "origin",
+          "coverage",
+          "codes",
+          "localities"
+        ],
+        "title": "VintageInfo"
+      }
+    }
+  }
+}

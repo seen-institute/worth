@@ -1,0 +1,7 @@
+{
+  "app": "npx tsx bin/worth.ts",
+  "watch": { "include": ["bin/**", "lib/**"], "exclude": ["node_modules", "cdk.out"] },
+  "context": {
+    "@aws-cdk/core:newStyleStackSynthesis": true
+  }
+}

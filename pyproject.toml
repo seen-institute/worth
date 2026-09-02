@@ -56,7 +56,7 @@ select = [
 docstring-code-format = true
 
 # --------------------------------------------------------------------------
-# mypy — strict, on worth-fees
+# mypy — strict, on the packages an auditor reads
 # --------------------------------------------------------------------------
 
 [tool.mypy]
@@ -66,6 +66,10 @@ warn_unreachable = true
 files = [
     "packages/worth-fees/worth_fees",
     "packages/worth-fees/tests",
+    "packages/worth-complexity/worth_complexity",
+    "packages/worth-complexity/tests",
+    "packages/worth-api/worth_api",
+    "packages/worth-api/tests",
 ]
 
 # --------------------------------------------------------------------------
@@ -73,8 +77,13 @@ files = [
 # --------------------------------------------------------------------------
 
 [tool.pytest.ini_options]
-testpaths = ["packages/worth-fees/tests"]
+testpaths = [
+    "packages/worth-fees/tests",
+    "packages/worth-complexity/tests",
+    "packages/worth-api/tests",
+]
 addopts = "-q --strict-markers --strict-config"
 markers = [
     "network: hits cms.gov; deselected by default and never run in CI",
+    "db: needs Postgres at DATABASE_URL; skipped when it is unset",
 ]

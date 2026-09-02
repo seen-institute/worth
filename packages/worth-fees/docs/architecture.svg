@@ -1,0 +1,281 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1900 1280" width="1900" height="1280" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <style>
+    .bg    { fill: #FBFAF8; }
+    .ink   { fill: #16150F; }
+    .muted { fill: #6E6A61; }
+    .accent{ fill: #A9501F; }
+    .box     { fill: #FFFFFF; stroke: #16150F; stroke-width: 1.6; }
+    .box-ext { fill: #EFEBE2; stroke: #16150F; stroke-width: 1.6; }
+    .box-acc { fill: #F7EAE0; stroke: #A9501F; stroke-width: 1.6; }
+    .rule    { stroke: #C9C4B8; stroke-width: 1; }
+    .flow    { stroke: #16150F; stroke-width: 1.8; fill: none; }
+    .flow-hv { stroke: #A9501F; stroke-width: 2.6; fill: none; }
+    .badge   { fill: #A9501F; }
+    .bnum    { fill: #FFFFFF; font-size: 10.5px; font-weight: 700; text-anchor: middle; }
+    .title { font-size: 24px; font-weight: 700; letter-spacing: -0.2px; }
+    .sub   { font-size: 13px; }
+    .sect  { font-size: 13px; font-weight: 700; letter-spacing: 1.4px; }
+    .hd    { font-size: 15px; font-weight: 700; }
+    .bd    { font-size: 11.5px; }
+    .cap   { font-size: 10.5px; }
+    .lg    { font-size: 11.8px; }
+    .lgb   { font-weight: 700; }
+    .chip  { font-size: 10px; font-weight: 700; fill: #FFFFFF; text-anchor: middle; letter-spacing: 0.6px; }
+  </style>
+
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#16150F"/>
+    </marker>
+    <marker id="ar-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#A9501F"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1900" height="1280"/>
+
+  <text class="title ink" x="50" y="54">worth-fees — from a published CMS release to one priced answer</text>
+  <text class="sub muted" x="50" y="78">What enters at each stage, what leaves it, and what is refused. Every amount arrives with the arithmetic that produced it and the hash of every file it was read from.</text>
+
+  <line class="rule" x1="50" y1="106" x2="1850" y2="106"/>
+  <text class="sect accent" x="50" y="134">THE FLOW, END TO END</text>
+
+  <!-- 1 · CMS -->
+  <rect class="box-ext" x="50" y="160" width="230" height="400" rx="4"/>
+  <text class="hd ink"    x="66" y="190">CMS release</text>
+  <text class="cap muted" x="66" y="208">upstream · public domain</text>
+  <circle class="badge" cx="70" cy="241" r="9.5"/><text class="bnum" x="70" y="245">1</text>
+  <text class="bd ink"    x="88" y="246">Quarterly release</text>
+  <text class="bd ink"    x="88" y="262">archives from cms.gov</text>
+  <text class="cap muted" x="88" y="279">4 archives · CY2026 Q1–Q4</text>
+  <text class="cap muted" x="88" y="294">each pinned by url + hash</text>
+  <circle class="badge" cx="70" cy="335" r="9.5"/><text class="bnum" x="70" y="339">2</text>
+  <text class="bd ink"    x="88" y="340">Three data files</text>
+  <text class="bd ink"    x="88" y="356">inside each archive</text>
+  <text class="cap muted" x="88" y="373">values for every code</text>
+  <text class="cap muted" x="88" y="388">geographic cost indices</text>
+  <text class="cap muted" x="88" y="403">locality-to-county list</text>
+  <text class="cap muted" x="88" y="432">the only upstream source</text>
+
+  <path class="flow" d="M 280 360 L 310 360" marker-end="url(#ar)"/>
+
+  <!-- 2 · Ingestion -->
+  <rect class="box" x="310" y="160" width="310" height="400" rx="4"/>
+  <text class="hd ink"    x="326" y="190">Ingestion</text>
+  <text class="cap muted" x="326" y="208">runs once per release · offline afterwards</text>
+  <circle class="badge" cx="330" cy="241" r="9.5"/><text class="bnum" x="330" y="245">3</text>
+  <text class="bd ink"    x="348" y="246">Download and verify</text>
+  <text class="bd ink"    x="348" y="262">the archive hash is checked</text>
+  <text class="cap muted" x="348" y="279">before anything is parsed</text>
+  <circle class="badge" cx="330" cy="311" r="9.5"/><text class="bnum" x="330" y="315">4</text>
+  <text class="bd ink"    x="348" y="316">Read and validate</text>
+  <text class="bd ink"    x="348" y="332">every row checked against CMS's</text>
+  <text class="bd ink"    x="348" y="348">own published totals</text>
+  <text class="cap muted" x="348" y="365">a shifted layout fails loudly</text>
+  <circle class="badge" cx="330" cy="397" r="9.5"/><text class="bnum" x="330" y="401">5</text>
+  <text class="bd ink"    x="348" y="402">Strip what must not be kept</text>
+  <text class="bd ink"    x="348" y="418">code descriptions never read</text>
+  <text class="cap muted" x="348" y="435">the repository is public</text>
+  <circle class="badge" cx="330" cy="467" r="9.5"/><text class="bnum" x="330" y="471">6</text>
+  <text class="bd ink"    x="348" y="472">Refuse rather than guess</text>
+  <text class="bd ink"    x="348" y="488">unpayable codes, NA settings</text>
+  <text class="bd ink"    x="348" y="504">and payment-scaling modifiers</text>
+  <text class="cap muted" x="348" y="521">a refusal beats a wrong number</text>
+
+  <path class="flow" d="M 620 360 L 650 360" marker-end="url(#ar)"/>
+
+  <!-- 3 · Parsed inputs -->
+  <rect class="box" x="650" y="160" width="290" height="400" rx="4"/>
+  <text class="hd ink"    x="666" y="190">Parsed inputs, in the database</text>
+  <text class="cap muted" x="666" y="208">~78,000 rows · the ingredients</text>
+  <circle class="badge" cx="670" cy="241" r="9.5"/><text class="bnum" x="670" y="245">7</text>
+  <text class="bd ink"    x="688" y="246">Releases and the dates</text>
+  <text class="bd ink"    x="688" y="262">their rates govern</text>
+  <circle class="badge" cx="670" cy="295" r="9.5"/><text class="bnum" x="670" y="299">8</text>
+  <text class="bd ink"    x="688" y="300">Every source file and</text>
+  <text class="bd ink"    x="688" y="316">its hash</text>
+  <circle class="badge" cx="670" cy="349" r="9.5"/><text class="bnum" x="670" y="353">9</text>
+  <text class="bd ink"    x="688" y="354">Values for every code</text>
+  <text class="cap muted" x="688" y="371">~19,226 rows per release</text>
+  <circle class="badge" cx="670" cy="403" r="9.5"/><text class="bnum" x="670" y="407">10</text>
+  <text class="bd ink"    x="688" y="408">Geography</text>
+  <text class="cap muted" x="688" y="425">109 localities + counties</text>
+  <circle class="badge" cx="670" cy="457" r="9.5"/><text class="bnum" x="670" y="461">11</text>
+  <text class="bd ink"    x="688" y="462">Conversion factors</text>
+  <text class="cap muted" x="688" y="479">two per release, one per basis</text>
+  <text class="cap muted" x="688" y="508">immutable — a reissue is a</text>
+  <text class="cap muted" x="688" y="523">new release, never an edit</text>
+
+  <path class="flow-hv" d="M 940 360 L 970 360" marker-end="url(#ar-a)"/>
+
+  <!-- 4 · Mass expansion -->
+  <rect class="box-acc" x="970" y="160" width="310" height="400" rx="4"/>
+  <text class="hd accent" x="986" y="190">Mass expansion</text>
+  <rect x="1158" y="176" width="106" height="19" rx="9.5" fill="#A9501F"/>
+  <text class="chip" x="1211" y="189">TARGET STATE</text>
+  <text class="cap muted" x="986" y="208">every permutation, written out</text>
+  <circle class="badge" cx="990" cy="245" r="9.5"/><text class="bnum" x="990" y="249">12</text>
+  <text class="bd ink"    x="1008" y="250">Every combination priced</text>
+  <text class="bd ink"    x="1008" y="266">code × locality × setting</text>
+  <text class="bd ink"    x="1008" y="282">× payment basis</text>
+  <circle class="badge" cx="990" cy="315" r="9.5"/><text class="bnum" x="990" y="319">13</text>
+  <text class="bd ink"    x="1008" y="320">~8.4M rows per release</text>
+  <text class="bd ink"    x="1008" y="336">~34M for the full CY2026 year</text>
+  <text class="cap muted" x="1008" y="353">roughly 0.5–1 GB per release</text>
+  <circle class="badge" cx="990" cy="385" r="9.5"/><text class="bnum" x="990" y="389">14</text>
+  <text class="bd ink"    x="1008" y="390">Written on load, not on read</text>
+  <text class="bd ink"    x="1008" y="406">indexed for direct lookup</text>
+  <text class="cap muted" x="1008" y="423">the read is a lookup, not a sum</text>
+  <circle class="badge" cx="990" cy="455" r="9.5"/><text class="bnum" x="990" y="459">15</text>
+  <text class="bd ink"    x="1008" y="460">Rebuilt when a release lands</text>
+  <text class="bd ink"    x="1008" y="476">from one definition, in full</text>
+  <text class="cap muted" x="1008" y="493">so stored rows cannot go stale</text>
+
+  <path class="flow" d="M 1280 360 L 1310 360" marker-end="url(#ar)"/>
+
+  <!-- 5 · Query -->
+  <rect class="box" x="1310" y="160" width="240" height="400" rx="4"/>
+  <text class="hd ink"    x="1326" y="190">The user's query</text>
+  <text class="cap muted" x="1326" y="208">what the caller supplies</text>
+  <circle class="badge" cx="1330" cy="245" r="9.5"/><text class="bnum" x="1330" y="249">16</text>
+  <text class="bd ink"    x="1348" y="250">What is being priced</text>
+  <text class="cap muted" x="1348" y="267">code · modifiers · setting</text>
+  <circle class="badge" cx="1330" cy="305" r="9.5"/><text class="bnum" x="1330" y="309">17</text>
+  <text class="bd ink"    x="1348" y="310">Where and when</text>
+  <text class="cap muted" x="1348" y="327">locality · date of service</text>
+  <circle class="badge" cx="1330" cy="365" r="9.5"/><text class="bnum" x="1330" y="369">18</text>
+  <text class="bd ink"    x="1348" y="370">On which basis</text>
+  <text class="cap muted" x="1348" y="387">standard or qualifying-APM</text>
+  <circle class="badge" cx="1330" cy="425" r="9.5"/><text class="bnum" x="1330" y="429">19</text>
+  <text class="bd ink"    x="1348" y="430">Resolved, then looked up</text>
+  <text class="cap muted" x="1348" y="447">the date picks the release, so</text>
+  <text class="cap muted" x="1348" y="462">a Q1 claim never gets Q3 rates</text>
+
+  <path class="flow" d="M 1550 360 L 1580 360" marker-end="url(#ar)"/>
+
+  <!-- 6 · Answer -->
+  <rect class="box-acc" x="1580" y="160" width="270" height="400" rx="4"/>
+  <text class="hd accent" x="1596" y="190">The answer</text>
+  <text class="cap muted" x="1596" y="208">one row, plus its receipts</text>
+  <circle class="badge" cx="1600" cy="245" r="9.5"/><text class="bnum" x="1600" y="249">20</text>
+  <text class="bd ink"    x="1618" y="250">The allowed amount, in cents</text>
+  <text class="cap muted" x="1618" y="267">a schedule figure, not a payment</text>
+  <circle class="badge" cx="1600" cy="305" r="9.5"/><text class="bnum" x="1600" y="309">21</text>
+  <text class="bd ink"    x="1618" y="310">The arithmetic behind it</text>
+  <text class="cap muted" x="1618" y="327">every product and running total</text>
+  <circle class="badge" cx="1600" cy="365" r="9.5"/><text class="bnum" x="1600" y="369">22</text>
+  <text class="bd ink"    x="1618" y="370">The receipts behind it</text>
+  <text class="cap muted" x="1618" y="387">the hash of every file involved</text>
+  <circle class="badge" cx="1600" cy="425" r="9.5"/><text class="bnum" x="1600" y="429">23</text>
+  <text class="bd ink"    x="1618" y="430">Or a refusal, with a reason</text>
+  <text class="cap muted" x="1618" y="447">when no payable amount exists</text>
+  <circle class="badge" cx="1600" cy="485" r="9.5"/><text class="bnum" x="1600" y="489">24</text>
+  <text class="bd ink"    x="1618" y="490">On to worth-complexity</text>
+  <text class="cap muted" x="1618" y="507">the denominator for a complexity-</text>
+  <text class="cap muted" x="1618" y="522">matched expected payment</text>
+
+  <!-- ================= LEGEND ================= -->
+  <line class="rule" x1="50" y1="600" x2="1850" y2="600"/>
+  <text class="sect accent" x="50" y="628">NUMBERED REFERENCES</text>
+
+  <circle class="badge" cx="60" cy="658" r="9.5"/><text class="bnum" x="60" y="662">1</text>
+  <text class="lg ink" x="78" y="662"><tspan class="lgb">Quarterly release archives</tspan> — the only upstream data source. CMS publishes the fee schedule four times a year as archives; each is</text>
+  <text class="lg ink" x="78" y="677">pinned here by its address and its hash, so the exact bytes in play are named before anything is read from them.</text>
+
+  <circle class="badge" cx="60" cy="702" r="9.5"/><text class="bnum" x="60" y="706">2</text>
+  <text class="lg ink" x="78" y="706"><tspan class="lgb">Three data files inside each archive</tspan> — the relative value of every code (published twice, once per payment basis), the geographic</text>
+  <text class="lg ink" x="78" y="721">cost indices for every locality, and the crosswalk naming which counties each locality covers.</text>
+
+  <circle class="badge" cx="60" cy="746" r="9.5"/><text class="bnum" x="60" y="750">3</text>
+  <text class="lg ink" x="78" y="750"><tspan class="lgb">Download and verify</tspan> — the archive's hash is compared against the pinned value before a single byte is parsed. A truncated download,</text>
+  <text class="lg ink" x="78" y="765">or a file quietly re-cut upstream, becomes a loud failure here rather than a subtly wrong dollar amount later.</text>
+
+  <circle class="badge" cx="60" cy="790" r="9.5"/><text class="bnum" x="60" y="794">4</text>
+  <text class="lg ink" x="78" y="794"><tspan class="lgb">Read and validate</tspan> — every row is checked against CMS's own published totals. If the values being read do not add up to the sums CMS</text>
+  <text class="lg ink" x="78" y="809">printed alongside them, the file is not laid out the way it is expected to be, and ingestion stops instead of guessing.</text>
+
+  <circle class="badge" cx="60" cy="834" r="9.5"/><text class="bnum" x="60" y="838">5</text>
+  <text class="lg ink" x="78" y="838"><tspan class="lgb">Strip what must not be kept</tspan> — the written descriptions of each code are copyrighted by the AMA. They are never read on the way in</text>
+  <text class="lg ink" x="78" y="853">and never written out, so neither the public repository nor the database can leak them. You cannot spill what you never held.</text>
+
+  <circle class="badge" cx="60" cy="878" r="9.5"/><text class="bnum" x="60" y="882">6</text>
+  <text class="lg ink" x="78" y="882"><tspan class="lgb">Refuse rather than guess</tspan> — codes Medicare does not pay under this schedule, settings CMS marks unpayable, and modifiers that scale</text>
+  <text class="lg ink" x="78" y="897">the amount are all rejected. Every one of those, priced naively, returns a real-looking number. A refusal is a result; that is not.</text>
+
+  <circle class="badge" cx="60" cy="922" r="9.5"/><text class="bnum" x="60" y="926">7</text>
+  <text class="lg ink" x="78" y="926"><tspan class="lgb">Releases and their dates</tspan> — one row per CMS publication, carrying the span of service dates it governs and when it was fetched. Two</text>
+  <text class="lg ink" x="78" y="941">clocks are kept apart: when the rate applied, and when you learned it. You need both to explain a number you published last year.</text>
+
+  <circle class="badge" cx="60" cy="966" r="9.5"/><text class="bnum" x="60" y="970">8</text>
+  <text class="lg ink" x="78" y="970"><tspan class="lgb">The provenance chain</tspan> — every file the data passed through, with its hash, linked child to parent back to the original archive. This is</text>
+  <text class="lg ink" x="78" y="985">what lets a hostile reviewer re-download the source and re-hash it themselves instead of taking your word for the number.</text>
+
+  <circle class="badge" cx="60" cy="1010" r="9.5"/><text class="bnum" x="60" y="1014">9</text>
+  <text class="lg ink" x="78" y="1014"><tspan class="lgb">Values for every code</tspan> — roughly 19,226 rows per release: the physician-work, practice-expense and malpractice components, whether</text>
+  <text class="lg ink" x="78" y="1029">the code is payable, its global period, and the payment-policy indicators. The indicators are stored but never priced from.</text>
+
+  <circle class="badge" cx="60" cy="1054" r="9.5"/><text class="bnum" x="60" y="1058">10</text>
+  <text class="lg ink" x="78" y="1058"><tspan class="lgb">Geography</tspan> — the 109 Medicare localities, each with its three cost indices, the counties it covers and the contractor that processes</text>
+  <text class="lg ink" x="78" y="1073">claims there. The same procedure with the same components is priced 109 different ways; that spread is the point.</text>
+
+  <circle class="badge" cx="60" cy="1098" r="9.5"/><text class="bnum" x="60" y="1102">11</text>
+  <text class="lg ink" x="78" y="1102"><tspan class="lgb">Conversion factors</tspan> — dollars per unit of value, one per payment basis. Held apart from the codes because the two bases differ in this</text>
+  <text class="lg ink" x="78" y="1117">number and in nothing else, so the components are stored once rather than duplicated to vary a single figure.</text>
+
+  <circle class="badge" cx="60" cy="1142" r="9.5"/><text class="bnum" x="60" y="1146">12</text>
+  <text class="lg ink" x="78" y="1146"><tspan class="lgb">Every combination priced</tspan> — code × locality × setting × payment basis, expanded and computed on load. Combinations with no payable</text>
+  <text class="lg ink" x="78" y="1161">amount are left out entirely, so the stored table cannot hand back a price for a service that does not have one.</text>
+
+  <circle class="badge" cx="990" cy="658" r="9.5"/><text class="bnum" x="990" y="662">13</text>
+  <text class="lg ink" x="1008" y="662"><tspan class="lgb">The size</tspan> — roughly 8.4M rows per quarterly release, about 34M for a full CY2026 year, at an estimated 0.5–1 GB</text>
+  <text class="lg ink" x="1008" y="677">per release. That is the price of trading a computation for a stored lookup, and it buys nothing the inputs did not already hold.</text>
+
+  <circle class="badge" cx="990" cy="702" r="9.5"/><text class="bnum" x="990" y="706">14</text>
+  <text class="lg ink" x="1008" y="706"><tspan class="lgb">Written on load, not on read</tspan> — the expansion runs once, when a release is loaded, and the result is indexed. A query then reads a</text>
+  <text class="lg ink" x="1008" y="721">row that already exists rather than doing the arithmetic again, which is what makes a full-table scan across all codes cheap.</text>
+
+  <circle class="badge" cx="990" cy="746" r="9.5"/><text class="bnum" x="990" y="750">15</text>
+  <text class="lg ink" x="1008" y="750"><tspan class="lgb">Rebuilt when a release lands</tspan> — the whole set is re-derived from a single definition rather than edited in place, so the stored rows</text>
+  <text class="lg ink" x="1008" y="765">cannot drift away from the formula that defines them. This is the guarantee the stored design has to earn back.</text>
+
+  <circle class="badge" cx="990" cy="790" r="9.5"/><text class="bnum" x="990" y="794">16</text>
+  <text class="lg ink" x="1008" y="794"><tspan class="lgb">What is being priced</tspan> — the procedure code, any modifiers, and whether the work happened in a facility or not. The setting matters</text>
+  <text class="lg ink" x="1008" y="809">because the practice-expense component differs between the two, sometimes by more than fifty dollars.</text>
+
+  <circle class="badge" cx="990" cy="834" r="9.5"/><text class="bnum" x="990" y="838">17</text>
+  <text class="lg ink" x="1008" y="838"><tspan class="lgb">Where and when</tspan> — the Medicare locality, and the date the service actually happened. Not today's date: the rate that applies is the</text>
+  <text class="lg ink" x="1008" y="853">one that was in force on the date of service, which is why the release a query resolves to is never simply the newest one.</text>
+
+  <circle class="badge" cx="990" cy="878" r="9.5"/><text class="bnum" x="990" y="882">18</text>
+  <text class="lg ink" x="1008" y="882"><tspan class="lgb">On which basis</tspan> — the standard rate, or the higher one paid to qualifying advanced-payment-model participants. CMS publishes both,</text>
+  <text class="lg ink" x="1008" y="897">so a request for a price that does not say which one it means is an unanswered question rather than a default.</text>
+
+  <circle class="badge" cx="990" cy="922" r="9.5"/><text class="bnum" x="990" y="926">19</text>
+  <text class="lg ink" x="1008" y="926"><tspan class="lgb">Resolved, then looked up</tspan> — the date of service selects the release, and the rest of the query selects the row within it. A</text>
+  <text class="lg ink" x="1008" y="941">first-quarter claim is never priced at third-quarter rates, and exactly one release is in force for any given date.</text>
+
+  <circle class="badge" cx="990" cy="966" r="9.5"/><text class="bnum" x="990" y="970">20</text>
+  <text class="lg ink" x="1008" y="970"><tspan class="lgb">The allowed amount</tspan> — the figure, in cents. It is what the schedule allows, not what anyone was paid: Medicare pays 80% of it, the</text>
+  <text class="lg ink" x="1008" y="985">patient owes the rest, and further adjustments move it again. None of that is modelled, and treating this as a payment is a misuse.</text>
+
+  <circle class="badge" cx="990" cy="1010" r="9.5"/><text class="bnum" x="990" y="1014">21</text>
+  <text class="lg ink" x="1008" y="1014"><tspan class="lgb">The arithmetic</tspan> — every multiplication and running total that produced the figure, at full precision, so it can be redone on paper by</text>
+  <text class="lg ink" x="1008" y="1029">someone who does not trust the system that produced it. No binary floating point touches the money at any stage.</text>
+
+  <circle class="badge" cx="990" cy="1054" r="9.5"/><text class="bnum" x="990" y="1058">22</text>
+  <text class="lg ink" x="1008" y="1058"><tspan class="lgb">The receipts</tspan> — the hash of every file the number came from, chained back to the original CMS archive. This is the difference between</text>
+  <text class="lg ink" x="1008" y="1073">a number on a screen and an argument someone else can check without trusting you, which is the whole point of the package.</text>
+
+  <circle class="badge" cx="990" cy="1098" r="9.5"/><text class="bnum" x="990" y="1102">23</text>
+  <text class="lg ink" x="1008" y="1102"><tspan class="lgb">Or a refusal</tspan> — when there is no payable amount, the answer is an explicit reason rather than a figure. Most ways of getting this wrong</text>
+  <text class="lg ink" x="1008" y="1117">produce a plausible number instead of an error, which is precisely what an explicit refusal is there to prevent.</text>
+
+  <circle class="badge" cx="990" cy="1142" r="9.5"/><text class="bnum" x="990" y="1146">24</text>
+  <text class="lg ink" x="1008" y="1146"><tspan class="lgb">Downstream</tspan> — the allowed amount is the denominator for the complexity-matched expected payment in worth-complexity. It is an input</text>
+  <text class="lg ink" x="1008" y="1161">to that argument, not the output of this one: the question there is whether a payment was adequate for the work actually done.</text>
+
+  <line class="rule" x1="50" y1="1196" x2="1850" y2="1196"/>
+  <text class="cap accent" x="50" y="1220">Stage 4 is target state. Today those combinations are computed when queried rather than stored: the database holds the ~78,000 input rows and derives each amount on read. Materialising them is the change this diagram depicts.</text>
+  <text class="cap muted"  x="50" y="1240">No amount produced by this package has been checked against CMS. The claim today is that the arithmetic is reproducible, not that the number is right.</text>
+  <text class="cap muted"  x="50" y="1257">Scope: Medicare Physician Fee Schedule only — no OPPS, ASC, IPPS, anesthesia, clinical lab, DMEPOS, Part B drugs or commercial rates. Public CMS data throughout; no PHI, no payer or institution rates, no code descriptions.</text>
+</svg>

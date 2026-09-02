@@ -1,0 +1,26 @@
+# AWS Amplify Hosting build spec.
+#
+# Amplify installs, builds and serves the console as flat files. The backend is
+# worth-api on App Runner (infra/), reached through one rewrite rule on the
+# Amplify app: /api/<*> -> https://<app-runner-host>/api/<*>, status 200. The
+# WorthConsole stack in infra/ creates the app with that rule; set up by hand,
+# the rule goes under App settings > Rewrites and redirects, and the app root
+# is `app`. VITE_API_BASE defaults to /api, so no build variable is needed.
+version: 1
+applications:
+  - appRoot: app
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm ci
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: dist
+        files:
+          - "**/*"
+      cache:
+        paths:
+          - node_modules/**/*

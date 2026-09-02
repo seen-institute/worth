@@ -2,7 +2,7 @@
 
 ``worth-fees demo`` is the thesis of the project in miniature: a code, a
 locality, an allowed amount, the arithmetic that produced it, and the sha256 of
-the CMS file it came from -- offline, on a clean machine.
+the CMS file it came from, offline, on a clean machine.
 """
 
 from __future__ import annotations
@@ -14,9 +14,16 @@ from collections.abc import Sequence
 from datetime import date
 
 from worth_fees.fees import expected_allowed
-from worth_fees.models import FeeDerivation, PlaceOfService, VintageError, WorthFeesError
+from worth_fees.models import (
+    FeeDerivation,
+    PaymentBasis,
+    PlaceOfService,
+    VintageError,
+    WorthFeesError,
+)
 from worth_fees.money import usd
 from worth_fees.sources import (
+    DEFAULT_PAYMENT_BASIS,
     PINNED_VINTAGES,
     Vintage,
     build_fixture,
@@ -29,8 +36,23 @@ from worth_fees.sql import export
 # The sample committed to the repository. A spread wide enough to exercise the
 # facility/non-facility split, the 26/TC component split, and the NA indicator,
 # and small enough that the fixture stays reviewable by eye.
-FIXTURE_CODES = ["99213", "99214", "99232", "71046", "93000", "20610", "29881"]
-FIXTURE_LOCALITIES = ["CA18"]
+#
+# 00100 is an anesthesia code: status J, so never priced, and absent from the
+# qualifying-APM file. It is here to give the offline suite one row where
+# `qpp_eligible` is False.
+FIXTURE_CODES = [
+    "99213", "99214", "99232", "71046", "93000", "20610", "29881", "00100",
+    # The synthetic dataset's codes, so worth-complexity can price its comparator
+    # cohort offline: five benign-GYN study codes and eight comparators.
+    "58558", "58563", "58570", "58661", "58662",
+    "49505", "44970", "47562", "52601", "27447", "50543", "55866",
+]  # fmt: skip
+
+# CA18 is the demo locality. AL00 is here because its work GPCI differs with
+# and without the statutory 1.0 floor (0.988 against 1.000), which CA18's does
+# not, without it, APPLY_WORK_GPCI_FLOOR could be flipped and every offline
+# test would still pass. 47 of the 109 localities are floor-affected.
+FIXTURE_LOCALITIES = ["CA18", "AL00", "NY01"]  # NY01: Manhattan, the synthetic institution
 
 # Cases printed by `verify-rates` for checking against the CMS Physician Fee
 # Schedule Look-Up Tool. These are inputs only; no expected value is asserted
@@ -58,6 +80,7 @@ def _demo(args: argparse.Namespace) -> int:
         PlaceOfService(args.place_of_service),
         args.year,
         args.quarter,
+        payment_basis=args.payment_basis,
     )
     print(derivation.render())
     return 0
@@ -164,7 +187,15 @@ def _year_quarter(vintage: Vintage) -> tuple[int, int]:
 def _price(args: argparse.Namespace) -> int:
     rule_year, quarter = parse_when(args.date)
     setting = PlaceOfService.FACILITY if args.facility else PlaceOfService.NON_FACILITY
-    derivation = expected_allowed(args.code, args.modifier, args.place, setting, rule_year, quarter)
+    derivation = expected_allowed(
+        args.code,
+        args.modifier,
+        args.place,
+        setting,
+        rule_year,
+        quarter,
+        payment_basis=args.payment_basis,
+    )
     if args.amount:
         print(derivation.amount)
     elif args.json:
@@ -186,6 +217,7 @@ def _as_dict(d: FeeDerivation) -> dict[str, object]:
         "place_of_service": d.place_of_service.value,
         "rule_year": d.rule_year,
         "quarter": d.quarter,
+        "payment_basis": d.payment_basis.value,
         "inputs": {
             "work_rvu": str(d.work_rvu),
             "pe_rvu": str(d.pe_rvu),
@@ -213,7 +245,7 @@ def _localities(args: argparse.Namespace) -> int:
     rule_year, quarter = parse_when(args.date)
     schedule = load_from_archive(rule_year, quarter) if args.full else load(rule_year, quarter)
     scope = "all localities in the CMS file" if args.full else "localities in the committed fixture"
-    print(f"{schedule.vintage.label} — {scope}\n")
+    print(f"{schedule.vintage.label}, {scope}\n")
     print(f"{'place':<7} {'MAC':<7} {'work':>6} {'PE':>6} {'MP':>6}  name")
     print("-" * 78)
     for key in sorted(schedule.gpcis):
@@ -221,6 +253,44 @@ def _localities(args: argparse.Namespace) -> int:
         print(f"{g.key:<7} {g.mac:<7} {g.work_gpci:>6} {g.pe_gpci:>6} {g.mp_gpci:>6}  {g.name}")
     if not args.full:
         print("\nAdd --full to list all 109 (needs the CMS download).")
+    return 0
+
+
+def _counties(args: argparse.Namespace) -> int:
+    """Print the locality-to-county crosswalk, in CMS's own words."""
+    rule_year, quarter = parse_when(args.date)
+    schedule = load_from_archive(rule_year, quarter) if args.full else load(rule_year, quarter)
+
+    if not schedule.localities:
+        print(
+            f"{schedule.vintage.label} ships no machine-readable locality crosswalk.\n"
+            "CMS published it for this release as .xlsx only, and worth-fees reads CSV "
+            "with the standard library rather than taking a dependency to open a "
+            "spreadsheet. Try another quarter."
+        )
+        return 0
+
+    rows = schedule.localities
+    if args.state:
+        wanted = args.state.strip().upper()
+        rows = tuple(r for r in rows if r.state_name.startswith(wanted))
+        if not rows:
+            print(f"no locality whose state name starts with {wanted!r}")
+            return 0
+
+    print(f"{schedule.vintage.label}, counties by Medicare locality\n")
+    print(f"{'MAC':<7} {'loc':<4} {'state':<16} {'fee schedule area':<44} counties")
+    print("-" * 110)
+    for row in rows:
+        print(
+            f"{row.mac:<7} {row.locality_number:<4} {row.state_name[:16]:<16} "
+            f"{row.fee_schedule_area[:44]:<44} {row.counties}"
+        )
+    print(
+        "\nCounty text is CMS's, verbatim. This cannot resolve an address to a "
+        "locality:\nfor that CMS publishes a separate ZIP-code file, which worth-fees "
+        "does not pin."
+    )
     return 0
 
 
@@ -257,6 +327,11 @@ def build_parser() -> argparse.ArgumentParser:
     demo.add_argument(
         "--modifier", action="append", default=[], help="repeatable, e.g. --modifier 26"
     )
+    demo.add_argument(
+        "--payment-basis",
+        default=DEFAULT_PAYMENT_BASIS.value,
+        choices=[b.value for b in PaymentBasis],
+    )
     _add_common(demo)
     demo.set_defaults(func=_demo)
 
@@ -278,6 +353,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="price the facility setting (hospital). Default is non-facility (office).",
     )
     price.add_argument("--modifier", action="append", default=[], help="repeatable, e.g. 26 or TC")
+    price.add_argument(
+        "--payment-basis",
+        default=DEFAULT_PAYMENT_BASIS.value,
+        choices=[b.value for b in PaymentBasis],
+        help="which CY2026 conversion factor to apply. Qualifying APM participants "
+        "are paid on the higher one. Default: %(default)s.",
+    )
     output = price.add_mutually_exclusive_group()
     output.add_argument("--amount", action="store_true", help="print only the dollar amount")
     output.add_argument("--json", action="store_true", help="print the full derivation as JSON")
@@ -289,6 +371,16 @@ def build_parser() -> argparse.ArgumentParser:
         "--full", action="store_true", help="all 109 from the CMS file, not just the fixture"
     )
     localities.set_defaults(func=_localities)
+
+    counties = subcommands.add_parser(
+        "counties", help="which counties each Medicare locality covers"
+    )
+    counties.add_argument("date", nargs="?", default="2026Q1", help="which release to list")
+    counties.add_argument("--state", help="filter by state name, e.g. CALIFORNIA")
+    counties.add_argument(
+        "--full", action="store_true", help="read the CMS archive rather than the fixture"
+    )
+    counties.set_defaults(func=_counties)
 
     verify = subcommands.add_parser(
         "verify-rates", help="worksheet for checking our amounts against CMS by hand"

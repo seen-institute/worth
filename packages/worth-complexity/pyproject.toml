@@ -1,0 +1,30 @@
+[project]
+name = "worth-complexity"
+version = "0.1.0"
+description = "Layer A complexity scoring and the WORTH payment adequacy ratio, computed from a partner's operative extract and 835 remittance."
+readme = "README.md"
+requires-python = ">=3.13"
+license = "Apache-2.0"
+authors = [{ name = "Seen Institute" }]
+
+# One dependency, worth-fees, and nothing else: the expected payment is priced
+# off the Medicare fee schedule, and that arithmetic lives there. worth-fees is
+# itself standard-library only, so the engine still runs unchanged on a laptop,
+# in a container, and inside a partner's own environment with no network
+# egress, and a security review still has nothing to evaluate but this
+# repository.
+dependencies = ["worth-fees"]
+
+[tool.uv.sources]
+worth-fees = { workspace = true }
+
+[project.scripts]
+worth-complexity = "worth_complexity.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.8,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "worth_complexity"
+module-root = ""

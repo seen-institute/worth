@@ -22,3 +22,8 @@ htmlcov/
 .DS_Store
 .idea/
 .vscode/
+
+# the console's dependencies and build output
+node_modules/
+app/dist/
+*.tsbuildinfo

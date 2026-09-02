@@ -1,0 +1,40 @@
+[project]
+name = "worth-api"
+version = "0.1.0"
+description = "The console's backend: serves a partner dataset, runs the worth-complexity pipeline on request, and prices codes through worth-fees."
+readme = "README.md"
+requires-python = ">=3.13"
+license = "Apache-2.0"
+authors = [{ name = "Seen Institute" }]
+
+# This is the one package in the workspace with third-party runtime dependencies.
+# worth-fees and worth-complexity stay standard-library only so a security review
+# has nothing to audit but this repository; the web framework, the server and (in
+# a later phase) the Postgres driver all live here, behind them, never inside them.
+dependencies = [
+    "fastapi>=0.115",
+    "psycopg[binary]>=3.2",
+    "pydantic>=2.9",
+    "uvicorn[standard]>=0.30",
+    "worth-complexity",
+    "worth-fees",
+]
+
+[project.scripts]
+worth-api = "worth_api.main:serve"
+worth-api-openapi = "worth_api.main:openapi"
+
+[dependency-groups]
+dev = ["httpx>=0.27"]
+
+[tool.uv.sources]
+worth-complexity = { workspace = true }
+worth-fees = { workspace = true }
+
+[build-system]
+requires = ["uv_build>=0.8,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "worth_api"
+module-root = ""

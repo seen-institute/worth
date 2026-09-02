@@ -21,8 +21,8 @@ from collections.abc import Sequence
 from decimal import Decimal
 from typing import TYPE_CHECKING
 
-from worth_fees.models import CodeSystem
-from worth_fees.sources import APPLY_WORK_GPCI_FLOOR, PAYMENT_BASIS
+from worth_fees.models import CodeSystem, PaymentBasis
+from worth_fees.sources import APPLY_WORK_GPCI_FLOOR
 
 if TYPE_CHECKING:
     from worth_fees.provenance import SourceFile
@@ -43,6 +43,33 @@ _RVU_COLUMNS = (
     "pe_rvu_facility",
     "pe_rvu_facility_na",
     "mp_rvu",
+    "qpp_eligible",
+    "pctc_indicator",
+    "multiple_procedure",
+    "bilateral_surgery",
+    "assistant_surgery",
+    "co_surgery",
+    "team_surgery",
+    "endoscopic_base",
+    "pre_op_share",
+    "intra_op_share",
+    "post_op_share",
+    "source_role",
+)
+_CONVERSION_FACTOR_COLUMNS = (
+    "release_id",
+    "payment_basis",
+    "conversion_factor",
+    "source_role",
+)
+_LOCALITY_COUNTY_COLUMNS = (
+    "release_id",
+    "ordinal",
+    "mac",
+    "state_name",
+    "locality_number",
+    "fee_schedule_area",
+    "counties",
     "source_role",
 )
 _GPCI_COLUMNS = (
@@ -109,7 +136,10 @@ def export(schedule: FeeSchedule) -> str:
     # Deduplicate the provenance chain by role: both files descend from the
     # same archive, which is one row, not two.
     chain: dict[str, SourceFile] = {}
-    for entry in schedule.sources.files:
+    provenance = list(schedule.sources.files)
+    if schedule.locco_source is not None:
+        provenance.append(schedule.locco_source)
+    for entry in provenance:
         for link in entry.chain():
             chain.setdefault(_role(link), link)
 
@@ -119,7 +149,8 @@ def export(schedule: FeeSchedule) -> str:
         f"-- sha256:   {vintage.archive_sha256}",
         f"-- url:      {vintage.url}",
         f"-- released: {vintage.release_date.isoformat()}",
-        f"-- rows:     {len(schedule.rvus)} rvu, {len(schedule.gpcis)} gpci",
+        f"-- rows:     {len(schedule.rvus)} rvu, {len(schedule.gpcis)} gpci, "
+        f"{len(schedule.localities)} locality-county",
         "--",
         "-- Apply migrations/0001_fee_schedule.sql first.",
         "",
@@ -128,13 +159,11 @@ def export(schedule: FeeSchedule) -> str:
         f"DELETE FROM fee_schedule_release WHERE release_id = {_literal(release)};",
         "",
         "INSERT INTO fee_schedule_release (",
-        "    release_id, rule_year, quarter, payment_basis, work_gpci_basis,",
-        "    conversion_factor, released_on, effective, source_url, archive_sha256, retrieved_at",
+        "    release_id, rule_year, quarter, work_gpci_basis,",
+        "    released_on, effective, source_url, archive_sha256, retrieved_at",
         ") VALUES (",
         f"    {_literal(release)}, {vintage.rule_year}, {vintage.quarter},",
-        f"    {_literal(PAYMENT_BASIS)}, {_literal(gpci_basis)},",
-        f"    {_literal(schedule.conversion_factor)}, "
-        f"{_literal(vintage.release_date.isoformat())},",
+        f"    {_literal(gpci_basis)}, {_literal(vintage.release_date.isoformat())},",
         f"    daterange({_literal(effective_from.isoformat())}, "
         f"{_literal(effective_to.isoformat())}, '[)'),",
         f"    {_literal(vintage.url)}, {_literal(vintage.archive_sha256)},",
@@ -166,6 +195,7 @@ def export(schedule: FeeSchedule) -> str:
 
     rvu_role = _role(schedule.sources.rvu)
     gpci_role = _role(schedule.sources.gpci)
+    qpp_role = _role(schedule.sources.rvu_qpp) if schedule.sources.rvu_qpp else rvu_role
 
     rvu_rows = [
         (
@@ -181,9 +211,42 @@ def export(schedule: FeeSchedule) -> str:
             row.pe_rvu_facility,
             row.pe_rvu_facility_na,
             row.mp_rvu,
+            row.qpp_eligible,
+            row.policy.pctc_indicator or None,
+            row.policy.multiple_procedure or None,
+            row.policy.bilateral_surgery or None,
+            row.policy.assistant_surgery or None,
+            row.policy.co_surgery or None,
+            row.policy.team_surgery or None,
+            row.policy.endoscopic_base or None,
+            row.policy.pre_op,
+            row.policy.intra_op,
+            row.policy.post_op,
             rvu_role,
         )
         for _, row in sorted(schedule.rvus.items())
+    ]
+    conversion_factor_rows = [
+        (
+            release,
+            basis.value,
+            schedule.conversion_factors[basis],
+            qpp_role if basis is PaymentBasis.QUALIFYING_APM else rvu_role,
+        )
+        for basis in sorted(schedule.conversion_factors, key=lambda b: b.value)
+    ]
+    locality_county_rows = [
+        (
+            release,
+            row.ordinal,
+            row.mac,
+            row.state_name,
+            row.locality_number,
+            row.fee_schedule_area or None,
+            row.counties or None,
+            _role(schedule.locco_source) if schedule.locco_source else rvu_role,
+        )
+        for row in schedule.localities
     ]
     gpci_rows = [
         (
@@ -202,7 +265,12 @@ def export(schedule: FeeSchedule) -> str:
         for _, row in sorted(schedule.gpcis.items())
     ]
 
+    lines += _copy_block(
+        "fee_schedule_conversion_factor", _CONVERSION_FACTOR_COLUMNS, conversion_factor_rows
+    )
     lines += _copy_block("rvu", _RVU_COLUMNS, rvu_rows)
     lines += _copy_block("gpci", _GPCI_COLUMNS, gpci_rows)
+    if locality_county_rows:
+        lines += _copy_block("locality_county", _LOCALITY_COUNTY_COLUMNS, locality_county_rows)
     lines.append("COMMIT;")
     return "\n".join(lines) + "\n"

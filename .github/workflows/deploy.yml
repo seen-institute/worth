@@ -1,0 +1,52 @@
+name: Deploy
+
+# The API stack, on every push to main. The image is built here from the
+# repository's Dockerfile (the CMS archives are fetched during the build) and
+# pushed by CDK; App Runner then rolls it out. The console is built by Amplify
+# from the same push, independently.
+#
+# Needs two repository settings:
+#   secrets.AWS_DEPLOY_ROLE_ARN   an IAM role GitHub's OIDC provider may assume,
+#                                 with permission to run `cdk deploy`
+#   vars.AWS_REGION               where the stack lives
+#
+# The WorthConsole stack is deployed by hand, once, after a GitHub token is in
+# Secrets Manager: see infra/README.md.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  api:
+    name: cdk deploy WorthApi
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: infra/package-lock.json
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: npm ci
+        run: npm --prefix infra ci
+
+      - name: cdk deploy
+        run: npm --prefix infra run deploy

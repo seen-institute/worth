@@ -1,17 +1,53 @@
-# Local Postgres for looking at fee schedule data. Development only.
+# The console's backend and its Postgres, for development.
 #
-# Nothing in this repository needs a database: the demo, the tests and CI all
-# run offline against the committed fixtures. This exists so you can point a
-# GUI at the schema without installing Postgres on your machine.
+#   just up         api on :8000 and db on :55432; the api reloads on edit
+#   just down       stop both
+#   just db-load    load a fee schedule vintage   (--full for all ~19k rows)
+#   just db-reset   throw the database away and start over
 #
-#   just db-up      start it, schema applied automatically
-#   just db-load    load the committed fixture   (--full for all ~19k rows)
-#   just db-reset   throw it away and start over
-#   just db-down    stop it
+# On boot the api applies the schema if the database is empty and loads every
+# pinned CMS vintage it does not already hold, from the archives baked into the
+# image. The demo, the tests and CI still run offline against the committed
+# fixtures and need neither service; set DATABASE_URL to run the db tests.
 
 name: worth
 
 services:
+  api:
+    build:
+      context: .
+      dockerfile: packages/worth-api/Dockerfile
+    command:
+      - uv
+      - run
+      - --no-sync
+      - uvicorn
+      - worth_api.main:create_app
+      - --factory
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8000"
+      - --reload
+      - --reload-dir
+      - /app/packages
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      # Source only. The image's .venv stays the image's.
+      - ./packages:/app/packages:ro
+    environment:
+      WORTH_DATASET_DIR: ""
+      DATABASE_URL: postgresql://worth:worth@db:5432/worth
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request as u; u.urlopen('http://127.0.0.1:8000/api/health')\""]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
   db:
     # Pinned deliberately. The point of this repo is that everyone gets the
     # same answer; that includes the server the SQL runs on. Bump to match

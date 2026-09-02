@@ -15,6 +15,24 @@ jobs:
   check:
     name: ruff, mypy, pytest
     runs-on: ubuntu-latest
+    # The db-marked tests apply the schema to this empty database and load the
+    # committed fixture into it; everything else stays offline.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: worth
+          POSTGRES_PASSWORD: worth
+          POSTGRES_DB: worth
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U worth -d worth"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://worth:worth@127.0.0.1:5432/worth
     steps:
       - uses: actions/checkout@v7
 
@@ -37,3 +55,63 @@ jobs:
 
       - name: pytest
         run: uv run pytest
+
+  console:
+    name: types, tsc, vite build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Sync workspace
+        run: uv sync --all-packages --locked
+
+      - name: npm ci
+        run: npm --prefix app ci
+
+      # The committed types must match the running API. A diff here means
+      # someone changed a response model and did not run `just types`.
+      - name: Regenerate the console's types
+        run: |
+          uv run worth-api-openapi > app/src/api/openapi.json
+          npm --prefix app run types
+          git diff --exit-code -- app/src/api
+
+      - name: tsc
+        run: npm --prefix app run typecheck
+
+      - name: vite build
+        run: npm --prefix app run build
+
+  infra:
+    name: cdk synth
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: infra/package-lock.json
+
+      - name: npm ci
+        run: npm --prefix infra ci
+
+      - name: tsc
+        run: npm --prefix infra run typecheck
+
+      # Environment-agnostic: no credentials, no account. Proves the stacks
+      # assemble; deploying them is the Deploy workflow's job.
+      - name: cdk synth
+        run: npm --prefix infra run synth -- --quiet
