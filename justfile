@@ -1,4 +1,4 @@
-# WORTH — task runner. `just --list` for everything.
+# WORTH task runner. `just --list` for everything.
 
 default:
     @just --list
@@ -10,6 +10,22 @@ demo *ARGS:
 # Price one code: just price 99213 CA18 2026-03-14
 price CODE PLACE DATE *ARGS:
     uv run worth-fees price {{CODE}} {{PLACE}} {{DATE}} {{ARGS}}
+
+# Layer A scores, Method 0 slopes and adequacy ratios on the synthetic dataset.
+complexity-demo *ARGS:
+    uv run worth-complexity demo {{ARGS}}
+
+# One encounter's complexity derivation and its adequacy arithmetic.
+complexity-encounter ID *ARGS:
+    uv run worth-complexity encounter {{ID}} {{ARGS}}
+
+# Every study encounter: score, operative minutes, realized payment, ratio.
+complexity-cases *ARGS:
+    uv run worth-complexity cases {{ARGS}}
+
+# Rebuild the synthetic partner dataset. Second argument scales the cohort.
+build-dataset DIR="packages/worth-complexity/worth_complexity/fixtures/mssm-synthetic" SCALE="1":
+    uv run python packages/worth-complexity/tools/make_synthetic_dataset.py {{DIR}} {{SCALE}}
 
 test:
     uv run pytest
@@ -39,9 +55,13 @@ vintages:
 export-sql *ARGS:
     uv run worth-fees export-sql {{ARGS}}
 
-# Start local Postgres. The schema is applied on first boot.
+# The tests that need Postgres, against the compose database.
+test-db: db-up
+    DATABASE_URL=postgresql://worth:worth@127.0.0.1:55432/worth uv run pytest -q -m db
+
+# Start local Postgres only. The schema is applied on first boot.
 db-up:
-    docker compose up -d --wait
+    docker compose up -d --wait db
     @echo "postgres://worth:worth@127.0.0.1:55432/worth"
 
 # Load a vintage (--full for all ~19k rows). Uses psql inside the container.

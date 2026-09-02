@@ -59,6 +59,7 @@ hash chain back to bytes you can re-download yourself.
 | `place_of_service` | `PlaceOfService \| str` | `"non-facility"` or `"facility"`. |
 | `rule_year` | `int` | Calendar year of the fee schedule. |
 | `quarter` | `int` | Quarterly release, 1 to 4. |
+| `payment_basis` | `PaymentBasis \| str` | Keyword-only, defaults to `non-qualifying-apm`. Which of CY2026's two conversion factors to apply. |
 
 ### `FeeDerivation`
 
@@ -73,6 +74,7 @@ Frozen. Every field is either a `Decimal` or a normalised input.
 | `work_gpci`, `pe_gpci`, `mp_gpci` | `Decimal` | Geographic indices for the locality. |
 | `conversion_factor` | `Decimal` | Read from the file, not hardcoded. |
 | `adjusted_rvu_total` | `Decimal` | The parenthesised sum, unrounded, full precision. |
+| `payment_basis` | `PaymentBasis` | Which conversion factor was applied. Part of the answer, not a setting. |
 | `code`, `modifier`, `modifiers`, `locality`, `locality_name`, `place_of_service`, `rule_year`, `quarter` | | Normalised inputs, as resolved. |
 
 `derivation.render()` formats all of it as text. That is what `just demo` prints.
@@ -86,6 +88,10 @@ and commercial rates. Also out of scope within the PFS itself: payment
 adjustments driven by modifiers, sequestration, the 80/20 beneficiary split, and
 quality-program adjustments. `amount` is the fee schedule allowed amount. It is
 not what a payer remitted, and not what landed in a bank account.
+
+The payment-policy indicators that drive the modifier adjustments *are* parsed
+and stored, see [section 10](#10-the-database), but nothing computes with
+them. Storing a column and modelling it are different commitments.
 
 ---
 
@@ -370,14 +376,21 @@ conversion factor only starts in 2026. The parser refuses a layout it does not
 recognise rather than reading the wrong columns, so supporting historic years
 means teaching it those layouts.
 
-The archive holds 19 files. Only two matter:
+The archive holds 19 files. Four are read:
 
 - `PPRRVU2026_Jan_nonQPP.csv`, 19,226 rows, one per code-and-modifier, 32
-  columns. The RVUs.
+  columns. The RVUs, and the non-qualifying-APM conversion factor.
+- `PPRRVU2026_Jan_QPP.csv`, 11,811 rows, same layout. Read for the
+  qualifying-APM conversion factor and the set of codes it covers. Its RVUs are
+  cross-checked against the base file rather than trusted; see
+  [section 11](#11-decisions-and-open-questions).
 - `GPCI2026.csv`, 109 rows, one per locality. The geographic indices.
+- `26LOCCO.csv`, 110 rows. The locality-to-county crosswalk. Reference data,
+  never priced from. **RVU26C ships this as `.xlsx` only**, so that release has
+  no crosswalk: the package reads CSV with the standard library and takes no
+  dependency to open a spreadsheet.
 
-The rest (OPPS caps, anesthesia factors, the locality-to-county crosswalk) is
-out of scope for now.
+The rest (OPPS caps, anesthesia factors) is out of scope.
 
 ```
    cms.gov
@@ -423,18 +436,27 @@ both paths run through the same parser and the fixture cannot silently drift
 from the format it claims to sample. A bug in parsing shows up in CI, not only
 against the full download.
 
-Current fixture contents: 9 rows across 7 codes, and one locality.
+Current fixture contents: 8 codes and two localities, in both RVU files.
 
 | Code | Modifiers | Global | Exercises |
 | --- | --- | --- | --- |
 | `99213`, `99214` | none | XXX | Facility / non-facility PE split |
 | `99232` | none | XXX | `NA` non-facility indicator |
 | `20610` | none | 000 | Payable in both settings |
-| `29881` | none | 090 | `NA` non-facility, 90-day global |
+| `29881` | none | 090 | `NA` non-facility, 90-day global, endoscopic base code |
 | `71046` | none, `26`, `TC` | XXX | Professional / technical component split |
 | `93000` | none | XXX | `NA` facility indicator |
+| `00100` | none | XXX | Status `J`, and absent from the QPP file: the one sampled row where `qpp_eligible` is false |
 
-Locality: `CA18`, Los Angeles-Long Beach-Anaheim, MAC 01182.
+| Locality | Why |
+| --- | --- |
+| `CA18` | Los Angeles-Long Beach-Anaheim, MAC 01182. The demo locality, and floor-neutral: 1.041 with the work GPCI floor and without. |
+| `AL00` | Alabama statewide. 0.988 without the floor, 1.000 with. **This is the locality that makes `APPLY_WORK_GPCI_FLOOR` testable.** With only `CA18` sampled, the setting could be flipped and every offline test would still pass. 47 of the 109 localities are floor-affected. |
+
+The crosswalk is committed whole rather than sampled: it is 7 KB, it carries no
+CPT material, and subsetting it would break it. CMS fills in the state column
+only on the first locality of each state, so dropped rows would leave the
+survivors inheriting the wrong state.
 
 Rebuild with `just refresh-fixture`, which requires network. Widen the sample by
 editing `FIXTURE_CODES` / `FIXTURE_LOCALITIES` in `cli.py` and rebuilding. The
@@ -463,8 +485,15 @@ pprrvu-2026q1.csv  ->  PPRRVU2026_Jan_nonQPP.csv  ->  rvu26a-updated-12-29-2025.
 
 Each link carries its own sha256 and the CMS release date. Upstream hashes are
 recorded in the manifest at build time, so an offline run can still name them.
-`source` covers two files, the RVU file and the GPCI file, because a derivation
-reads both. A single hash would misstate where the geographic indices came from.
+
+`source` covers three files: the RVU file, the QPP RVU file and the GPCI file. A
+single hash would misstate where the geographic indices came from, and the QPP
+file is listed because it is genuinely read, it supplies the qualifying-APM
+conversion factor and is cross-checked against the base file on every load.
+
+The crosswalk is not on `Sources`. It hangs off `FeeSchedule.locco_source`
+instead, because no derivation reads it, and a derivation's sources must name
+only what its number actually depended on.
 
 ---
 
@@ -525,7 +554,7 @@ worth_fees/
 | Module | What lives there |
 | --- | --- |
 | `money.py` | The pinned decimal context and the rounding rule. Start here. It is short, and everything else depends on it. |
-| `models.py` | `PlaceOfService`, `CodeSystem`, `FeeDerivation`, and the error taxonomy. |
+| `models.py` | `PlaceOfService`, `PaymentBasis`, `CodeSystem`, `FeeDerivation`, and the error taxonomy. |
 | `provenance.py` | sha256 helpers and the `SourceFile` chain. |
 | `sources.py` | The biggest file. Pinned vintages, the CMS parsers, the download cache, fixture load and build. |
 | `fees.py` | `expected_allowed()`. The formula, the refusals, the trace. |
@@ -535,7 +564,11 @@ worth_fees/
 Tests mirror this. `test_money.py` guards the decimal discipline,
 `test_sources.py` covers fixture integrity and copyright hygiene,
 `test_fees.py` checks the formula against an independent recomputation,
-`test_sql.py` asserts the SQL and Python cannot drift apart, and
+`test_sql.py` asserts the SQL and Python cannot drift apart,
+`test_payment_basis.py` holds the two conversion factors and the invariant that
+lets them share rows, `test_work_gpci_floor.py` proves the floor setting is
+load-bearing rather than decorative, `test_reference_data.py` covers the columns
+and files that are stored but never priced from, and
 `test_published_rates.py` holds the CMS-verification story.
 
 Requires Python 3.13+. `mypy --strict` clean.
@@ -565,6 +598,7 @@ uv run worth-fees price 99213 CA18 2026-03-14
 | --- | --- |
 | `--facility` | Price the facility (hospital) setting. Default is non-facility (office). |
 | `--modifier X` | Repeatable. `26` professional component, `TC` technical component. Payment-scaling modifiers are refused. |
+| `--payment-basis B` | `non-qualifying-apm` (default) or `qualifying-apm`. Which CY2026 conversion factor to apply. |
 | `--amount` | Print only the dollar amount, for scripting. |
 | `--json` | Print the whole derivation, including the trace and the full provenance chain, as JSON. |
 
@@ -573,6 +607,9 @@ uv run worth-fees price 99213 CA18 2026-03-14              # full derivation
 uv run worth-fees price 99213 CA18 2026-03-14 --amount     # 104.89
 uv run worth-fees price 99213 CA18 today --facility        # hospital setting
 uv run worth-fees price 71046 CA18 2026Q3 --modifier 26    # professional component
+uv run worth-fees price 99213 AL00 2026-03-14 --amount     # 87.79, a cheaper locality
+uv run worth-fees price 99213 CA18 2026-03-14 \
+    --payment-basis qualifying-apm --amount                # 105.41, the APM factor
 uv run worth-fees price 99213 CA18 2026-03-14 --json       # machine-readable
 ```
 
@@ -581,6 +618,7 @@ uv run worth-fees price 99213 CA18 2026-03-14 --json       # machine-readable
 | Command | What it does | Network? |
 | --- | --- | --- |
 | `localities [--full]` | The valid `<place>` values, fixture or all 109. | no |
+| `counties [--state S] [--full]` | Which counties each locality covers, in CMS's words. | no |
 | `vintages` | Every pinned release and the service dates it governs. | no |
 | `demo` | A worked example, no arguments needed. | no |
 | `verify-rates` | Print amounts to check by hand against CMS. | no |
@@ -631,10 +669,12 @@ environment in a way a Python client does not.
 | Object | Grain | Rows per release |
 | --- | --- | --- |
 | `fee_schedule_release` | One CMS publication | 1 |
-| `source_file` | One provenance link | 3 |
+| `fee_schedule_conversion_factor` | `(release, payment basis)` | 2 |
+| `source_file` | One provenance link | 5 |
 | `rvu` | `(release, code, modifier)` | 19,226 |
 | `gpci` | `(release, locality)` | 109 |
-| `allowed_amount` | view, the priced cross product | ~4.2M, computed |
+| `locality_county` | `(release, row of the CMS file)` | 110, or 0 for RVU26C |
+| `allowed_amount` | view, the priced cross product | ~8.4M, computed |
 
 Three things the schema enforces:
 
@@ -646,9 +686,10 @@ Three things the schema enforces:
 - **A release is immutable.** CMS reissues files, and each reissue is a new
   release rather than an edit.
 
-Verified against PostgreSQL 16 by loading all 19,226 rows and comparing 50,084
-amounts across four localities, including the two where the work GPCI floor
-changes the answer, against `expected_allowed()`. Zero mismatches.
+Verified against PostgreSQL 16 by loading all four CY2026 releases and comparing
+75,126 amounts against `expected_allowed()`, four localities including two the
+work GPCI floor changes, across both payment bases. Zero mismatches, and no case
+where the view priced something the Python refuses.
 
 The release-overlap guard needs `btree_gist`, standard contrib, present on RDS
 and Aurora. It installs conditionally and raises a warning if unavailable rather
@@ -665,9 +706,7 @@ thing being versioned is a published file with a hash.
 | `release_id` | text PK | CMS's label, e.g. `RVU26A`. A = January, B = April, C = July, D = October. |
 | `rule_year` | smallint | Calendar year the fee schedule belongs to. |
 | `quarter` | smallint | 1 to 4. |
-| `payment_basis` | text | `non-qualifying-apm` or `qualifying-apm`. CY2026 has two conversion factors, and which one this release carries is part of its identity. |
 | `work_gpci_basis` | text | `floor` or `no-floor`, which work-GPCI column was used. Versioned with the data rather than buried in code. |
-| `conversion_factor` | numeric(12,4) | Dollars per RVU. `33.4009` for CY2026 non-qualifying. |
 | `released_on` | date | The date CMS stamped the file. |
 | `effective` | daterange | Service dates these rates govern. Use `effective @> claim_date` to resolve a claim to a release. |
 | `source_url` | text | Where it was downloaded from. |
@@ -675,10 +714,27 @@ thing being versioned is a published file with a hash.
 | `retrieved_at` | timestamptz | When we fetched it, as distinct from when it applied. You need both to explain a number you published last year. |
 | `superseded_by` | text FK | Set when CMS reissues. Null means still in force. |
 
-An exclusion constraint prevents two in-force releases of the same payment basis
-from covering the same service date, so a claim date resolves to exactly one
-release. It permits the qualifying-APM basis over the same dates, which is the
-CY2026 dual-conversion-factor case.
+An exclusion constraint prevents two in-force releases from covering the same
+service date, so a claim date resolves to exactly one release.
+
+### `fee_schedule_conversion_factor`
+
+Dollars per RVU, one row per payment basis. Grain: `(release, payment_basis)`,
+2 rows.
+
+| Column | Type | Meaning |
+| --- | --- | --- |
+| `payment_basis` | text | `non-qualifying-apm` (33.4009) or `qualifying-apm` (33.5675). |
+| `conversion_factor` | numeric(12,4) | Dollars per RVU. |
+| `source_role` | text | Which of CMS's two files it was read from. |
+
+This is a table rather than a column on the release because one CMS publication
+carries both factors, and because the alternative, a second release with its
+own 11,811 byte-identical RVU rows, would be the same mistake as materialising
+`allowed_amount`. What makes that normalisation safe is that the two CMS files
+genuinely agree: `_cross_check_qpp` asserts it on every parse and refuses to
+load a release where they diverge. See
+[section 11](#11-decisions-and-open-questions).
 
 ### `rvu`
 
@@ -699,13 +755,37 @@ rows per release. Note what is absent: no descriptor column.
 | `pe_rvu_facility` | 8 | Practice expense in a hospital. |
 | `pe_rvu_facility_na` | 9 | The same, other setting. |
 | `mp_rvu` | 10 | Malpractice. |
+| `qpp_eligible` | derived | Whether the qualifying-APM file also carries this code. |
+| `pctc_indicator` | 13 | Professional/technical split behaviour. |
+| `pre_op_share`, `intra_op_share`, `post_op_share` | 15–17 | Shares of the work RVU by phase of care. Sum to 1.00, or all zero. |
+| `multiple_procedure`, `bilateral_surgery`, `assistant_surgery`, `co_surgery`, `team_surgery` | 18–22 | Payment-policy indicators. Stored, never priced. |
+| `endoscopic_base` | 24 | The endoscopic base code this one belongs to, or null. |
 | `source_role` | | Which `source_file` row this came from. |
 
-The CMS file has 32 columns, the package reads 11. The unread ones are real
-data, just out of scope for now: bilateral and multiple-procedure indicators,
-pre/intra/post-op work splits, the PC/TC indicator, endoscopic base codes, and
-OPPS payment caps. If you later model payment-adjusting modifiers, columns 18 to
-22 are where you will go.
+The CMS file has 32 columns, the package now reads 21 of them. The policy
+indicators and work splits are stored but never enter the arithmetic: worth-fees
+rejects the modifiers that would trigger those adjustments rather than modelling
+them, and a test asserts none of these values reaches a derivation trace. They
+are parsed anyway because ingest is where the bytes are, reading a column costs
+nothing now and a re-download later.
+
+The work splits are the most interesting of them for WORTH's purposes. They are
+the closest thing the fee schedule publishes to a decomposition of physician
+effort. Only codes with a global period carry them: in RVU26A that is 3,767
+codes at 090 days (averaging 10% pre-op, 75% intra-op, 15% post-op) and 469 at
+010 days (a flat 10/80/10). Post-operative share never exceeds 0.23, so the
+spread is narrower than you might expect, but two codes at equal work RVUs and
+equal global periods are still different claims about what was done if one is
+23% post-operative and another 5%.
+
+Still unread: the OPPS payment caps (29–31), the "not used for Medicare payment"
+column (4), physician supervision (26), the calculation flag (27) and the
+diagnostic imaging family indicator (28).
+
+**`qpp_eligible` never decides whether a price exists.** Across all four CY2026
+releases, every code CMS omits from the QPP file carries a non-payable status
+anyway, and `_cross_check_qpp` refuses to load a release where that stops being
+true. It records which of CMS's two files a row was seen in, nothing more.
 
 ### `gpci`
 
@@ -722,20 +802,47 @@ Grain: one row per `(release, locality)`, 109 rows.
 | `pe_gpci` | Practice-expense index. The widest-varying of the three. |
 | `mp_gpci` | Malpractice index. Varies enormously, since liability costs are intensely local. |
 
+### `locality_county`
+
+Which counties each Medicare locality covers, in CMS's own words. Grain: one row
+per row of the CMS file, 110 per release, and zero for RVU26C.
+
+| Column | Meaning |
+| --- | --- |
+| `ordinal` | Position in the CMS file, from 1. The key. |
+| `mac`, `locality_number` | Join back to `gpci` on these two, **not on state**: this file names states in full (`CALIFORNIA`) while the GPCI file uses `CA`. |
+| `state_name` | CMS fills this in only on the first locality of each state; the parser carries it forward. That is the one inference it makes. |
+| `fee_schedule_area`, `counties` | Free text, verbatim. |
+
+Two things this table deliberately does not do.
+
+It does not clean up the county text. CY2026 spells Orange county `ORAGNGE`, and
+normalising it would mean storing a guess about what CMS meant, which the next
+reader could not tell from data. It also does not deduplicate: Missouri's
+rest-of-state is serviced by two carriers and appears as two rows identical but
+for trailing whitespace, which is why the key is a row ordinal.
+
+**It cannot resolve an address to a locality.** For that CMS publishes a
+separate ZIP-code file, which worth-fees does not pin. If you build a resolver,
+build it on that file, not on this prose.
+
 ### `source_file`
 
 The provenance chain, one row per link, self-referencing via `derived_from`.
-Three rows per release. The committed fixture points at the CMS member file,
-which points at the archive. Each carries its own `sha256`.
+Five rows per release, four for RVU26C. The committed fixture points at the CMS
+member file, which points at the archive. Each carries its own `sha256`.
 
 ### `allowed_amount`, a view rather than a table
 
 This is the master table you would expect, and it deliberately is not one. The
-inputs are ~19,226 + 109 rows. Their cross product is ~4.2 million per release
-and contains nothing the inputs do not, so it is computed rather than stored.
+inputs are ~19,226 + 109 + 2 rows. Their cross product is ~8.4 million per
+release, one row per code, locality, setting and payment basis, and contains
+nothing the inputs do not, so it is computed rather than stored.
 
-It filters out non-payable status codes, `NA` settings, and modifier `53`, so a
-plain `SELECT` cannot return a number for a service that has no allowed amount.
+It filters out non-payable status codes, `NA` settings, modifier `53`, and codes
+absent from the chosen payment basis, so a plain `SELECT` cannot return a number
+for a service that has no allowed amount. **Filter on `payment_basis` unless you
+want both**, every payable code appears twice, once per conversion factor.
 Modifier `53` has RVU rows in the CMS file but scales payment, so it is stored
 in `rvu` and excluded from the view. A test parses the migration and asserts its
 modifier filter still matches the Python. The view exposes every input alongside
@@ -746,7 +853,28 @@ hand.
 SELECT hcpcs, setting, work_rvu, pe_rvu, amount
 FROM allowed_amount
 WHERE locality = 'CA18' AND hcpcs IN ('99213','29881')
+  AND payment_basis = 'non-qualifying-apm'
 ORDER BY hcpcs, setting;
+```
+
+What the two bases are worth to a practice, across a year of one code:
+
+```sql
+SELECT hcpcs, locality,
+       max(amount) FILTER (WHERE payment_basis = 'qualifying-apm')
+     - max(amount) FILTER (WHERE payment_basis = 'non-qualifying-apm') AS apm_premium
+FROM allowed_amount
+WHERE release_id = 'RVU26A' AND setting = 'non-facility' AND hcpcs = '99213'
+GROUP BY hcpcs, locality ORDER BY apm_premium DESC LIMIT 5;
+```
+
+Where the work actually sits, which is the question the RVU alone cannot answer:
+
+```sql
+SELECT hcpcs, global_days, work_rvu, pre_op_share, intra_op_share, post_op_share
+FROM rvu
+WHERE release_id = 'RVU26A' AND global_days = '090'
+ORDER BY post_op_share DESC, work_rvu DESC LIMIT 10;
 ```
 
 ---
@@ -756,12 +884,31 @@ ORDER BY hcpcs, setting;
 Two pins a reviewer will ask about. Both are recorded in the derivation trace
 rather than buried in code, and both are reversible.
 
-### CY2026 has two conversion factors
+### CY2026 has two conversion factors, both are now modelled
 
 The non-qualifying-APM file carries 33.4009 across 19,226 codes, the
-qualifying-APM (QPP) file carries 33.5675 across 11,811. The package models the
-non-qualifying one. Modelling both changes the API signature, so it was left as
-a deliberate pin.
+qualifying-APM (QPP) file carries 33.5675 across 11,811. Both are read.
+`expected_allowed()` takes a keyword-only `payment_basis` that defaults to the
+non-qualifying factor, so the API change was additive and existing callers are
+unaffected.
+
+The interesting part is what the two files turn out to be. Comparing them across
+all four CY2026 releases: the QPP file is a strict subset, with no QPP-only
+codes, and for every code they share **every column the package reads or stores
+is byte-identical**. They differ in exactly three places. CMS's own pricing
+indicator (9 against 1), the conversion factor, and the OPPS payment columns
+that are out of scope.
+
+So the basis changes what a unit is worth, not what the units are. That is why
+the database stores one set of RVU rows and two conversion factors rather than
+two releases: a second copy of 11,811 identical rows to vary one number would be
+the same mistake as materialising `allowed_amount`.
+
+That is an observed fact about CY2026, not a guarantee, so it is not assumed.
+`_cross_check_qpp` runs on every load and refuses the release if the two files
+disagree on any RVU or policy indicator, or if the QPP file drops a code that is
+payable. If CMS ever diverges them, loading fails loudly instead of pricing the
+qualifying basis off the wrong file.
 
 ### The work GPCI floor
 
@@ -823,3 +970,18 @@ a different number from a different source.
 `RVU24AR`, `RVU25D-0`, and our own `rvu26a-updated-12-29-2025` are all
 corrections, and each one is a new release. Mutate rows in place and the
 recorded hash stops meaning anything.
+
+**`allowed_amount` returns every payable code twice.** Once per payment basis.
+A `SELECT` without `WHERE payment_basis = ...` double-counts, and an aggregate
+over it is wrong by roughly half. This is the easiest new mistake to make.
+
+**The stored policy indicators are not modelled.** `bilateral_surgery`,
+`assistant_surgery` and the rest say how CMS *would* adjust a payment. Nothing
+in this package performs that adjustment, and `expected_allowed()` still refuses
+the modifiers that trigger them. Reading the column and concluding worth-fees
+handles modifier 50 would be a wrong answer wearing a right one's costume.
+
+**The county crosswalk is not an address lookup.** It is CMS's prose, typos
+included, about which counties sit in a locality. Resolving a ZIP or an address
+to a locality needs the separate CMS ZIP-code file, which is not pinned here.
+And RVU26C has no crosswalk at all: CMS shipped it as `.xlsx` only.

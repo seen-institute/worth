@@ -8,7 +8,7 @@ from decimal import Decimal
 from pathlib import Path
 
 import pytest
-from worth_fees import sources
+from worth_fees import fees, sources
 from worth_fees.models import SourceIntegrityError, VintageError
 from worth_fees.provenance import sha256_file
 from worth_fees.sources import (
@@ -25,6 +25,11 @@ VINTAGE = PINNED_VINTAGES[(2026, 1)]
 FIXTURE_RVU = FIXTURE_DIR / f"pprrvu-{VINTAGE.key}.csv"
 FIXTURE_GPCI = FIXTURE_DIR / f"gpci-{VINTAGE.key}.csv"
 
+# Every committed RVU fixture, both payment bases and all four quarters. The
+# copyright guards below run over all of them: each is cut from a CMS file that
+# does carry descriptors, so testing only one would leave seven unchecked.
+ALL_RVU_FIXTURES = sorted(FIXTURE_DIR.glob("pprrvu*-2026q*.csv"))
+
 
 def _data_rows(path: Path, header_cell: str) -> list[list[str]]:
     rows = list(csv.reader(path.read_text(encoding="latin-1").splitlines()))
@@ -38,20 +43,32 @@ def _data_rows(path: Path, header_cell: str) -> list[list[str]]:
 # ---------------------------------------------------------------------------
 
 
-def test_committed_fixture_has_no_cpt_descriptors() -> None:
-    for row in _data_rows(FIXTURE_RVU, "hcpcs"):
-        assert row[sources._DESCRIPTION] == "", f"{row[0]} still carries a descriptor"
+def test_every_rvu_fixture_is_committed() -> None:
+    """Guards the guards: if the glob stops matching, the tests below pass
+    vacuously and descriptors could ship unnoticed."""
+    assert len(ALL_RVU_FIXTURES) == 8, [p.name for p in ALL_RVU_FIXTURES]
 
 
-def test_committed_fixture_data_rows_contain_no_prose() -> None:
+@pytest.mark.parametrize("fixture", ALL_RVU_FIXTURES, ids=lambda p: p.name)
+def test_committed_fixture_has_no_cpt_descriptors(fixture: Path) -> None:
+    rows = _data_rows(fixture, "hcpcs")
+    assert rows, f"{fixture.name} has no data rows to check"
+    for row in rows:
+        assert row[sources._DESCRIPTION] == "", (
+            f"{fixture.name}: {row[0]} still carries a descriptor"
+        )
+
+
+@pytest.mark.parametrize("fixture", ALL_RVU_FIXTURES, ids=lambda p: p.name)
+def test_committed_fixture_data_rows_contain_no_prose(fixture: Path) -> None:
     """A blunt second guard: CMS data cells are digits and uppercase codes only.
 
-    Any lowercase letter below the header block means descriptor text -- or
-    some other free text -- has leaked into a file we publish.
+    Any lowercase letter below the header block means descriptor text, or
+    some other free text, has leaked into a file we publish.
     """
-    for row in _data_rows(FIXTURE_RVU, "hcpcs"):
+    for row in _data_rows(fixture, "hcpcs"):
         joined = ",".join(row)
-        assert joined == joined.upper(), f"lowercase text in fixture row: {row[0]}"
+        assert joined == joined.upper(), f"lowercase text in {fixture.name} row: {row[0]}"
 
 
 def test_parser_does_not_expose_descriptors() -> None:
@@ -191,3 +208,28 @@ def test_a_shifted_column_is_caught_by_the_cross_check() -> None:
 
     with pytest.raises(SourceIntegrityError, match="CMS's own"):
         parse_pprrvu(tampered)
+
+
+def test_payable_status_codes_do_not_drift_between_modules() -> None:
+    """``sources`` needs to know which statuses are payable, to check that the
+    two payment bases cover the same codes. ``fees`` needs the same fact to
+    decide what to price.
+
+    The constant is duplicated rather than shared: ingest must not import the
+    pricing layer, and one small frozenset in two places is cheaper than a
+    module that exists only to hold it. This is the test that makes the
+    duplication safe, the two must partition the status codes CMS actually
+    publishes, with nothing in both and nothing in neither.
+    """
+    payable = set(sources._PAYABLE_STATUS)
+    non_payable = set(fees._NON_PAYABLE_STATUS)
+
+    assert not (payable & non_payable), "a status code cannot be both payable and not"
+
+    published = {row.status_code for row in load(2026, 1).rvus.values()}
+    for quarter in (2, 3, 4):
+        published |= {row.status_code for row in load(2026, quarter).rvus.values()}
+    assert published <= payable | non_payable, (
+        f"CMS publishes status code(s) {sorted(published - payable - non_payable)} that "
+        "neither module classifies; pricing would fall through to an unhandled case."
+    )

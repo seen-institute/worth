@@ -88,8 +88,10 @@ def test_price_json_is_machine_readable(capsys: pytest.CaptureFixture[str]) -> N
     assert payload["modifier"] == "TC"
     assert payload["locality"] == "CA18"
     assert payload["trace"]
-    # Provenance survives serialisation: three chain links per file, hashes intact.
-    assert len(payload["source"]["files"]) == 6
+    # Provenance survives serialisation: three chain links per file, hashes
+    # intact. Three files now, the QPP RVU file supplies the second
+    # conversion factor and is cross-checked against the base file.
+    assert len(payload["source"]["files"]) == 9
     assert all(len(f["sha256"]) == 64 for f in payload["source"]["files"])
 
 
