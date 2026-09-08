@@ -1,0 +1,29 @@
+MOUNT SINAI HEALTH SYSTEM
+OPERATIVE NOTE
+
+PATIENT: Z0004399
+DATE OF SERVICE: 09/10/2026
+SURGEON: S00817
+SERVICE: GYN
+ASA CLASS: 2
+
+PREOPERATIVE DIAGNOSIS:
+N80.531
+
+PROCEDURE PERFORMED:
+Hysteroscopy with dilation and curettage.
+
+INDICATION:
+She has a history of appendectomy and a prior cystotomy repair, both without complication. There is no prior operative diagnosis on file.
+
+FINDINGS:
+Hysteroscopy with dilation and curettage was undertaken. There was no evidence of diaphragmatic involvement.
+
+DESCRIPTION OF PROCEDURE:
+The patient was placed in the standard position and prepped and draped in the usual sterile fashion. Access was obtained and the abdomen inspected systematically. Haemostasis was confirmed and instruments were removed under direct vision.
+
+ESTIMATED BLOOD LOSS: 10 mL
+TOTAL OPERATIVE TIME: 24 minutes
+COMPLICATIONS: None.
+SPECIMENS: Sent to pathology.
+DISPOSITION: The patient was taken to recovery in stable condition.

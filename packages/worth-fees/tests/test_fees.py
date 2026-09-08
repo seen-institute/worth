@@ -202,7 +202,7 @@ def test_na_practice_expense_indicator_refuses_to_price(code: str, setting: Plac
 
 def test_unknown_code_names_the_fixture_limit() -> None:
     with pytest.raises(UnknownCodeError, match="fixture"):
-        expected_allowed("00100", [], "CA18", NON_FACILITY, 2026, 1)
+        expected_allowed("99215", [], "CA18", NON_FACILITY, 2026, 1)
 
 
 def test_unknown_modifier_variant_lists_what_exists() -> None:

@@ -1,4 +1,4 @@
-"""worth-fees — reproducible Medicare Physician Fee Schedule allowed amounts.
+"""worth-fees, reproducible Medicare Physician Fee Schedule allowed amounts.
 
 The whole package in one call::
 
@@ -13,6 +13,7 @@ The whole package in one call::
 from worth_fees.models import (
     FeeDerivation,
     NotPayableError,
+    PaymentBasis,
     PlaceOfService,
     SourceIntegrityError,
     UnknownCodeError,
@@ -31,6 +32,7 @@ __all__ = [
     "FeeDerivation",
     "Money",
     "NotPayableError",
+    "PaymentBasis",
     "PlaceOfService",
     "SourceFile",
     "SourceIntegrityError",

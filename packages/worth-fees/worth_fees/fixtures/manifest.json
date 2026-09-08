@@ -8,9 +8,12 @@
         "label": "RVU26A",
         "release_date": "2025-12-29",
         "url": "https://www.cms.gov/files/zip/rvu26a-updated-12-29-2025.zip",
-        "payment_basis": "non-qualifying APM conversion factor (CMS PPRRVU nonQPP file); the qualifying-APM CF is not modelled"
+        "payment_bases": {
+          "non-qualifying-apm": "non-qualifying APM conversion factor (CMS PPRRVU nonQPP file)",
+          "qualifying-apm": "qualifying APM conversion factor (CMS PPRRVU QPP file)"
+        }
       },
-      "retrieved_at": "2026-08-31T22:43:36+00:00",
+      "retrieved_at": "2026-09-03T15:43:12+00:00",
       "archive": {
         "filename": "rvu26a-updated-12-29-2025.zip",
         "sha256": "91b9bdd5459bc4c19d4f8203410b29a672db37def2e70f01ef627b8b18fc7482"
@@ -20,33 +23,89 @@
           "filename": "PPRRVU2026_Jan_nonQPP.csv",
           "sha256": "9a15cb9cc117f079f5bbd41819bcad7c9ebf71fa8836ee186e079bc15b3269de"
         },
+        "pprrvu_qpp": {
+          "filename": "PPRRVU2026_Jan_QPP.csv",
+          "sha256": "121dcb278d7000ca9c3f94ea59dc00cd9071508d799405d787344912476306c2"
+        },
         "gpci": {
           "filename": "GPCI2026.csv",
           "sha256": "5e2cc8072633ccb0e24b4620e87540852235a71aad6bdd12601308b41e636bf1"
+        },
+        "locco": {
+          "filename": "26LOCCO.csv",
+          "sha256": "250733bd5eefaea091541fe24d865eda38fb166f124c7bd474b55581b45e972a"
         }
       },
       "fixtures": {
         "pprrvu": {
           "filename": "pprrvu-2026q1.csv",
-          "sha256": "0f5ff9f6023962bcd874d492dfcb8e5a9c02d00fd7c879be2ec9697bfb7a2daf",
+          "sha256": "e5258930178f1c0c9c5965bc86dd4c3ed14ab03057498df1d545513825081df9",
+          "rows": 22,
           "codes": [
+            "00100",
             "20610",
+            "27447",
             "29881",
+            "44970",
+            "47562",
+            "49505",
+            "50543",
+            "52601",
+            "55866",
+            "58558",
+            "58563",
+            "58570",
+            "58661",
+            "58662",
             "71046",
             "93000",
             "99213",
             "99214",
             "99232"
-          ],
-          "rows": 9
+          ]
+        },
+        "pprrvu_qpp": {
+          "filename": "pprrvu-qpp-2026q1.csv",
+          "sha256": "7486938cb2b08a2708d093765e594bab8fab43624738f7b55162116922ba0416",
+          "rows": 21,
+          "codes": [
+            "00100",
+            "20610",
+            "27447",
+            "29881",
+            "44970",
+            "47562",
+            "49505",
+            "50543",
+            "52601",
+            "55866",
+            "58558",
+            "58563",
+            "58570",
+            "58661",
+            "58662",
+            "71046",
+            "93000",
+            "99213",
+            "99214",
+            "99232"
+          ]
         },
         "gpci": {
           "filename": "gpci-2026q1.csv",
-          "sha256": "53dc94a1f38ff605e8aee7e06db93fb2d6761a1a0c1e070ce6c2083da3e30803",
+          "sha256": "36713fe8077e9e530eb08407c5bad984e1b2bbf2bd35be3351356648d9d5cb2d",
+          "rows": 3,
           "localities": [
-            "CA18"
-          ],
-          "rows": 1
+            "AL00",
+            "CA18",
+            "NY01"
+          ]
+        },
+        "locco": {
+          "filename": "locco-2026q1.csv",
+          "sha256": "736407dc2ba4d3847f61c00fd02cd6c27f2bc93c563fe88d0acc90b9f85d4294",
+          "rows": 168,
+          "note": "committed in full; see build_fixture"
         }
       }
     },
@@ -57,9 +116,12 @@
         "label": "RVU26B",
         "release_date": "2026-05-01",
         "url": "https://www.cms.gov/files/zip/rvu26b-updated-05-01-2026.zip",
-        "payment_basis": "non-qualifying APM conversion factor (CMS PPRRVU nonQPP file); the qualifying-APM CF is not modelled"
+        "payment_bases": {
+          "non-qualifying-apm": "non-qualifying APM conversion factor (CMS PPRRVU nonQPP file)",
+          "qualifying-apm": "qualifying APM conversion factor (CMS PPRRVU QPP file)"
+        }
       },
-      "retrieved_at": "2026-08-31T22:26:19+00:00",
+      "retrieved_at": "2026-09-03T15:43:12+00:00",
       "archive": {
         "filename": "rvu26b-updated-05-01-2026.zip",
         "sha256": "7d9a398769fc4da406aa99284f3ab1a56eb609696fcf2f6f166387574edd5728"
@@ -69,33 +131,89 @@
           "filename": "PPRRVU2026_Apr_nonQPP.csv",
           "sha256": "afc9cf9fe60742518cf6aaccd507edc035052ab9ab1be48644be39f38fceec48"
         },
+        "pprrvu_qpp": {
+          "filename": "PPRRVU2026_Apr_QPP.csv",
+          "sha256": "f06f743b793282a5c26aa679203d640730285a9540bec166fd84a71946564057"
+        },
         "gpci": {
           "filename": "GPCI2026.csv",
           "sha256": "7850e2987d12e46930e49033f96829b5ae11f60dd1f19965329b38cf08b05264"
+        },
+        "locco": {
+          "filename": "26LOCCO.csv",
+          "sha256": "250733bd5eefaea091541fe24d865eda38fb166f124c7bd474b55581b45e972a"
         }
       },
       "fixtures": {
         "pprrvu": {
           "filename": "pprrvu-2026q2.csv",
-          "sha256": "a1f0eb2ee99b2be61e4bc3cf5ee8c310194c089770fc1066dde62fe791ea2d1d",
+          "sha256": "6b4be0e15f3bf41a885ee30afe01b7d2081cecf04215e63b2759c45ad03ad437",
+          "rows": 22,
           "codes": [
+            "00100",
             "20610",
+            "27447",
             "29881",
+            "44970",
+            "47562",
+            "49505",
+            "50543",
+            "52601",
+            "55866",
+            "58558",
+            "58563",
+            "58570",
+            "58661",
+            "58662",
             "71046",
             "93000",
             "99213",
             "99214",
             "99232"
-          ],
-          "rows": 9
+          ]
+        },
+        "pprrvu_qpp": {
+          "filename": "pprrvu-qpp-2026q2.csv",
+          "sha256": "352343c4743cd3b1bb8955c0117514b22bb71115767a5798e5d8ea58b0a7f5a9",
+          "rows": 21,
+          "codes": [
+            "00100",
+            "20610",
+            "27447",
+            "29881",
+            "44970",
+            "47562",
+            "49505",
+            "50543",
+            "52601",
+            "55866",
+            "58558",
+            "58563",
+            "58570",
+            "58661",
+            "58662",
+            "71046",
+            "93000",
+            "99213",
+            "99214",
+            "99232"
+          ]
         },
         "gpci": {
           "filename": "gpci-2026q2.csv",
-          "sha256": "06563ebe75bc00e9c722e08ff189fca7213b36094f60cc67405cc315d0eff432",
+          "sha256": "761898fde20da664a447e91756ef01a2ff53713b6e51c7e0b08d29625c7dc509",
+          "rows": 3,
           "localities": [
-            "CA18"
-          ],
-          "rows": 1
+            "AL00",
+            "CA18",
+            "NY01"
+          ]
+        },
+        "locco": {
+          "filename": "locco-2026q2.csv",
+          "sha256": "736407dc2ba4d3847f61c00fd02cd6c27f2bc93c563fe88d0acc90b9f85d4294",
+          "rows": 168,
+          "note": "committed in full; see build_fixture"
         }
       }
     },
@@ -106,9 +224,12 @@
         "label": "RVU26C",
         "release_date": "2026-06-30",
         "url": "https://www.cms.gov/files/zip/rvu26c-updated-06-30-2026.zip",
-        "payment_basis": "non-qualifying APM conversion factor (CMS PPRRVU nonQPP file); the qualifying-APM CF is not modelled"
+        "payment_bases": {
+          "non-qualifying-apm": "non-qualifying APM conversion factor (CMS PPRRVU nonQPP file)",
+          "qualifying-apm": "qualifying APM conversion factor (CMS PPRRVU QPP file)"
+        }
       },
-      "retrieved_at": "2026-08-31T22:26:19+00:00",
+      "retrieved_at": "2026-09-03T15:43:12+00:00",
       "archive": {
         "filename": "rvu26c-updated-06-30-2026.zip",
         "sha256": "d45a158e02694c1539e7f88192c611883e377181eda86dc213359707bcacbacb"
@@ -118,6 +239,10 @@
           "filename": "PPRRVU2026_Jul_nonQPP.csv",
           "sha256": "b7d197e73211ef6854c213c267d5fa9dec8df995db8e1ee7d44c0556ad7cee21"
         },
+        "pprrvu_qpp": {
+          "filename": "PPRRVU2026_Jul_QPP.csv",
+          "sha256": "1aff4407731607b79ff54f1ed4f61b4cf5d664515819fb39f92e753f8760f971"
+        },
         "gpci": {
           "filename": "GPCI2026.csv",
           "sha256": "7850e2987d12e46930e49033f96829b5ae11f60dd1f19965329b38cf08b05264"
@@ -126,25 +251,67 @@
       "fixtures": {
         "pprrvu": {
           "filename": "pprrvu-2026q3.csv",
-          "sha256": "9c201ca8f02f1d6ebb10309c843c0ab823236c7085845d8c8cc3fb28a0dd6609",
+          "sha256": "85982104e4be01223914b639708ee7d601355a7f26e57a0ffc179bb9e0b562f5",
+          "rows": 22,
           "codes": [
+            "00100",
             "20610",
+            "27447",
             "29881",
+            "44970",
+            "47562",
+            "49505",
+            "50543",
+            "52601",
+            "55866",
+            "58558",
+            "58563",
+            "58570",
+            "58661",
+            "58662",
             "71046",
             "93000",
             "99213",
             "99214",
             "99232"
-          ],
-          "rows": 9
+          ]
+        },
+        "pprrvu_qpp": {
+          "filename": "pprrvu-qpp-2026q3.csv",
+          "sha256": "60ae613ecf59d58aba871e0045efded3513e4dac048ecc8d5133e1601ed5d7d6",
+          "rows": 21,
+          "codes": [
+            "00100",
+            "20610",
+            "27447",
+            "29881",
+            "44970",
+            "47562",
+            "49505",
+            "50543",
+            "52601",
+            "55866",
+            "58558",
+            "58563",
+            "58570",
+            "58661",
+            "58662",
+            "71046",
+            "93000",
+            "99213",
+            "99214",
+            "99232"
+          ]
         },
         "gpci": {
           "filename": "gpci-2026q3.csv",
-          "sha256": "06563ebe75bc00e9c722e08ff189fca7213b36094f60cc67405cc315d0eff432",
+          "sha256": "761898fde20da664a447e91756ef01a2ff53713b6e51c7e0b08d29625c7dc509",
+          "rows": 3,
           "localities": [
-            "CA18"
-          ],
-          "rows": 1
+            "AL00",
+            "CA18",
+            "NY01"
+          ]
         }
       }
     },
@@ -155,9 +322,12 @@
         "label": "RVU26D",
         "release_date": "2026-08-26",
         "url": "https://www.cms.gov/files/zip/rvu26d-updated-08-26-2026.zip",
-        "payment_basis": "non-qualifying APM conversion factor (CMS PPRRVU nonQPP file); the qualifying-APM CF is not modelled"
+        "payment_bases": {
+          "non-qualifying-apm": "non-qualifying APM conversion factor (CMS PPRRVU nonQPP file)",
+          "qualifying-apm": "qualifying APM conversion factor (CMS PPRRVU QPP file)"
+        }
       },
-      "retrieved_at": "2026-08-31T22:26:19+00:00",
+      "retrieved_at": "2026-09-03T15:43:12+00:00",
       "archive": {
         "filename": "rvu26d-updated-08-26-2026.zip",
         "sha256": "521ff0f4ecbf13b5d99dc1dc04d9f82e5361e55c6b4b6b3033043598bf8406e6"
@@ -167,33 +337,89 @@
           "filename": "PPRRVU2026_Oct_nonQPP.csv",
           "sha256": "4d0d3f19bd954ffc0f5b8439169d267da023d4f6911f4539bb6e98723cb1a626"
         },
+        "pprrvu_qpp": {
+          "filename": "PPRRVU2026_Oct_QPP.csv",
+          "sha256": "59d3734704853936070f972d741f7b6739bf22510f08998a599d2fcd5c865cfe"
+        },
         "gpci": {
           "filename": "GPCI2026.csv",
           "sha256": "7850e2987d12e46930e49033f96829b5ae11f60dd1f19965329b38cf08b05264"
+        },
+        "locco": {
+          "filename": "26LOCCO.csv",
+          "sha256": "250733bd5eefaea091541fe24d865eda38fb166f124c7bd474b55581b45e972a"
         }
       },
       "fixtures": {
         "pprrvu": {
           "filename": "pprrvu-2026q4.csv",
-          "sha256": "d28e0f8f252ed8eb7d054a7048dd476e07e34885dfb666e2b36c0fa74e54f7ac",
+          "sha256": "b0d9e01869e2ecc3f57476adeb39ad88b96c97655580b5532ee84f74a789d9fa",
+          "rows": 22,
           "codes": [
+            "00100",
             "20610",
+            "27447",
             "29881",
+            "44970",
+            "47562",
+            "49505",
+            "50543",
+            "52601",
+            "55866",
+            "58558",
+            "58563",
+            "58570",
+            "58661",
+            "58662",
             "71046",
             "93000",
             "99213",
             "99214",
             "99232"
-          ],
-          "rows": 9
+          ]
+        },
+        "pprrvu_qpp": {
+          "filename": "pprrvu-qpp-2026q4.csv",
+          "sha256": "496cd055271a2f7ba62a5e091bad3cd9e4d39b29ebd924b6c14eb8933fc07c5f",
+          "rows": 21,
+          "codes": [
+            "00100",
+            "20610",
+            "27447",
+            "29881",
+            "44970",
+            "47562",
+            "49505",
+            "50543",
+            "52601",
+            "55866",
+            "58558",
+            "58563",
+            "58570",
+            "58661",
+            "58662",
+            "71046",
+            "93000",
+            "99213",
+            "99214",
+            "99232"
+          ]
         },
         "gpci": {
           "filename": "gpci-2026q4.csv",
-          "sha256": "06563ebe75bc00e9c722e08ff189fca7213b36094f60cc67405cc315d0eff432",
+          "sha256": "761898fde20da664a447e91756ef01a2ff53713b6e51c7e0b08d29625c7dc509",
+          "rows": 3,
           "localities": [
-            "CA18"
-          ],
-          "rows": 1
+            "AL00",
+            "CA18",
+            "NY01"
+          ]
+        },
+        "locco": {
+          "filename": "locco-2026q4.csv",
+          "sha256": "736407dc2ba4d3847f61c00fd02cd6c27f2bc93c563fe88d0acc90b9f85d4294",
+          "rows": 168,
+          "note": "committed in full; see build_fixture"
         }
       }
     }

@@ -1,0 +1,29 @@
+MOUNT SINAI HEALTH SYSTEM
+OPERATIVE NOTE
+
+PATIENT: Z0006429
+DATE OF SERVICE: 06/02/2026
+SURGEON: S02901
+SERVICE: GENSURG
+ASA CLASS: 3
+
+PREOPERATIVE DIAGNOSIS:
+K80.20
+
+PROCEDURE PERFORMED:
+Laparoscopic cholecystectomy.
+
+INDICATION:
+She has a history of appendectomy and a prior cystotomy repair, both without complication. There is no prior operative diagnosis on file.
+
+FINDINGS:
+Laparoscopic cholecystectomy was undertaken. The small bowel was mobilised to expose the operative field. Filmy adhesions were noted in the right adnexal region. There was no evidence of diaphragmatic involvement.
+
+DESCRIPTION OF PROCEDURE:
+The patient was placed in the standard position and prepped and draped in the usual sterile fashion. Access was obtained and the abdomen inspected systematically. Haemostasis was confirmed and instruments were removed under direct vision.
+
+ESTIMATED BLOOD LOSS: 60 mL
+TOTAL OPERATIVE TIME: 85 minutes
+COMPLICATIONS: None.
+SPECIMENS: Sent to pathology.
+DISPOSITION: The patient was taken to recovery in stable condition.

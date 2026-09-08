@@ -1,13 +1,13 @@
-# Local Postgres for looking at fee schedule data. Development only.
+# Local Postgres for the fee-schedule database.
 #
-# Nothing in this repository needs a database: the demo, the tests and CI all
-# run offline against the committed fixtures. This exists so you can point a
-# GUI at the schema without installing Postgres on your machine.
+#   just db-up      postgres on :55432
+#   just db-load    load a fee schedule vintage   (--full for all ~19k rows)
+#   just db-reset   throw the database away and start over
 #
-#   just db-up      start it, schema applied automatically
-#   just db-load    load the committed fixture   (--full for all ~19k rows)
-#   just db-reset   throw it away and start over
-#   just db-down    stop it
+# On an empty volume the initdb hook applies the schema; use `worth-db migrate`
+# (or `worth-db load`) to fill it. The demo, the tests and CI still run offline
+# against the committed fixtures and need neither service; set DATABASE_URL to
+# run the db tests.
 
 name: worth
 

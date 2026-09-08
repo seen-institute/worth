@@ -1,0 +1,32 @@
+[project]
+name = "worth-cli"
+version = "0.1.0"
+description = "The umbrella command over worth-fees, worth-complexity and worth-db: run, price, db, version."
+readme = "README.md"
+requires-python = ">=3.13"
+license = "Apache-2.0"
+authors = [{ name = "Seen Institute" }]
+
+# Standard library only in this package's own code (argparse, json,
+# dataclasses); everything it does is delegate to the packages below.
+dependencies = [
+    "worth-complexity",
+    "worth-db",
+    "worth-fees",
+]
+
+[project.scripts]
+worth-cli = "worth_cli.cli:main"
+
+[tool.uv.sources]
+worth-complexity = { workspace = true }
+worth-db = { workspace = true }
+worth-fees = { workspace = true }
+
+[build-system]
+requires = ["uv_build>=0.8,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "worth_cli"
+module-root = ""

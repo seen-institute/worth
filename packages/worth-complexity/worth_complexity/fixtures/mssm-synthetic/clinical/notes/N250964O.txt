@@ -1,0 +1,29 @@
+MOUNT SINAI HEALTH SYSTEM
+OPERATIVE NOTE
+
+PATIENT: Z0006604
+DATE OF SERVICE: 03/01/2026
+SURGEON: S04188
+SERVICE: ORTHO
+ASA CLASS: 3
+
+PREOPERATIVE DIAGNOSIS:
+M17.11
+
+PROCEDURE PERFORMED:
+Total knee arthroplasty.
+
+INDICATION:
+She has a history of appendectomy and a prior cystotomy repair, both without complication. There is no prior operative diagnosis on file.
+
+FINDINGS:
+Total knee arthroplasty was undertaken. The joint capsule was opened and the compartment inspected. Periarticular osteophytes were resected sharply. Moderate fibrous adhesions were encountered and adhesiolysis was performed sharply. There was no evidence of diaphragmatic involvement.
+
+DESCRIPTION OF PROCEDURE:
+The patient was placed in the standard position and prepped and draped in the usual sterile fashion. Access was obtained and the abdomen inspected systematically. Haemostasis was confirmed and instruments were removed under direct vision.
+
+ESTIMATED BLOOD LOSS: 360 mL
+TOTAL OPERATIVE TIME: 159 minutes
+COMPLICATIONS: None.
+SPECIMENS: Sent to pathology.
+DISPOSITION: The patient was taken to recovery in stable condition.

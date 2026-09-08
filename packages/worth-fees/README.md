@@ -15,11 +15,14 @@ be able to redo the arithmetic on paper and re-download the source file to check
 the hash.
 
 **In scope.** Medicare Physician Fee Schedule allowed amounts, CY2026, all four
-quarters, all 109 localities.
+quarters, all 109 localities, both payment bases (the qualifying-APM conversion
+factor and the non-qualifying one).
 
 **Not in scope.** OPPS, ASC, IPPS, anesthesia, clinical lab, DMEPOS, Part B
 drugs, and commercial rates. Within the PFS itself: payment-adjusting modifiers,
 sequestration, the 80/20 beneficiary split, and quality-program adjustments.
+The payment-policy indicators those adjustments would need are parsed and
+stored, but nothing computes with them.
 
 **What the number is not.** The allowed amount is a schedule figure, not a
 payment. It is not what a payer remitted and not what landed in a bank account.
@@ -65,7 +68,10 @@ Three positional arguments: a code, a locality, and a date. A few more:
 ```bash
 uv run worth-fees price 99213 CA18 2026-03-14 --amount     # 104.89
 uv run worth-fees price 99213 CA18 today --facility        # hospital setting
+uv run worth-fees price 99213 CA18 today \
+    --payment-basis qualifying-apm                         # the APM conversion factor
 uv run worth-fees localities --full                        # the 109 valid places
+uv run worth-fees counties --state CALIFORNIA              # what a locality covers
 uv run worth-fees vintages                                 # the valid dates
 ```
 
@@ -153,6 +159,7 @@ Association.
 | You want to | Read |
 | --- | --- |
 | Understand RVUs, GPCIs, modifiers and status codes | [GUIDE section 2](GUIDE.md#2-the-domain-in-ten-minutes) |
+| Know which conversion factor applies to you | [GUIDE section 11](GUIDE.md#11-decisions-and-open-questions) |
 | Follow the arithmetic | [GUIDE section 3](GUIDE.md#3-the-formula-walked-through) |
 | Call it from Python | [GUIDE section 1](GUIDE.md#1-what-it-does) |
 | Know why it refuses something | [GUIDE section 5](GUIDE.md#5-refusals-errors-and-modifiers) |

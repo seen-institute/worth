@@ -1,7 +1,7 @@
 """The one public calculation: a Medicare PFS allowed amount you can re-check.
 
 Scope is deliberately narrow. This is the Medicare Physician Fee Schedule
-formula and nothing else -- no OPPS, no ASC, no anesthesia, no clinical lab:
+formula and nothing else, no OPPS, no ASC, no anesthesia, no clinical lab:
 
     (work_rvu x work_gpci + pe_rvu x pe_gpci + mp_rvu x mp_gpci) x CF
 
@@ -23,15 +23,18 @@ from functools import lru_cache
 from worth_fees.models import (
     FeeDerivation,
     NotPayableError,
+    PaymentBasis,
     PlaceOfService,
     UnknownCodeError,
     UnknownLocalityError,
     UnsupportedModifierError,
+    VintageError,
 )
 from worth_fees.money import money_context, to_cents, usd
 from worth_fees.sources import (
     APPLY_WORK_GPCI_FLOOR,
-    PAYMENT_BASIS_NOTE,
+    DEFAULT_PAYMENT_BASIS,
+    PAYMENT_BASIS_NOTES,
     FeeSchedule,
     GpciRow,
     RvuRow,
@@ -187,6 +190,9 @@ def expected_allowed(
     place_of_service: PlaceOfService | str,
     rule_year: int,
     quarter: int,
+    *,
+    payment_basis: PaymentBasis | str = DEFAULT_PAYMENT_BASIS,
+    schedule: FeeSchedule | None = None,
 ) -> FeeDerivation:
     """Compute the Medicare PFS allowed amount, with its derivation and sources.
 
@@ -199,6 +205,14 @@ def expected_allowed(
         place_of_service: :class:`PlaceOfService`, or its string value.
         rule_year: Calendar year of the fee schedule, e.g. ``2026``.
         quarter: Quarterly release, ``1``-``4``.
+        payment_basis: Which CY2026 conversion factor to apply. Keyword-only
+            and defaulted, so existing callers are unaffected. Qualifying APM
+            participants are paid on a higher factor; see :class:`PaymentBasis`.
+        schedule: The :class:`FeeSchedule` to price from, when the caller has
+            one that did not come from the committed fixture: the full release
+            read back out of a database, say. It must be the vintage named by
+            ``rule_year`` and ``quarter``; a mismatch is refused rather than
+            silently priced on the wrong release. Default: the fixture.
 
     Returns:
         A :class:`FeeDerivation` carrying ``.amount``, ``.trace`` and ``.source``.
@@ -211,7 +225,14 @@ def expected_allowed(
         UnsupportedModifierError: A modifier outside the modelled scope.
     """
     setting = PlaceOfService(place_of_service)
-    schedule = _schedule(rule_year, quarter)
+    basis = PaymentBasis(payment_basis)
+    if schedule is None:
+        schedule = _schedule(rule_year, quarter)
+    elif (schedule.vintage.rule_year, schedule.vintage.quarter) != (rule_year, quarter):
+        raise VintageError(
+            f"the supplied schedule is {schedule.vintage.label} (CY{schedule.vintage.rule_year} "
+            f"Q{schedule.vintage.quarter}), not CY{rule_year} Q{quarter}"
+        )
     normalised_code = code.strip().upper()
     modifier = _select_modifier(modifiers)
 
@@ -222,14 +243,21 @@ def expected_allowed(
             f"{_NON_PAYABLE_STATUS[row.status_code]}. There is no PFS allowed amount to report."
         )
 
+    if basis is PaymentBasis.QUALIFYING_APM and not row.qpp_eligible:
+        raise NotPayableError(
+            f"{normalised_code} is not in the qualifying-APM file for "
+            f"{schedule.vintage.label}, so there is no allowed amount on that basis. "
+            "Price it on the non-qualifying basis, or check the status code."
+        )
+
     gpci = _lookup_gpci(schedule, _normalise_locality(locality))
     pe_rvu = _practice_expense(row, setting)
-    conversion_factor = row.conversion_factor
+    conversion_factor = schedule.conversion_factors[basis]
 
     floor_note = "with 1.0 floor" if APPLY_WORK_GPCI_FLOOR else "without 1.0 floor"
     trace: list[str] = [
         f"fee schedule: CMS {schedule.vintage.label} (CY{rule_year} Q{quarter}), "
-        f"{PAYMENT_BASIS_NOTE}",
+        f"{PAYMENT_BASIS_NOTES[basis]}",
         f"locality:     {gpci.key} {gpci.name} (MAC {gpci.mac})",
         f"setting:      {setting.value} (facility PE RVU {row.pe_rvu_facility}, "
         f"non-facility {row.pe_rvu_nonfacility}; using {pe_rvu})",
@@ -287,6 +315,7 @@ def expected_allowed(
         place_of_service=setting,
         rule_year=rule_year,
         quarter=quarter,
+        payment_basis=basis,
         work_rvu=row.work_rvu,
         pe_rvu=pe_rvu,
         mp_rvu=row.mp_rvu,

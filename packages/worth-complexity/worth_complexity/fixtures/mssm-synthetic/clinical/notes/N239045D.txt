@@ -1,0 +1,14 @@
+MOUNT SINAI HEALTH SYSTEM
+DISCHARGE SUMMARY
+
+PATIENT: Z0005995
+DATE OF SERVICE: 01/28/2026
+
+HOSPITAL COURSE:
+The patient tolerated the procedure well. Bowel function returned on the first postoperative day and the bladder catheter was removed without difficulty.
+
+DISCHARGE DIAGNOSIS:
+N80.531
+
+DISCHARGE INSTRUCTIONS:
+Return for fever, worsening pain, or inability to tolerate oral intake.

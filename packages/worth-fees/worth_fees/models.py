@@ -99,6 +99,28 @@ class CodeSystem(StrEnum):
         return self in {CodeSystem.CPT_I, CodeSystem.CPT_II, CodeSystem.CPT_III}
 
 
+class PaymentBasis(StrEnum):
+    """Which of CY2026's two conversion factors applies.
+
+    From CY2026 CMS publishes the fee schedule twice in one archive. Clinicians
+    who qualify for an Advanced Alternative Payment Model are paid on a higher
+    conversion factor than everyone else, 33.5675 against 33.4009, and CMS
+    ships that as a second copy of the whole RVU file rather than as a second
+    column.
+
+    The two files carry identical RVUs and payment-policy indicators for every
+    code they share; the qualifying file simply omits codes that are not
+    payable at all. So this selects a conversion factor, not a different set of
+    relative values, and :func:`worth_fees.sources.load` enforces that rather
+    than assuming it.
+    """
+
+    NON_QUALIFYING_APM = "non-qualifying-apm"
+    """The default. CMS's ``nonQPP`` file, pricing indicator 9."""
+    QUALIFYING_APM = "qualifying-apm"
+    """Qualifying APM participants. CMS's ``QPP`` file, pricing indicator 1."""
+
+
 class PlaceOfService(StrEnum):
     """Which practice-expense RVU applies.
 
@@ -131,6 +153,8 @@ class FeeDerivation:
     place_of_service: PlaceOfService
     rule_year: int
     quarter: int
+    payment_basis: PaymentBasis
+    """Which conversion factor was applied. Part of the answer, not a setting."""
 
     work_rvu: Decimal
     pe_rvu: Decimal
@@ -153,7 +177,8 @@ class FeeDerivation:
             f"{self.code}"
             + (f"-{self.modifier}" if self.modifier else "")
             + f"   locality {self.locality} ({self.locality_name})",
-            f"{self.place_of_service.value}   CY{self.rule_year} Q{self.quarter}",
+            f"{self.place_of_service.value}   CY{self.rule_year} Q{self.quarter}   "
+            f"{self.payment_basis.value}",
             "",
             "Derivation",
             "----------",

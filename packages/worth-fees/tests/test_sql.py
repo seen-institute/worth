@@ -1,7 +1,7 @@
 """The SQL export, and keeping the Postgres schema honest about the Python.
 
-None of these need a database. They check the emitted script, and — more
-importantly — that the migration and the Python cannot silently drift apart on
+None of these need a database. They check the emitted script, and, more
+importantly, that the migration and the Python cannot silently drift apart on
 the two things where a divergence would produce different money.
 """
 
@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 from worth_fees import fees
-from worth_fees.models import CodeSystem
+from worth_fees.models import CodeSystem, PaymentBasis
 from worth_fees.sources import PINNED_VINTAGES, load
 from worth_fees.sql import export
 
@@ -45,7 +45,12 @@ def test_copy_blocks_hold_every_row(script: str) -> None:
     schedule = load(2026, 1)
     blocks = re.findall(r"COPY (\w+) \([^)]*\) FROM STDIN;\n(.*?)\n\\\.", script, re.DOTALL)
     counts = {table: len(body.splitlines()) for table, body in blocks}
-    assert counts == {"rvu": len(schedule.rvus), "gpci": len(schedule.gpcis)}
+    assert counts == {
+        "fee_schedule_conversion_factor": len(schedule.conversion_factors),
+        "rvu": len(schedule.rvus),
+        "gpci": len(schedule.gpcis),
+        "locality_county": len(schedule.localities),
+    }
 
 
 def test_provenance_chain_is_deduplicated(script: str) -> None:
@@ -58,14 +63,18 @@ def test_provenance_chain_is_deduplicated(script: str) -> None:
 
 
 def test_copy_cells_are_escaped(script: str) -> None:
-    """COPY text format is tab-delimited: no cell may contain a raw tab."""
-    blocks = re.findall(r"FROM STDIN;\n(.*?)\n\\\.", script, re.DOTALL)
+    """COPY text format is tab-delimited, so every row must have exactly as
+    many cells as its block declares columns. A raw tab or newline in a value
+    would split or truncate a row, silently shifting every column after it."""
+    blocks = re.findall(r"COPY \w+ \(([^)]*)\) FROM STDIN;\n(.*?)\n\\\.", script, re.DOTALL)
     assert blocks
-    for body in blocks:
+    for columns, body in blocks:
+        width = len(columns.split(","))
+        assert width >= 4
         for line in body.splitlines():
             cells = line.split("\t")
             assert all("\n" not in c and "\r" not in c for c in cells)
-            assert len(cells) >= 11
+            assert len(cells) == width
 
 
 def test_no_cpt_descriptors_reach_the_sql(script: str) -> None:
@@ -100,7 +109,7 @@ def test_migration_and_python_price_the_same_modifiers() -> None:
 
 
 def test_migration_uses_exact_numeric_types_only() -> None:
-    # Strip -- comments: the header explains why these types are banned.
+    # Strip, comments: the header explains why these types are banned.
     ddl = "\n".join(line.split("--")[0] for line in MIGRATION.read_text().splitlines())
     assert not re.search(r"\b(real|double precision|float[48]?)\b", ddl, re.IGNORECASE)
     assert "numeric(" in ddl
@@ -140,3 +149,53 @@ def test_code_system_values_match_the_schema_check() -> None:
 def test_code_system_classification(code: str, expected: CodeSystem, ama: bool) -> None:
     assert CodeSystem.classify(code) is expected
     assert expected.is_ama_copyrighted is ama
+
+
+# ---------------------------------------------------------------------------
+# Schema agreement for the payment-basis and reference tables
+# ---------------------------------------------------------------------------
+
+
+def test_migration_payment_bases_match_the_enum() -> None:
+    """Postgres must accept exactly the bases Python can produce, and no more."""
+    sql = MIGRATION.read_text()
+    matches = re.findall(r"payment_basis IN \(([^)]*)\)", sql)
+    assert matches, "the schema no longer constrains payment_basis"
+    for group in matches:
+        in_sql = {m.strip().strip("'") for m in group.split(",")}
+        assert in_sql == {member.value for member in PaymentBasis}
+
+
+def test_conversion_factor_is_not_on_the_release_table() -> None:
+    """One release now carries two factors, so the factor lives in its own
+    table. A column here would make the release row ambiguous."""
+    sql = MIGRATION.read_text()
+    start = sql.index("CREATE TABLE fee_schedule_release")
+    release_ddl = sql[start : sql.index("\n);", start)]
+    assert "conversion_factor" not in release_ddl
+    assert "CREATE TABLE fee_schedule_conversion_factor" in sql
+
+
+def test_view_restricts_the_qualifying_basis_to_codes_it_covers() -> None:
+    """Without this filter the view would price a code on a basis whose file
+    does not contain it, using the other file's RVUs."""
+    view = MIGRATION.read_text()
+    view = view[view.index("CREATE VIEW allowed_amount") :]
+    assert "qpp_eligible" in view
+    assert PaymentBasis.QUALIFYING_APM.value in view
+
+
+def test_view_prices_per_payment_basis() -> None:
+    view = MIGRATION.read_text()
+    view = view[view.index("CREATE VIEW allowed_amount") :]
+    assert "JOIN fee_schedule_conversion_factor" in view
+    assert "cf.conversion_factor" in view
+    # The release table no longer supplies it, so a stale reference would be a
+    # column that does not exist rather than a silently wrong number.
+    assert "rel.conversion_factor" not in view
+
+
+def test_work_split_shares_are_constrained_to_cms_shapes() -> None:
+    """CMS apportions work across phases to exactly 1.00, or not at all."""
+    sql = MIGRATION.read_text()
+    assert "pre_op_share + intra_op_share + post_op_share IN (0, 1)" in sql

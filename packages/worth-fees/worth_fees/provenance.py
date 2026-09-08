@@ -78,9 +78,13 @@ class SourceFile:
 class Sources:
     """The full set of files a single derivation depended on.
 
-    A fee derivation reads two files -- the RVU file and the GPCI file -- so a
-    single hash would be a lie about where the number came from. Both are
-    cut from the same CMS release archive, which is named in ``release``.
+    A fee derivation reads the RVU file, the GPCI file and, for the second
+    conversion factor, the qualifying-APM RVU file, so a single hash would be
+    a lie about where the number came from. All are cut from the same CMS
+    release archive, which is named in ``release``.
+
+    The locality-to-county crosswalk is deliberately absent: no derivation
+    reads it, so naming it here would overstate what the number depended on.
     """
 
     release: str
@@ -88,10 +92,18 @@ class Sources:
     release_date: date
     rvu: SourceFile
     gpci: SourceFile
+    rvu_qpp: SourceFile | None = None
+    """The qualifying-APM RVU file, when the release carries one.
+
+    Listed because it is genuinely read: it supplies the qualifying-APM
+    conversion factor, and it is cross-checked against the base file on every
+    load. A derivation on the qualifying basis is priced from it directly.
+    """
 
     @property
     def files(self) -> tuple[SourceFile, ...]:
-        return (self.rvu, self.gpci)
+        optional = (self.rvu_qpp,) if self.rvu_qpp is not None else ()
+        return (self.rvu, *optional, self.gpci)
 
     def render(self, indent: str = "") -> list[str]:
         lines = [f"{indent}CMS release {self.release}, published {self.release_date.isoformat()}"]
