@@ -47,8 +47,15 @@ class Table:
         return SourceRef(self.name, self.sha256, self.row_numbers[index], column)
 
 
-def read_table(path: Path) -> Table:
-    """Read a delimited extract file."""
+def read_table(path: Path, *, required: frozenset[str] | None = None) -> Table:
+    """Read a delimited extract file.
+
+    ``required``, when given, names columns the caller cannot do without;
+    a header missing any of them fails fast here with :class:`ExtractError`
+    rather than downstream as a bare ``KeyError`` the first time a row is
+    read. Optional so every existing call site (no column requirement
+    declared) reads exactly as it always has.
+    """
     if not path.is_file():
         msg = f"missing extract file: {path.name}"
         raise ExtractError(msg)
@@ -58,6 +65,10 @@ def read_table(path: Path) -> Table:
         msg = f"empty extract file: {path.name}"
         raise ExtractError(msg)
     columns = tuple(c.strip() for c in lines[0].split(DELIMITER))
+    if required is not None and not required.issubset(columns):
+        missing = ", ".join(sorted(required.difference(columns)))
+        msg = f"{path.name}: missing required column(s): {missing}"
+        raise ExtractError(msg)
     rows: list[dict[str, str]] = []
     numbers: list[int] = []
     for offset, line in enumerate(lines[1:], start=2):
@@ -135,7 +146,22 @@ def read_notes(directory: Path) -> tuple[Note, ...]:
 def read_extract(directory: Path) -> ClinicalExtract:
     """Read the whole clinical extract from a directory."""
     return ClinicalExtract(
-        or_log=read_table(directory / "or_log.txt"),
+        or_log=read_table(
+            directory / "or_log.txt",
+            required=frozenset(
+                {
+                    "log_id",
+                    "csn",
+                    "pat_id",
+                    "billing_account_id",
+                    "surgery_date",
+                    "facility_npi",
+                    "service",
+                    "specialty",
+                    "patient_class",
+                }
+            ),
+        ),
         or_log_proc=read_table(directory / "or_log_proc.txt"),
         or_staff=read_table(directory / "or_staff.txt"),
         encounter_dx=read_table(directory / "encounter_dx.txt"),
@@ -203,6 +229,7 @@ def encounters(extract: ClinicalExtract) -> tuple[Encounter, ...]:
                 primary_cpt=panel[0][1],
                 procedures=tuple((cpt, mod) for _, cpt, mod in panel),
                 inpatient=row["patient_class"].strip().lower() == "inpatient",
+                surgeon_id=row.get("primary_surgeon_id") or None,
             )
         )
     return tuple(out)

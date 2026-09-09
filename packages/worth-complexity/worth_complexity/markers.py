@@ -27,7 +27,13 @@ from decimal import Decimal
 from typing import TYPE_CHECKING
 
 from worth_complexity import notes as notes_mod
-from worth_complexity.cases import ClinicalExtract, parse_decimal, parse_dttm, parse_int
+from worth_complexity.cases import (
+    ClinicalExtract,
+    ExtractError,
+    parse_decimal,
+    parse_dttm,
+    parse_int,
+)
 from worth_complexity.models import Encounter, Marker, SourceRef
 
 if TYPE_CHECKING:
@@ -161,21 +167,48 @@ def _for_encounter(
     row = extract_.or_log.rows[index]
     where = f"or_log {enc.encounter_id}"
 
-    start = parse_dttm(row["procedure_start_dttm"], f"{where}.procedure_start_dttm")
-    close = parse_dttm(row["procedure_close_dttm"], f"{where}.procedure_close_dttm")
-    minutes = (Decimal((close - start).total_seconds()) / Decimal(60)).quantize(Decimal("1"))
+    # A blank or malformed timestamp is a data-quality failure on this one
+    # field, not grounds to fail the whole encounter's extraction: decision
+    # 6, CONTRACT-SEEDS.md, "missing markers default to zero", covers a
+    # value that never parsed the same way it covers one that parsed but
+    # failed the plausibility guard (:mod:`worth_complexity.scoring`). The
+    # marker is simply omitted here; ``scoring._missing_reason`` already
+    # treats an omitted marker id as "absent" and scores it at zero.
+    minutes: Decimal | None
+    try:
+        start = parse_dttm(row["procedure_start_dttm"], f"{where}.procedure_start_dttm")
+        close = parse_dttm(row["procedure_close_dttm"], f"{where}.procedure_close_dttm")
+        minutes = (Decimal((close - start).total_seconds()) / Decimal(60)).quantize(Decimal("1"))
+    except ExtractError:
+        minutes = None
+
+    # A blank ``ebl_ml`` (the multi-site scenario's site-C documentation gap,
+    # CONTRACT-SEEDS.md's catalog) is the same kind of data-quality failure
+    # as a blank operative-time timestamp above: the marker is omitted, not
+    # the whole encounter.
+    ebl: Decimal | None
+    try:
+        ebl = parse_decimal(row["ebl_ml"], f"{where}.ebl_ml")
+    except ExtractError:
+        ebl = None
 
     specialties = {sp for role, sp in team if role in _OPERATING_ROLES}
     assistants = sum(1 for role, _ in team if role in _ASSISTANT_ROLES)
 
     log = extract_.or_log
     return (
-        _marker(
-            enc,
-            "operative_minutes",
-            minutes,
-            log.ref(index, "procedure_start_dttm..procedure_close_dttm"),
-            "optime_incision_close",
+        *(
+            (
+                _marker(
+                    enc,
+                    "operative_minutes",
+                    minutes,
+                    log.ref(index, "procedure_start_dttm..procedure_close_dttm"),
+                    "optime_incision_close",
+                ),
+            )
+            if minutes is not None
+            else ()
         ),
         _marker(
             enc,
@@ -184,12 +217,18 @@ def _for_encounter(
             log.ref(index, "asa_class"),
             "optime_asa_class",
         ),
-        _marker(
-            enc,
-            "estimated_blood_loss_ml",
-            parse_decimal(row["ebl_ml"], f"{where}.ebl_ml"),
-            log.ref(index, "ebl_ml"),
-            "optime_ebl",
+        *(
+            (
+                _marker(
+                    enc,
+                    "estimated_blood_loss_ml",
+                    ebl,
+                    log.ref(index, "ebl_ml"),
+                    "optime_ebl",
+                ),
+            )
+            if ebl is not None
+            else ()
         ),
         _marker(
             enc,

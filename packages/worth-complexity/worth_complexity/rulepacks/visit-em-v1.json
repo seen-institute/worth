@@ -1,0 +1,230 @@
+{
+    "rule_pack_id": "visit-em",
+    "version": "1",
+    "weights_version": "1",
+    "encounter_class": "visit",
+    "status": "provisional",
+    "status_note": "Weights and anchors below are the methodology doc's own illustrative placeholders (Examples v3, p. 13), chosen only so worked examples B and C reproduce at 71 and 70. No index computed with this pack should be published until clinical advisory input and statistical analysis of which markers predict resource intensity have set the weights for real.",
+    "scope_note": "One pack scores the whole office-visit E/M class: menopause and maternity (study) and endocrinology/cardiology/nephrology chronic management (comparator) all score against the same six markers and weights (decision 1, CONTRACT-PACKS.md). The sixth marker, patient_context, is one marker at weight 0.05 rather than a specialty-specific one (decision 2): pregnancy risk tier when a PREGNANCY* problem-list flag exists, otherwise whether shared decision-making is documented. The alternative design considered and set aside was two packs sharing the other 95 points, one per domain family, each free to define its own sixth marker; that stays open for advisors to revisit once real weights are set, because a single shared marker forces maternity's pregnancy-risk signal and menopause's shared-decision-making signal onto the same 5% of the score, which may understate one or the other.",
+    "normalisation": "fixed-anchor",
+    "normalisation_note": "Each marker is normalised against fixed anchors published in this file, never against percentiles of the observed cohort, for the same reason the surgical pack gives: a score that moved every time an encounter was added would not be comparable with itself a month later.",
+    "lanes_note": "Five markers are structured only. patient_context is structured when the problem list carries a PREGNANCY* flag and a note rule otherwise (decision 2); the extractor emits exactly one of the two per encounter, so lane precedence never has to choose between them.",
+    "markers": [
+        {
+            "marker_id": "total_documented_minutes",
+            "provenance": "structured",
+            "weight": "0.30",
+            "anchor_low": "0",
+            "anchor_high": "60",
+            "note": "The visit's own total documented time, as attested. The largest single driver of E/M level under time-based billing, and the fact every work rule in this pack that reasons about level-by-time reads first."
+        },
+        {
+            "marker_id": "problems_addressed",
+            "provenance": "structured",
+            "weight": "0.20",
+            "anchor_low": "0",
+            "anchor_high": "5",
+            "note": "Count of diagnoses this visit's encounter_dx rows mark addressed, not merely listed on the problem list. A visit that manages five active problems is not the same visit as one that manages one, even at the same documented minutes."
+        },
+        {
+            "marker_id": "data_reviewed_ordered",
+            "provenance": "structured",
+            "weight": "0.15",
+            "anchor_low": "0",
+            "anchor_high": "5",
+            "note": "Count of this visit's orders.txt rows: labs, imaging, DEXA, glucose logs and fetal surveillance ordered or reviewed. The data-review axis E/M leveling already recognises, read from what was actually ordered or reviewed rather than asserted."
+        },
+        {
+            "marker_id": "prescription_management",
+            "provenance": "structured",
+            "weight": "0.15",
+            "anchor_low": "0",
+            "anchor_high": "1",
+            "note": "1 when this visit started, adjusted or stopped a medication; 0 when every med_orders row (if any) was a continuation. A continuation is a status check; a change is a decision made today."
+        },
+        {
+            "marker_id": "coordination_minutes",
+            "provenance": "structured",
+            "weight": "0.15",
+            "anchor_low": "0",
+            "anchor_high": "60",
+            "note": "Sum of window_encounters.minutes over the 30 days following the visit: portal messages, calls, referrals, lab review, prior authorisation and MFM comanagement together. Work the visit set in motion, not work performed inside the visit's own minutes, and invisible to a coder who only ever opens the visit note."
+        },
+        {
+            "marker_id": "patient_context",
+            "provenance": "structured",
+            "weight": "0.05",
+            "anchor_low": "0",
+            "anchor_high": "1",
+            "note": "Decision 2: pregnancy risk tier (the problem list's own PREGNANCY or PREGNANCY_HIGH_RISK flag, tier divided by 3) when the patient carries one; otherwise whether the note documents shared decision-making, a 0/1 the narrative rule below reads. The extractor picks exactly one source per encounter, never both.",
+            "narrative": {
+                "aggregate": "max_value",
+                "note_types": ["visit"],
+                "sections": ["counseling", "plan"],
+                "excluded_sections": [],
+                "patterns": [
+                    {"id": "shared-decision", "value": "1", "regex": "\\bshared decision\\b"},
+                    {
+                        "id": "risks-and-benefits",
+                        "value": "1",
+                        "regex": "\\bdiscussed risks and benefits\\b"
+                    },
+                    {"id": "patient-elected", "value": "1", "regex": "\\bpatient elected\\b"},
+                    {"id": "options-reviewed", "value": "1", "regex": "\\boptions reviewed\\b"}
+                ]
+            }
+        }
+    ],
+    "work_rules": [
+        {
+            "id": "em-level-by-time-99213",
+            "when": {"fact": "total_documented_minutes", "min": "30"},
+            "billed_any_of": ["99213"],
+            "candidate_codes": ["99214"],
+            "replaces": "99213",
+            "bucket_if_absent": "missed",
+            "bucket_if_present": null,
+            "statement": "Total documented time {total_documented_minutes} min supports the next E/M level by time",
+            "section": "time attestation",
+            "evidence_strength": "strong",
+            "note": "Time-based leveling: at or above the 99214 time threshold with 99213 actually billed, the next level was earned but not submitted."
+        },
+        {
+            "id": "em-level-by-time-99214",
+            "when": {"fact": "total_documented_minutes", "min": "40"},
+            "billed_any_of": ["99214"],
+            "candidate_codes": ["99215"],
+            "replaces": "99214",
+            "bucket_if_absent": "missed",
+            "bucket_if_present": null,
+            "statement": "Total documented time {total_documented_minutes} min supports the next E/M level by time",
+            "section": "time attestation",
+            "evidence_strength": "strong",
+            "note": "Time-based leveling: at or above the 99215 time threshold with 99214 actually billed, the next level was earned but not submitted."
+        },
+        {
+            "id": "prolonged-service",
+            "when": {"fact": "total_documented_minutes", "min": "55"},
+            "billed_any_of": ["99215"],
+            "candidate_codes": ["G2212"],
+            "replaces": null,
+            "bucket_if_absent": "missed",
+            "bucket_if_present": null,
+            "statement": "Total documented time {total_documented_minutes} min exceeds the top E/M level and supports prolonged service",
+            "section": "time attestation",
+            "evidence_strength": "strong",
+            "note": "Beyond the highest E/M level's own time threshold, the extra time is a separate, additive prolonged-service code rather than a still-higher level, so it replaces nothing already billed."
+        },
+        {
+            "id": "online-digital-em-99421",
+            "when": {
+                "all_of": [
+                    {"fact": "portal_minutes_patient_initiated", "min": "5"},
+                    {"fact": "portal_minutes_patient_initiated", "max": "10"}
+                ]
+            },
+            "billed_any_of": [],
+            "candidate_codes": ["99421"],
+            "replaces": null,
+            "bucket_if_absent": "missed",
+            "bucket_if_present": null,
+            "statement": "{portal_minutes_patient_initiated} min of patient-initiated portal messaging in the 7 days after the visit supports a digital E/M code",
+            "section": "portal messaging",
+            "evidence_strength": "moderate",
+            "note": "Cumulative patient-initiated online time in the qualifying window is its own billable code family, separate from the visit's own E/M level."
+        },
+        {
+            "id": "online-digital-em-99422",
+            "when": {
+                "all_of": [
+                    {"fact": "portal_minutes_patient_initiated", "min": "11"},
+                    {"fact": "portal_minutes_patient_initiated", "max": "20"}
+                ]
+            },
+            "billed_any_of": [],
+            "candidate_codes": ["99422"],
+            "replaces": null,
+            "bucket_if_absent": "missed",
+            "bucket_if_present": null,
+            "statement": "{portal_minutes_patient_initiated} min of patient-initiated portal messaging in the 7 days after the visit supports the middle digital E/M tier",
+            "section": "portal messaging",
+            "evidence_strength": "moderate",
+            "note": "Cumulative patient-initiated online time in the qualifying window is its own billable code family, separate from the visit's own E/M level."
+        },
+        {
+            "id": "online-digital-em-99423",
+            "when": {"fact": "portal_minutes_patient_initiated", "min": "21"},
+            "billed_any_of": [],
+            "candidate_codes": ["99423"],
+            "replaces": null,
+            "bucket_if_absent": "missed",
+            "bucket_if_present": null,
+            "statement": "{portal_minutes_patient_initiated} min of patient-initiated portal messaging in the 7 days after the visit supports the top digital E/M tier",
+            "section": "portal messaging",
+            "evidence_strength": "moderate",
+            "note": "Cumulative patient-initiated online time in the qualifying window is its own billable code family, separate from the visit's own E/M level."
+        },
+        {
+            "id": "care-management-coordination",
+            "when": {
+                "all_of": [
+                    {"fact": "coordination_minutes_clinician", "min": "20"},
+                    {"fact": "chronic_condition_count", "min": "2"}
+                ]
+            },
+            "billed_any_of": [],
+            "candidate_codes": ["99490"],
+            "replaces": null,
+            "bucket_if_absent": "missed",
+            "bucket_if_present": null,
+            "statement": "{coordination_minutes_clinician} min of clinician-initiated care coordination across {chronic_condition_count} chronic conditions supports chronic care management",
+            "section": "care coordination",
+            "evidence_strength": "moderate",
+            "note": "Twenty clinician-initiated minutes coordinating two or more chronic conditions in the 30-day window is its own monthly code, earned by minutes the visit note itself never shows."
+        },
+        {
+            "id": "care-management-ineligible",
+            "when": {
+                "all_of": [
+                    {"fact": "coordination_minutes_clinician", "min": "20"},
+                    {"fact": "chronic_condition_count", "max": "1"}
+                ]
+            },
+            "billed_any_of": [],
+            "candidate_codes": [],
+            "replaces": null,
+            "bucket_if_absent": "no_code",
+            "bucket_if_present": null,
+            "statement": "{coordination_minutes_clinician} min of clinician-initiated coordination were logged, but only {chronic_condition_count} chronic condition qualifies",
+            "section": "care coordination",
+            "evidence_strength": "weak",
+            "note": "care-management eligibility not met: chronic care management needs two or more chronic conditions, not just qualifying minutes, so the minutes here have no billing vehicle."
+        },
+        {
+            "id": "non-vehicle-coordination",
+            "when": {"fact": "non_vehicle_minutes", "min": "5"},
+            "billed_any_of": [],
+            "candidate_codes": [],
+            "replaces": null,
+            "bucket_if_absent": "no_code",
+            "bucket_if_present": null,
+            "statement": "{non_vehicle_minutes} min of lab review and prior authorisation work were logged in the 30-day window",
+            "section": "care coordination",
+            "evidence_strength": "weak",
+            "note": "Lab review without a message, prior authorisation and step-therapy paperwork are real clinician time with no billing vehicle of their own; distinct from the messaging and telephone minutes the digital-E/M and care-management rules already price."
+        },
+        {
+            "id": "prenatal-em-basis",
+            "when": {"fact": "is_pregnancy", "flag": true},
+            "billed_any_of": ["99213", "99214", "99215"],
+            "candidate_codes": [],
+            "replaces": null,
+            "bucket_if_absent": "mismatched",
+            "bucket_if_present": null,
+            "statement": "Pregnancy-flagged encounter billed on a standard E/M level ({billed_em})",
+            "section": "billing basis",
+            "evidence_strength": "moderate",
+            "note": "E/M valuation basis was never designed for prenatal visit content: a pregnant patient's routine visit is billed on the same level codes as any other office visit, but the content the code was valued against and the content actually documented have diverged, which is a structural mismatch, not a missed charge."
+        }
+    ]
+}

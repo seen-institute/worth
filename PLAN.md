@@ -448,9 +448,11 @@ are synthesised, not deployed.
   a real 835 feed carries institutional claims alongside professional ones. The
   parser should route institutional 835s (revenue-code lines) away from the ratio
   rather than sum them; pricing them is a second package.
-- Method 1 (the 837 against the code's valuation basis) and Method 2's adjustment
-  factor. The file-hosting design should treat an 837 bundle as a third `kind` when
-  it arrives; nothing else in this plan anticipates them.
+- ~~Method 1 (the 837 against the code's valuation basis) and Method 2's adjustment
+  factor.~~ Built 2026-09-09 — see the dated section at the end of this file. Both
+  are in scope now: Method 1's pricing (the fee schedule times the payer multiplier)
+  and Method 2's adjustment (the compression component of the dollar spine) are
+  wired into the pipeline.
 
 ## 13. Alignment with the methodology notes, the Milken note and the CIO brief
 
@@ -516,3 +518,375 @@ Architecture v4* (Mount Sinai CIO, July 2026).
   is five Clarity-shaped tables, which the Data tab already labels as an assumption.
   Nothing in this plan changes that, and the file-hosting design does not care what
   shape the tables arrive in.
+
+## 2026-09-09: outputs build
+
+W3 (integration), following W1a (Method 1) and W1b (Method 3, signature,
+population, witness) landing their own modules. Decisions 1, 2, 5, 6, 7 and
+11 from `CONTRACT.md`, in worth's own words rather than the contract's:
+
+- **Decision 1 — Method 1 is priced, not just flagged.** `missed` and
+  `mismatched` statements get a dollar figure the same way anything else in
+  this codebase does: the fee schedule's own amount for the candidate code,
+  at the run's reference release, times the payer's measured multiple.
+  `no_code` stays unpriced on purpose — there is no code to look up a price
+  for, and inventing one would be the kind of number a referee finds first.
+- **Decision 2 — the denominator moved.** The payment adequacy ratio used to
+  divide by a single fitted line's value at the encounter's own score. It now
+  divides by the median of what comparator encounters *scored near this one*
+  actually got paid, widened until there are enough of them to publish. The
+  old line is still fitted and still reported — it is what tells you whether
+  a code's own curve position is doing the work (compression) or whether the
+  center itself is off — but it no longer decides the number everyone reads
+  first.
+- **Decision 5 — every output can name the formula that produced it.**
+  `rulebook_version` (`rule_pack_id@version`) and `weights_version` sit next
+  to `rule_pack_digest` on every record, every card, every CLI document. The
+  digest proves the bytes; the version is what a person says out loud.
+- **Decision 6 — a run can be checked without re-running it.** The witness is
+  a hash of a hash: one over the exact files read, one over the outputs
+  themselves, folded into an envelope that also names the rulebook and the
+  package. Anyone holding the same three inputs gets the same hex string.
+  Anyone holding a key gets a signature too.
+- **Decision 7 — Method 0's pooled slope is measured on the fee schedule's
+  own scale.** Realized dollars divided by the payer's multiplier before
+  fitting, so a code that happens to see more of an expensive payer's cases
+  does not read as more complexity-sensitive than it is. Per-payer strata are
+  still kept, unchanged, beside it.
+- **Decision 11 — friction is reported, never subtracted.** A denial or a
+  downcode is a fact about the payer's processing, not about whether the fee
+  schedule pays the work correctly, and the two questions get separate
+  numbers rather than one number that answers neither cleanly.
+
+What actually shipped: `worth_complexity.pipeline.run` now links claims,
+prices Method 1 flags, computes Method 3's band, builds the dollar spine and
+its signature, folds every study encounter into a per-code population card,
+and seals the run with a witness — six new stages, reordered from the
+contract's literal "append at the end" phrasing into the order the data
+actually depends on (`Adequacy` embeds Method 1/3/signature, so those run
+before it; `IndexRecord` carries its code's card, so population runs before
+records). `worth-cli` gained six subcommands — `score`, `explain`, `slope`,
+`code`, `compare`, `queue` — each in `--json`, `--table` or `--csv`, plus a
+bare `worth` alias.
+
+One honest limitation, found rather than papered over: the only procedure
+rule with a candidate code (`adhesiolysis` → 58660) names a CPT the committed
+`worth-fees` fixture does not carry, so every Method 1 flag in the packaged
+demo run comes back priced `None` with the reason on the record, rather than
+a positive dollar figure. The pricing arithmetic itself is exercised directly
+in `packages/worth-complexity/tests/test_pipeline.py`, against a candidate
+the fixture does price. Widening the fixture would need a change to another
+package's sha256-manifest-pinned data, outside this track's ownership.
+
+- **Layer 2 of rule pack storage**, built alongside this track for Meridian to
+  target concurrently: `rulepack.load` now resolves a pack from `--pack`/
+  `--rulepack-dir` search directories, then `WORTH_RULEPACK_DIR`, then the
+  packaged `rulepacks/`, and every `RulePack` carries `source`
+  (`"packaged"`/`"external"`), `source_path` and `filename` so a run always
+  says where its formula came from. Published packs stay the only source a
+  `ratified` pack may come from — an external pack is capped to
+  `provisional` on load, whatever it declares — and `IndexRecord` now checks
+  `rule_pack_source == "packaged"` independently of `rule_pack_status` in
+  `publishable`, so the packaged-only rule holds even if a record were ever
+  built by hand. `rulepack.available()` lists every pack either layer can
+  see (a malformed external file comes back `invalid` rather than raising),
+  and `worth-cli packs` is the new subcommand onto it.
+
+- **Groundwork for the visit and episode rule-pack track** (CONTRACT-PACKS.md,
+  agent G): a clinical extract is now dispatched by which anchor file it
+  holds (`extracts.read_extract`; `or_log.txt` → surgical, `visit.txt` and
+  `episode.txt` placeholders raising "not built yet" until agents V and E
+  land their readers), and `pipeline.run` picks the packaged pack for the
+  extract's own class (`CLASS_DEFAULT_PACKS`) when `pack_name` is not given,
+  refusing a mismatch by name. `Encounter` gained `encounter_class`,
+  `clinician_id`, `window_start`/`window_end`, all defaulted so no existing
+  call site changed. `method1.WorkRule` and `evaluate_work_rules` give the
+  visit and episode classes a Method 1 built from a pack's `work_rules`
+  block — threshold rules over structured facts instead of note-phrase
+  statements — producing the same `Method1Flag`, now with a `replaces`
+  field priced as the candidate-minus-billed difference, floored at 0.
+  `CodeCard` gained `service_line`, and `compare_rows(..., by="domains")`
+  groups codes by it within a class (`worth-cli compare --domains`, which
+  used to group by dominant lever, now groups by service line instead — a
+  deliberate redefinition of that flag for this track, not an addition
+  beside it). `worth-fees FIXTURE_CODES` gained the E/M, care-management,
+  digital E/M, RPM, cardiac-device, home-dialysis and CGM codes the visit
+  and episode packs' comparators and work rules will need, rebuilt offline
+  from the cached CMS archives for all four 2026 quarters; 99417 (prolonged
+  service) turned out to carry CMS status I, "not valid for Medicare
+  purposes", in every 2026 quarter, so it was dropped rather than invented,
+  and G2212 (Medicare's replacement) was added and prices normally instead.
+
+- **Multi-class runs** (CONTRACT-PACKS-MC.md, agent MC): a real partner
+  delivery is one extract with OR cases, clinic visits and monitoring
+  episodes side by side, sharing one 835/837 feed, so `extracts.read_extract`
+  no longer refuses a directory naming more than one anchor — it reads a
+  class per anchor and wraps them in `CombinedExtract`
+  (`encounter_class == "mixed"`, `classes`; `notes`/`tables`/`file_hashes`
+  the deduplicated union; `notes_for`/`facts`/`markers` dispatched by the
+  encounter's own class). `pipeline.run` links remittance and claims once
+  over every encounter regardless of class, then runs one full scoring pass
+  — pack, setting, pricing, the comparator curve, multipliers, Method 0/1/3,
+  signatures, cards, compare rows, the queue — per class present, in the
+  fixed order surgical/visit/episode. `Run` is now the shared
+  linkage/claims/payer-blinding/witness context plus `classes:
+  tuple[ClassRun, ...]`, one `ClassRun` per class carrying what used to live
+  directly on `Run`; `adequacies`/`records`/`cards`/`compare`/`queue`/
+  `observations` are properties that flatten across every class so an
+  existing single-class caller (and Meridian's serializer) see no
+  difference, and `pack`/`rulebook_version`/`weights_version`/`setting` and
+  the rest of the old per-run fields still read as the one class's value on
+  a single-class run, raising `WorthComplexityError` naming `run.classes` on
+  a genuinely mixed one. `pack_name`/`pack_path` may now be a sequence, one
+  pack per class it declares (two for the same class refused; a pack for a
+  class the extract lacks recorded in `Run.unused_packs` rather than an
+  error, unless the extract has exactly one class, where a mismatch is still
+  refused as before); a class with no pack resolved lists its encounters in
+  `Run.unscored` instead of being dropped. `population.domain_rows` replaces
+  a class's per-code cards with one row per `service_line`, reusing
+  `code_card`'s own per-encounter computations (`worth-cli compare
+  --domains`); a new `population.assert_single_class` guard refuses to pool
+  cards from two classes into any of this module's cross-code functions.
+  `worth-cli`'s `--pack` and `--setting` both became repeatable
+  (`CLASS=VALUE` or a bare value for every class); `cmd_report` now prints
+  one section per class. `tools/make_mixed_dataset.py` composes the three
+  single-class generators' own output into `fixtures/mixed-synthetic/`
+  (`just build-dataset mixed`) — class-prefixed 835/837 filenames and
+  offset envelope control numbers, union-schema merges for tables whose
+  column names differ by class (`encounter_dx.txt`) — without regenerating
+  any of the three single-class fixtures it composes.
+
+- **Domain rows fit within codes, never across them.** `compare --domains` reports a service
+  line's Method 0 slope as the n-weighted mean of its member codes' own normalized slopes. A
+  line fitted through several codes measures how the schedule prices those codes against each
+  other, which reads as "rising" for a domain whose every code is flat; the first mixed fixture
+  showed exactly that and it was wrong.
+- **Fixtures are never shaped to a pattern.** The episode generator briefly forced a score
+  tie at the study median so the median case would land on the doc's "no billing vehicle"
+  signature. Removed: by dollars that pattern needs no-code work to be priced (decision 1
+  leaves it unpriced), so the median episode reads `center-mispriced` and the test prints
+  which pattern it landed on rather than asserting one. Pricing no-code work against a
+  reference family is the open follow-up.
+
+## 2026-09-10: seed suite — decisions 6 and 7 (agent S2)
+
+Pipeline behaviour the seed scenarios (CONTRACT-SEEDS.md) need, alongside
+agent S1's generators-into-the-package track and ahead of Meridian's own
+seed-suite work.
+
+- **Decision 6 — missing markers default to zero, not to a refusal.**
+  `scoring.score` no longer raises `MissingMarkerError` for a marker the rule
+  pack lists but the extract did not produce, or produced with an
+  implausible value: it scores at zero, and `ScoredEncounter.missing` (marker
+  ids) plus the new `ScoredEncounter.marker_rows` (one `MarkerRow` per rule,
+  `missing: bool` and a reason) record it, alongside the derivation trace. A
+  structured value outside a plausibility guard — operative minutes outside
+  `[0, 1440]`, EBL over 5000, ASA outside 1..6, any `*_minutes` marker
+  negative, an episode's device-reading volume over 5000 — is rejected the
+  same way, `"rejected: <why>"` rather than `"absent"`. `MissingMarkerError`
+  survives only for the encounter where every *structured* marker the pack
+  admits is gone: `pipeline.run` catches it per encounter, adds it to
+  `Run.unscored` with the reason, and keeps going rather than failing the
+  whole run. `population.instrument_health` and `EncounterRow.missing_markers`
+  now compute site missingness straight from those flags instead of
+  inferring it from which markers happened to be present.
+- **Decision 6, the remittance side — reversals and replacements are real,
+  not refused.** `x12.parse_835` no longer raises on `CLP02 == 22`; every
+  `RemitLine` instead carries `claim_seq`, the ordinal of the CLP occurrence
+  it came from (renumbered by `x12.read_directory` to stay ordered across
+  files). `linkage.link` nets a reversal against the earlier remit for the
+  same account — both excluded from `realized` — and recognizes a later
+  corrected claim, if any, as the one that counts; `Linkage.reasons` tallies
+  why every unlinked encounter stayed that way (`"no remittance"`,
+  `"reversed without correction"`, `"duplicate account"` — two encounters
+  sharing a billing account link neither). `claims.py` reads CLM05-3, the
+  claim frequency type code: a frequency-7 claim (a replacement) supersedes
+  whatever was on file for its account in `link_claims`, regardless of
+  submission order, ahead of the existing earliest-wins rule for accidental
+  duplicates. `LQ*HE` RARC parsing already existed and needed only
+  confirming (it does: multiple `LQ` segments on one line all carry through).
+- **Decision 7 — an over-time output exists.** `population.periods(rows, *,
+  policy_date, granularity="month")` returns one `PeriodSeries` per code:
+  `points` (one `PeriodPoint` per calendar period — `n`, `ratio`, its
+  interval, and `suppressed` when `n < 11`, independently per point), `pre`/
+  `post` (`PeriodSummary`: distribution, ratio, signature mix, computed only
+  when `policy_date` is given and only on sides that actually have data) and
+  `by_payer` (the same points, split by payer). `pipeline.run(policy_date:
+  date | None = None)` wires it in as a new `"trends"` stage, between
+  `adequacy` and `population`; `ClassRun.trends`/`Run.trends` carry the
+  per-class and flattened output. `worth-cli trend [CODE] [--policy-date
+  YYYY-MM-DD] [--by payer]` is the new subcommand (registered next to
+  `compare`), in all three formats; `worth-cli run --json` carries `trends`
+  too; `cmd_report` prints a short "Over time" section per class, only when
+  that class's trends actually span more than one period. Verified against
+  the committed `mssm-synthetic` fixture: twelve months of 2026, twelve
+  points per study code, several suppressed at the fixture's small monthly
+  counts — the same shape the policy-change scenario's planted truth expects
+  once agent S1's `synth` CLI can generate it directly.
+
+No published fixture number moved: the committed `mssm-synthetic`,
+`visit-synthetic`, `episode-synthetic` and `mixed-synthetic` datasets carry a
+complete structured marker for every encounter and no reversed remittance
+line, so decision 6's default-to-zero path and its remittance-reversal
+handling are both new code paths the existing fixtures never exercise —
+every existing test's assertions on those fixtures still hold unchanged, and
+the new behaviour is proven by hand-built rows in `test_scoring.py`,
+`test_x12.py`, `test_cases_and_linkage.py` and `test_claims.py` instead.
+
+## 2026-09-10: seed suite — generators into the package, finished (agent S1)
+
+Closes out agent S1's own track (CONTRACT-SEEDS.md): every class now has the
+scenario-aware entry point `synthetic/surgical.py` shipped first, and
+`worth-cli synth` exists.
+
+- **`build(out_dir, *, scenario, seed=None, scale=1)`** added to `visit.py`,
+  `episode.py` and `mixed.py`, alongside the `build_fixture` each already
+  had. `build_records`/`build_episodes` gained an explicit `study_n`/
+  `study_scale` parameter separate from `comparator_scale` (surgical's
+  `build_encounters` already had this split) so the scenario path can target
+  `scenarios.SCENARIO_STUDY_PER_CODE` per code without touching the
+  comparator cohort; `build_fixture`'s own call sites were updated to pass
+  the equivalent counts, verified byte-identical
+  (`test_synthetic_baseline.py` still passes unchanged). `mixed.build` runs
+  the same scenario through all three per-class `build()`s into scratch
+  directories at one seed, then merges exactly as `build_fixture` merges the
+  packaged fixtures — a broken scenario is therefore broken independently by
+  all three classes, so the merged directory's planted failure does not
+  depend on which class's anchor a reader reaches first.
+- **`worth-cli synth --scenario S --class C [--seed N] [--scale K] DIR`** and
+  **`worth-cli synth --list`** added (`packages/worth-cli/worth_cli/cli.py`,
+  appended after `packs`, the `trend` subcommand untouched). Prints the
+  output directory and the written `truth.json`.
+- **Fee fixture**: `59426`/`59425` (the policy-change scenario's antepartum
+  bundle) are in all four 2026 quarters' `pprrvu-*.csv`; `59400`/`59510`
+  were tried and dropped (both carry an `NA` non-facility practice-expense
+  indicator — unpriceable at NY01 non-facility, the visit class's setting)
+  rather than kept unpriceable, with the reason recorded next to
+  `FIXTURE_CODES` in `worth-fees/worth_fees/cli.py`.
+- **Lint/type debt** the move left behind is gone: `ruff check`/`format` and
+  `mypy` are clean across `synthetic/` and its tests. The one intentional
+  ignore is `ARG001` for `dirt.py`'s corruption functions (`pyproject.toml`,
+  `per-file-ignores`): every one takes a keyword-only `rng` for uniform
+  dispatch from `dirt.apply`, even when it does not use one, by the module's
+  own documented convention — dropping the parameter on the no-rng-needed
+  functions would break that single call site's uniformity for no benefit.
+  `write_remittance`/`write_claims` (`edi.py`) and `omit_secondary_codes`
+  (`knobs.py`) take `Sequence[...]` instead of `list[...]` now (mypy's list
+  invariance note) since none of them mutate the list itself, only read it
+  or attributes of its items.
+- **Tests**: `tests/test_synthetic_scenarios.py` is new — every (scenario,
+  class) pair in the catalog (15 x 4 = 60) generates at scale 1 and its
+  `truth.json` validates; every core scenario also reads cleanly through
+  `extracts.read_extract`; every broken scenario, run through the real
+  `pipeline.run`, raises exactly the exception class, message substring and
+  pipeline stage its own `truth.json` planted (the stage read from `run`'s
+  `progress` callback, not inferred from the exception type). One bug this
+  surfaced and fixed: `planted.py`'s `broken/no-anchor` `message_contains`
+  named `cases.read_table`'s message ("missing extract file") but the actual
+  failure comes from `extracts.read_extract`'s own anchor-dispatch check
+  ("no recognised extract anchor file") — `dirt.remove_anchor` deletes
+  whichever anchor is present and the directory is read through the generic
+  dispatcher before any class-specific reader opens it.
+- **Known gap, not closed here**: `Scenario.policy_date` and
+  `Scenario.multi_site` are threaded through every class's `build()` and
+  accepted without error, but neither changes what is generated yet — no
+  class spans multiple calendar periods around a policy date, or varies
+  documentation completeness by facility NPI. `synthetic/README.md`
+  ("Known gaps") has the detail; closing it is follow-on work, most useful
+  once Meridian's Over-time tab (decision 7) has a real two-period dataset
+  to render against.
+
+## 2026-09-10: `policy-change` and `multi-site` planted for real (agent S1b)
+
+Closes the known gap above: both scenarios now generate the narratives
+CONTRACT-SEEDS.md's catalog names, for all four classes, instead of a
+baseline-shaped dataset with an accepted-but-inert knob.
+
+- **`policy-change`**: every class's service window widens to 24 months
+  (2026-01 through 2027-12); comparator encounters stay inside the original
+  CY2026 window (`worth_complexity.adequacy.price_comparators` prices each
+  one at the real, unclamped vintage in force on its own date, which has no
+  CY2027 fallback — only the study cohort needs to span the policy date).
+  Visit class: a pre-date pregnancy's 6-10 prenatal visits are grouped
+  (`visit.build_pregnancy`) into one antepartum-care claim (CPT `59426`/
+  `59425`) submitted once, on an account every one of that pregnancy's
+  visit rows shares, while each visit still extracts and scores as its own
+  encounter; post-date, visits bill `99214` individually as today.
+  `worth_complexity.linkage.link` gained a bundle carve-out
+  (`BUNDLE_CODES`, `LinkedEncounter.bundle_size`): a claim whose lines
+  carry a global/antepartum code is a legitimate multi-encounter bundle,
+  not the "duplicate account" ambiguity two encounters sharing an account
+  ordinarily are — every encounter it covers links, each with its own
+  share of the claim's allowed amount, recorded on `bundle_size` and in
+  `rule` (`"account_id/bundle:N"`). Surgical/episode: a flat 4%
+  fee-schedule step (`pricing.FEE_SCHEDULE_STEP`) on every priced base
+  amount once the encounter's own service date reaches the policy date.
+  No CY2027 CMS archive is pinned, so every scenario-aware pricing helper
+  now calls `pricing.vintage_for_date_clamped` (falls back to the 2026 Q4
+  vintage past it) instead of `worth_fees.sources.vintage_for_date`
+  directly — a generator-side clamp only, `vintage_for_date` itself still
+  raises for a real caller, and a caller running the real pipeline over one
+  of these fixtures still needs `reference=(2026, 4)` explicit
+  (`pipeline.run`'s own default reference vintage is not clamped).
+  `knobs.stratify_study_months` (round-robin, one study case per calendar
+  month) replaces a plain uniform date draw for the study cohort in
+  surgical and episode, so the Over-time output's monthly points do not
+  have real gaps at this small a fixture size. `truth.json` plants
+  `periods: 2`, `policy_date`, and per study line a `ratio` pre/post band
+  pair (`study_pre`/`study_post` for surgical/episode; `maternity_pre`/
+  `maternity_post` for visit, read back from a real `pipeline.run` over the
+  just-generated directory, since a bundle visit's realized share is not a
+  fixed multiple of anything `pricing.py` already has a closed-form band
+  for), and `distribution_shift: false` (menopause is unaffected).
+- **`multi-site`**: three facility NPIs (`sites.SITE_NPIS`) — the existing
+  single-site NPI (site A, unaffected) plus two new ones. Site B withholds
+  the note a rule-based marker would read 60% of the time (the surgical
+  operative note, the visit note's shared decision-making branch) —
+  withholding the whole note, not editing its language, is what actually
+  registers as missing under decision 6, rather than a note that legitimately
+  never uses the tracked phrases (still a real, present zero). Site C leaves
+  a structured field blank: surgical's `or_log.txt` `ebl_ml` 95% of the time
+  (and its operative note's own ESTIMATED BLOOD LOSS line, since the rule
+  pack's `estimated_blood_loss_ml` marker has a narrative fallback that
+  would otherwise still resolve it), and episode's `time_log.txt` entirely
+  absent for 40% of episodes (`worth_complexity.episodes`'s
+  `_oversight_minutes` now returns `None`, not a legitimate zero, when an
+  episode has no time-log rows at all — the same treatment `markers.py`'s
+  blank-`ebl_ml` and blank-timestamp handling already gave their own
+  markers). `truth.json` plants `sites: 3` and `missingness_by_site`
+  (`{facility NPI: {marker_id: [low, high]}}`, `planted.
+  missingness_by_site`, scored fresh from the generated files the same way
+  `missingness_max` already was, broken out by `Encounter.facility_npi`).
+- **`markers.py`**: the two pre-existing ruff findings (an unsorted,
+  over-length import line) were trivial and fixed alongside the EBL change
+  they sit next to.
+- **Tests**: `test_synthetic_scenarios.py` gained
+  `test_policy_change_visit_trends` (100% linkage; `pipeline.run(...,
+  policy_date=date(2027, 1, 1))` reads back a real pre/post split for
+  `99214` and for the pre-date bundle code(s), with the bundle's pre ratio
+  nowhere near post-date `99214`'s), `test_policy_change_monthly_points`
+  (surgical/episode: 24 real monthly points, requesting month granularity
+  directly since a ~1-case-per-code-per-month cohort does not clear
+  `population.periods`'s own "auto" granularity heuristic at monthly
+  resolution) and `test_multi_site_instrument_health_and_sites` (`truth.
+  json`'s `missingness_by_site` reproduces byte-for-byte from
+  `planted.missingness_by_site`; the real pipeline's work queue and cards
+  see all three planted sites). The existing parametrized sweep
+  (`test_scenario_truth_validates`, `test_core_scenario_is_readable`)
+  already covers both scenarios across all four classes now that they plant
+  something real. `synthetic/README.md`'s "Known gaps" section is gone,
+  replaced with a real description of both scenarios.
+
+- **Over-time granularity is automatic.** `population.periods` buckets by month, quarter or
+  half-year, choosing the finest at which at least half a code's points clear the n = 11
+  floor, and reports which it chose. Sixty cases a year are five a month, so a monthly series
+  drew nothing; quarters do.
+- **Over-time by domain.** The same series keyed by service line (`trend --by domain`), so a
+  line whose billing vehicle changes at a policy date (maternity: antepartum bundle before,
+  99214 after) reads as one series instead of two half-series under different codes.
+- **Service dates past the newest pinned CMS release price at that release.** `adequacy.
+  vintage_in_force` carries the newest vintage forward and marks the encounter
+  `beyond_pinned`; a date before the oldest pinned release is still an error.
+- **Antepartum bundles price at the bundle's own schedule amount** in the policy-change
+  generator, once per pregnancy, allocated across the visits it covers by the linkage.
+

@@ -20,17 +20,27 @@ Two invariants are enforced at load rather than trusted:
 from __future__ import annotations
 
 import json
+import os
 import re
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from decimal import Decimal
 from pathlib import Path
+from typing import TYPE_CHECKING, Any, Literal
 
 from worth_complexity.models import Provenance, RulePackError
 from worth_complexity.money import money_context
 from worth_complexity.provenance import sha256_bytes
 
+if TYPE_CHECKING:
+    from worth_complexity.method1 import WorkRule
+
 _PACK_DIR = Path(__file__).parent / "rulepacks"
 ONE = Decimal("1")
+
+_EXTERNAL_RATIFIED_NOTE = (
+    "external rule packs are capped at provisional; ratified packs ship with worth-complexity"
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -100,6 +110,37 @@ class MarkerRule:
 
 
 @dataclass(frozen=True, slots=True)
+class ProcedureRule:
+    """A separate-procedure statement Method 1 looks for in an operative note.
+
+    Distinct from :class:`MarkerRule`: a marker contributes a weighted value to
+    the Layer A score, while a procedure rule feeds the documented-vs-submitted
+    cross-check instead, "was this step, named in the record, also named on the
+    claim". Some steps have a billable code of their own that NCCI bundles into
+    a bigger procedure done the same session, so documenting the step without
+    the bundled code being present is not, by itself, evidence of anything;
+    some steps have no code at all. ``candidate_codes`` and ``bundled_with``
+    are what let ``method1.cross_check`` tell those cases apart without
+    guessing at a coding rule the pack does not publish.
+    """
+
+    rule_id: str
+    patterns: tuple[re.Pattern[str], ...]
+    sections: frozenset[str]
+    """Sections this rule may match in, e.g. ``findings``, ``description of
+    procedure``. A statement whose section is not here is never attributed to
+    this rule, the same discipline :class:`MarkerRule` applies to narrative."""
+    candidate_codes: tuple[str, ...]
+    """The code(s) this step could be billed under. Empty when none exists."""
+    bundled_with: tuple[str, ...]
+    """Codes that, if submitted, already cover this step under NCCI, so an
+    absent candidate is a mismatch rather than a missed charge."""
+    note: str
+    """Why the bundling (or lack of a candidate) is what it is, in our own
+    words: no CPT descriptor text, only the reasoning."""
+
+
+@dataclass(frozen=True, slots=True)
 class RulePack:
     """A complete, content-addressed scoring formula."""
 
@@ -109,11 +150,52 @@ class RulePack:
     digest: str
     """sha256 of the pack file exactly as shipped."""
     markers: tuple[MarkerRule, ...]
+    procedures: tuple[ProcedureRule, ...] = ()
+    """Method 1's separate-procedure patterns. Optional: a pack with no
+    ``procedures`` block still scores Layer A, it just cannot cross-check
+    documented steps against a claim."""
+    work_rules: tuple[WorkRule, ...] = ()
+    """Method 1's threshold rules over structured facts (decision 4,
+    CONTRACT-PACKS.md): the visit and episode classes' equivalent of
+    ``procedures`` above, evaluated by
+    ``method1.evaluate_work_rules`` instead of ``method1.cross_check``.
+    Optional, and empty on the surgical pack, which uses ``procedures``."""
+    weights_version: str = ""
+    """The version of the weights and anchors below, separate from the pack's
+    own ``version`` so a pack can gain a new marker or procedure rule without
+    the weights themselves having moved. Defaults to ``version`` (see
+    :func:`loads`) for a pack that has not split the two yet."""
+    encounter_class: str = "surgical"
+    """The kind of encounter this pack scores. Decision 9: raw scores are
+    never compared across classes; every population-level row carries this so
+    a caller can enforce it."""
+    source: Literal["packaged", "external"] = "packaged"
+    """Where this pack was loaded from. Every run reports it (layer 2): a
+    ``ratified`` pack may only ever have ``"packaged"`` here, enforced at
+    load rather than trusted, see :func:`loads`."""
+    source_path: str | None = None
+    """Absolute path to the file, for an external pack. ``None`` for a
+    packaged pack — it has no path meaningful outside this package."""
+    filename: str = ""
+    """The file name the pack was read from, e.g. ``surgical-v1.json``."""
+    declared_status: str | None = None
+    """The status the file itself declared, when that differs from
+    :attr:`status` — currently only set when an external pack declared
+    ``ratified`` and was capped to ``provisional`` on load."""
+    status_note: str = ""
+    """Set alongside :attr:`declared_status`: why ``status`` was overridden."""
 
     @property
     def is_provisional(self) -> bool:
         """True while the weights have not been set by clinical and statistical review."""
         return self.status != "ratified"
+
+    @property
+    def rulebook_version(self) -> str:
+        """``"{rule_pack_id}@{version}"``, carried beside ``digest`` on every
+        output (decision 5). Nothing pins the digest to this string; it is a
+        human-readable version label, not a substitute for the content hash."""
+        return f"{self.rule_pack_id}@{self.version}"
 
     def for_provenance(self, allowed: frozenset[str]) -> tuple[MarkerRule, ...]:
         """The subset of markers a given provenance filter admits."""
@@ -138,17 +220,177 @@ def _pattern(rule_id: str, raw: dict[str, str]) -> Pattern:
     )
 
 
-def load(name: str = "gyn-surgical-v1") -> RulePack:
-    """Load a rule pack shipped with the package, hashing the bytes it came from."""
-    path = _PACK_DIR / f"{name}.json"
+def _procedure_rule(raw: dict[str, Any]) -> ProcedureRule:
+    """Compile one procedure rule, failing at load rather than at extraction time."""
+    rule_id: str = raw["id"]
+    try:
+        patterns = tuple(re.compile(p, re.IGNORECASE) for p in raw.get("patterns", ()))
+    except re.error as exc:
+        msg = f"{rule_id}: {exc}"
+        raise RulePackError(msg) from exc
+    return ProcedureRule(
+        rule_id=rule_id,
+        patterns=patterns,
+        sections=frozenset(raw.get("sections", ())),
+        candidate_codes=tuple(raw.get("candidate_codes", ())),
+        bundled_with=tuple(raw.get("bundled_with", ())),
+        note=str(raw.get("note", "")),
+    )
+
+
+_BUCKETS = frozenset({"missed", "mismatched", "no_code"})
+_WHEN_KEYS = frozenset({"fact", "min", "max", "equals", "flag", "all_of", "any_of"})
+
+
+def _validate_when(rule_id: str, when: dict[str, Any], *, depth: int = 0) -> None:
+    """Fail at load rather than at evaluation time: an unknown key, an
+    ``all_of``/``any_of`` nested more than one level, or a clause naming
+    neither a comparison nor a nesting operator."""
+    unknown = set(when) - _WHEN_KEYS
+    if unknown:
+        msg = f"{rule_id}: 'when' has unknown key(s) {sorted(unknown)}"
+        raise RulePackError(msg)
+    for key in ("all_of", "any_of"):
+        if key in when:
+            if depth:
+                msg = f"{rule_id}: '{key}' nests more than one level deep"
+                raise RulePackError(msg)
+            clauses = when[key]
+            if not isinstance(clauses, list) or not clauses:
+                msg = f"{rule_id}: '{key}' must be a non-empty list of clauses"
+                raise RulePackError(msg)
+            for clause in clauses:
+                _validate_when(rule_id, clause, depth=depth + 1)
+            return
+    if "fact" not in when:
+        msg = f"{rule_id}: 'when' clause names no fact and no all_of/any_of"
+        raise RulePackError(msg)
+    comparisons = {"min", "max", "equals", "flag"}
+    if not comparisons & set(when):
+        msg = f"{rule_id}: 'when' clause has none of min/max/equals/flag"
+        raise RulePackError(msg)
+
+
+def _work_rule(raw: dict[str, Any]) -> WorkRule:
+    """Compile one work rule, failing at load rather than at evaluation time."""
+    from worth_complexity.method1 import (
+        STRENGTH_RANK,  # deferred: method1 imports this module
+        WorkRule,
+    )
+
+    rule_id: str = raw["id"]
+    when = raw["when"]
+    if not isinstance(when, dict):
+        msg = f"{rule_id}: 'when' must be an object"
+        raise RulePackError(msg)
+    _validate_when(rule_id, when)
+
+    bucket_if_absent = str(raw["bucket_if_absent"])
+    if bucket_if_absent not in _BUCKETS:
+        msg = f"{rule_id}: bucket_if_absent must be one of {sorted(_BUCKETS)}"
+        raise RulePackError(msg)
+    bucket_if_present = raw.get("bucket_if_present")
+    if bucket_if_present is not None and bucket_if_present not in _BUCKETS:
+        msg = f"{rule_id}: bucket_if_present must be one of {sorted(_BUCKETS)} or null"
+        raise RulePackError(msg)
+    evidence_strength = str(raw.get("evidence_strength", "moderate"))
+    if evidence_strength not in STRENGTH_RANK:
+        msg = f"{rule_id}: evidence_strength must be one of {sorted(STRENGTH_RANK)}"
+        raise RulePackError(msg)
+
+    return WorkRule(
+        rule_id=rule_id,
+        when=when,
+        billed_any_of=tuple(raw.get("billed_any_of", ())),
+        candidate_codes=tuple(raw.get("candidate_codes", ())),
+        replaces=raw.get("replaces"),
+        bucket_if_absent=bucket_if_absent,  # type: ignore[arg-type]
+        bucket_if_present=bucket_if_present,
+        statement=str(raw["statement"]),
+        section=str(raw["section"]),
+        evidence_strength=evidence_strength,
+        note=str(raw.get("note", "")),
+    )
+
+
+def _rulepack_dirs() -> tuple[Path, ...]:
+    """Directories named by ``WORTH_RULEPACK_DIR``, read fresh at call time.
+
+    ``os.pathsep``-separated, the same convention as ``PATH``, so a
+    deployment can point at more than one candidate directory.
+    """
+    raw = os.environ.get("WORTH_RULEPACK_DIR", "")
+    return tuple(Path(p) for p in raw.split(os.pathsep) if p)
+
+
+def _filename_for(name: str) -> str:
+    return name if name.endswith(".json") else f"{name}.json"
+
+
+def load(name: str = "surgical-v1", *, search: Sequence[Path] | None = None) -> RulePack:
+    """Load a rule pack by name, resolving where it comes from (layer 2).
+
+    Resolution order: the directories in ``search``, in order, then the
+    directories named by ``WORTH_RULEPACK_DIR`` (``os.pathsep``-separated,
+    read at call time), then the packaged ``rulepacks/``. ``name`` may be
+    given with or without ``.json``.
+
+    First match wins, with one exception: a packaged pack of the same name
+    is never silently shadowed by an external one. That combination is a
+    :class:`RulePackError` naming both paths, because an external pack that
+    happens to share a packaged pack's file name is far more likely to be a
+    mistake than a deliberate override, and a load that silently picked one
+    of two same-named files is not auditable. An external pack that wants to
+    stand in for a candidate must use a distinct file name.
+    """
+    filename = _filename_for(name)
+    external_dirs = (*(search or ()), *_rulepack_dirs())
+
+    external_path: Path | None = None
+    for directory in external_dirs:
+        candidate = directory / filename
+        if candidate.is_file():
+            external_path = candidate
+            break
+
+    packaged_path = _PACK_DIR / filename
+    packaged_exists = packaged_path.is_file()
+
+    if external_path is not None and packaged_exists:
+        msg = (
+            f"rule pack {filename!r} exists both packaged ({packaged_path}) and external "
+            f"({external_path}); an external rule pack must use a distinct file name, not "
+            "silently shadow a packaged one"
+        )
+        raise RulePackError(msg)
+
+    if external_path is not None:
+        return load_path(external_path)
+
+    if packaged_exists:
+        raw = packaged_path.read_bytes()
+        return loads(raw, source="packaged", source_path=None, filename=filename)
+
+    msg = f"no such rule pack: {name}"
+    raise RulePackError(msg)
+
+
+def load_path(path: Path) -> RulePack:
+    """Load one file directly as an external pack, whatever its name."""
     if not path.is_file():
-        msg = f"no such rule pack: {name}"
+        msg = f"no such rule pack file: {path}"
         raise RulePackError(msg)
     raw = path.read_bytes()
-    return loads(raw)
+    return loads(raw, source="external", source_path=str(path.resolve()), filename=path.name)
 
 
-def loads(raw: bytes) -> RulePack:
+def loads(
+    raw: bytes,
+    *,
+    source: Literal["packaged", "external"] = "packaged",
+    source_path: str | None = None,
+    filename: str = "",
+) -> RulePack:
     """Parse and validate rule pack bytes."""
     try:
         doc = json.loads(raw)
@@ -208,10 +450,116 @@ def loads(raw: bytes) -> RulePack:
         msg = f"rule pack weights must sum to exactly 1, got {total}"
         raise RulePackError(msg)
 
+    procedures = tuple(_procedure_rule(p) for p in doc.get("procedures", ()))
+    work_rules = tuple(_work_rule(w) for w in doc.get("work_rules", ()))
+    version = str(doc["version"])
+
+    declared_status = str(doc.get("status", "provisional"))
+    status = declared_status
+    status_note = ""
+    recorded_declared_status: str | None = None
+    if source == "external" and declared_status == "ratified":
+        recorded_declared_status = declared_status
+        status = "provisional"
+        status_note = _EXTERNAL_RATIFIED_NOTE
+
     return RulePack(
         rule_pack_id=doc["rule_pack_id"],
-        version=str(doc["version"]),
-        status=doc.get("status", "provisional"),
+        version=version,
+        status=status,
         digest=sha256_bytes(raw),
         markers=tuple(markers),
+        procedures=procedures,
+        work_rules=work_rules,
+        weights_version=str(doc.get("weights_version", version)),
+        encounter_class=doc.get("encounter_class", "surgical"),
+        source=source,
+        source_path=source_path,
+        filename=filename,
+        declared_status=recorded_declared_status,
+        status_note=status_note,
     )
+
+
+@dataclass(frozen=True, slots=True)
+class PackInfo:
+    """One rule pack :func:`available` found, without loading it into a run.
+
+    A malformed external file never raises out of :func:`available`: it
+    comes back with ``status="invalid"`` and the error in ``note``, because a
+    listing exists precisely so a caller can see what is on disk, including
+    the file that does not parse.
+    """
+
+    rule_pack_id: str
+    version: str
+    weights_version: str
+    encounter_class: str
+    status: str
+    digest: str
+    source: Literal["packaged", "external"]
+    filename: str
+    path: str | None
+    """Absolute path for an external pack, ``None`` for a packaged one."""
+    name: str
+    """The loadable name: the file's stem, suitable for :func:`load`."""
+    note: str | None = None
+    """The load error, when ``status == "invalid"``."""
+
+
+def _pack_info(path: Path, *, source: Literal["packaged", "external"]) -> PackInfo:
+    try:
+        raw = path.read_bytes()
+        pack = loads(
+            raw,
+            source=source,
+            source_path=str(path.resolve()) if source == "external" else None,
+            filename=path.name,
+        )
+    except (RulePackError, KeyError, ValueError, TypeError, OSError) as exc:
+        return PackInfo(
+            rule_pack_id="",
+            version="",
+            weights_version="",
+            encounter_class="",
+            status="invalid",
+            digest="",
+            source=source,
+            filename=path.name,
+            path=str(path.resolve()) if source == "external" else None,
+            name=path.stem,
+            note=str(exc),
+        )
+    return PackInfo(
+        rule_pack_id=pack.rule_pack_id,
+        version=pack.version,
+        weights_version=pack.weights_version,
+        encounter_class=pack.encounter_class,
+        status=pack.status,
+        digest=pack.digest,
+        source=pack.source,
+        filename=pack.filename,
+        path=pack.source_path,
+        name=path.stem,
+    )
+
+
+def available(*, search: Sequence[Path] | None = None) -> tuple[PackInfo, ...]:
+    """Every rule pack layer 2 can see: packaged first, then external.
+
+    Deterministic order (packaged sorted by file name, then each external
+    directory in resolution order, sorted by file name within it) so two
+    calls in the same environment always list packs the same way. A
+    malformed external file yields an ``invalid`` :class:`PackInfo` rather
+    than raising, so one bad file never hides the rest of the listing.
+    """
+    infos: list[PackInfo] = [
+        _pack_info(p, source="packaged") for p in sorted(_PACK_DIR.glob("*.json"))
+    ]
+
+    for directory in (*(search or ()), *_rulepack_dirs()):
+        if not directory.is_dir():
+            continue
+        infos.extend(_pack_info(p, source="external") for p in sorted(directory.glob("*.json")))
+
+    return tuple(infos)

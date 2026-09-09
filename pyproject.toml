@@ -51,6 +51,12 @@ select = [
 
 [tool.ruff.lint.per-file-ignores]
 "packages/*/tests/*" = ["ANN201"]  # test functions need no return annotation
+# Every corruption function takes a keyword-only `rng` for uniform dispatch
+# from `dirt.apply` (`func(root, rng=rng, **kwargs)`), even when it does not
+# use one -- see the module docstring. Dropping the parameter on the
+# no-rng-needed functions would break that single call site's uniformity for
+# no benefit; not renaming it, since `apply` binds it by the keyword `rng`.
+"packages/worth-complexity/worth_complexity/synthetic/dirt.py" = ["ARG001"]
 
 [tool.ruff.format]
 docstring-code-format = true

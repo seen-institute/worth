@@ -111,12 +111,12 @@ def _encounter(account: str) -> Encounter:
     )
 
 
-def _line(account: str, allowed: str) -> RemitLine:
+def _line(account: str, allowed: str, *, status: str = "1", claim_seq: int = 0) -> RemitLine:
     return RemitLine(
         account,
         "87726",
         "UHC",
-        "1",
+        status,
         "58662",
         (),
         Decimal("9800"),
@@ -125,6 +125,7 @@ def _line(account: str, allowed: str) -> RemitLine:
         date(2025, 3, 14),
         (),
         REF,
+        claim_seq=claim_seq,
     )
 
 
@@ -146,3 +147,52 @@ def test_realized_payment_sums_the_allowed_amount_not_the_paid_amount() -> None:
     work was worth; including it would make the index a measure of deductible season."""
     linkage = link((_encounter("A1"),), (_line("A1", "500"), _line("A1", "120")))
     assert linkage.linked[0].realized == Decimal("620")
+
+
+# --------------------------------------------------------------------- reasons
+
+
+def test_no_remittance_at_all_is_the_default_unlinked_reason() -> None:
+    linkage = link((_encounter("A1"),), ())
+    assert linkage.unlinked == (_encounter("A1"),)
+    assert linkage.reasons == {"no remittance": 1}
+
+
+def test_two_encounters_sharing_an_account_link_neither() -> None:
+    """Decision 6, CONTRACT-SEEDS.md: link neither, report both."""
+    encounters = (_encounter("A1"), _encounter("A1"))
+    linkage = link(encounters, (_line("A1", "500"),))
+    assert linkage.linked == ()
+    assert len(linkage.unlinked) == 2
+    assert linkage.reasons == {"duplicate account": 2}
+
+
+def test_a_reversal_nets_against_the_earlier_remit_and_leaves_the_account_unlinked() -> None:
+    """No corrected claim follows the reversal: nothing survives to count as
+    this account's realized payment, and the encounter is reported unlinked
+    with its own reason rather than silently dropped."""
+    original = _line("A1", "500", status="1", claim_seq=0)
+    reversal = _line("A1", "500", status="22", claim_seq=1)
+    linkage = link((_encounter("A1"),), (original, reversal))
+    assert linkage.linked == ()
+    assert linkage.unlinked == (_encounter("A1"),)
+    assert linkage.reasons == {"reversed without correction": 1}
+
+
+def test_a_reversal_followed_by_a_corrected_claim_counts_the_correction() -> None:
+    original = _line("A1", "500", status="1", claim_seq=0)
+    reversal = _line("A1", "500", status="22", claim_seq=1)
+    corrected = _line("A1", "650", status="1", claim_seq=2)
+    linkage = link((_encounter("A1"),), (original, reversal, corrected))
+    assert len(linkage.linked) == 1
+    assert linkage.linked[0].realized == Decimal("650")
+    assert linkage.reasons == {}
+
+
+def test_reversal_and_correction_out_of_claim_seq_order_still_net_correctly() -> None:
+    """``claim_seq`` order, not list order, is what ``link`` walks."""
+    original = _line("A1", "500", status="1", claim_seq=0)
+    reversal = _line("A1", "500", status="22", claim_seq=1)
+    corrected = _line("A1", "650", status="1", claim_seq=2)
+    linkage = link((_encounter("A1"),), (corrected, original, reversal))
+    assert linkage.linked[0].realized == Decimal("650")

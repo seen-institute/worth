@@ -1,0 +1,24 @@
+MOUNT SINAI HEALTH SYSTEM
+OFFICE VISIT NOTE
+
+PATIENT: W0004403
+DATE OF SERVICE: 04/25/2026
+CLINICIAN: C11244
+SERVICE LINE: MENOPAUSE
+
+SUBJECTIVE:
+Patient presents for a scheduled visit. No shared decision conversation occurred at today's visit; that discussion is deferred to the next appointment.
+
+OBJECTIVE:
+Vital signs reviewed and within the patient's usual range. Examination as documented in the flowsheet.
+
+ASSESSMENT:
+N95.1 addressed today, stable on the current plan.
+
+COUNSELING:
+Treatment options reviewed with the patient; she elected to continue with observation.
+
+PLAN:
+Continue current management and follow up as scheduled.
+
+TIME: 44 minutes total documented for this encounter.

@@ -73,10 +73,24 @@ def test_every_value_names_the_segment_it_came_from() -> None:
     assert ref.row > 0
 
 
-def test_a_reversal_is_refused_rather_than_summed() -> None:
-    """Summing a reversal as a forward claim double-counts, and nobody notices for a year."""
-    with pytest.raises(X12Error, match="reversal"):
-        parse(CLAIM.replace("*A70041188*1*", "*A70041188*22*"))
+def test_a_reversal_parses_and_is_tagged() -> None:
+    """Decision 6 (CONTRACT-SEEDS.md): a reversal is no longer refused at
+    parse time -- ``linkage.link`` is where it gets netted against the
+    remit it reverses."""
+    lines = parse(CLAIM.replace("*A70041188*1*", "*A70041188*22*"))
+    assert all(line.is_reversal for line in lines)
+    assert all(line.claim_status == "22" for line in lines)
+
+
+def test_every_line_of_one_clp_occurrence_shares_a_claim_seq() -> None:
+    lines = parse()
+    assert {line.claim_seq for line in lines} == {0}
+
+
+def test_a_second_clp_occurrence_gets_the_next_claim_seq() -> None:
+    lines = parse(CLAIM + CLAIM)
+    seqs = sorted({line.claim_seq for line in lines})
+    assert seqs == [0, 1]
 
 
 def test_a_line_without_an_allowed_amount_is_refused() -> None:
@@ -88,3 +102,21 @@ def test_a_line_without_an_allowed_amount_is_refused() -> None:
 def test_an_empty_file_is_refused() -> None:
     with pytest.raises(X12Error, match="no service lines"):
         parse("ST*835*0001~SE*2*0001~")
+
+
+def test_a_line_with_no_remark_code_carries_an_empty_rarc() -> None:
+    """Most lines in the fixture carry no ``LQ*HE`` segment at all."""
+    assert parse()[0].rarc == ()
+
+
+def test_lq_he_segments_become_rarc_codes() -> None:
+    """``LQ*HE*<code>`` names a remark code on the line it follows (decision 11)."""
+    with_remark = CLAIM.replace("CAS*CO*97*4250.00~", "CAS*CO*97*4250.00~LQ*HE*N19~")
+    bundled = parse(with_remark)[1]
+    assert bundled.rarc == ("N19",)
+
+
+def test_multiple_lq_he_segments_on_one_line_all_carry_through() -> None:
+    with_remarks = CLAIM.replace("CAS*CO*97*4250.00~", "CAS*CO*97*4250.00~LQ*HE*N19~LQ*HE*M15~")
+    bundled = parse(with_remarks)[1]
+    assert bundled.rarc == ("N19", "M15")

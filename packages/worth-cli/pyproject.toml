@@ -17,6 +17,7 @@ dependencies = [
 
 [project.scripts]
 worth-cli = "worth_cli.cli:main"
+worth = "worth_cli.cli:main"
 
 [tool.uv.sources]
 worth-complexity = { workspace = true }
