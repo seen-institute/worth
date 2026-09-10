@@ -1,0 +1,24 @@
+MOUNT SINAI HEALTH SYSTEM
+OFFICE VISIT NOTE
+
+PATIENT: W0002693
+DATE OF SERVICE: 05/04/2026
+CLINICIAN: C10817
+SERVICE LINE: MATERNITY
+
+SUBJECTIVE:
+Patient presents for a scheduled visit. No shared decision conversation occurred at today's visit; that discussion is deferred to the next appointment.
+
+OBJECTIVE:
+Vital signs reviewed and within the patient's usual range. Examination as documented in the flowsheet.
+
+ASSESSMENT:
+O09.90 addressed today, stable on the current plan.
+
+COUNSELING:
+Routine anticipatory guidance was provided; no decision point arose today.
+
+PLAN:
+Continue current management and follow up as scheduled.
+
+TIME: 46 minutes total documented for this encounter.

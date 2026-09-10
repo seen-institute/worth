@@ -39,21 +39,25 @@ from worth_complexity.models import (
     ComplexityScore,
     Encounter,
     ExtrapolationError,
+    IndexRecord,
     Marker,
+    MarkerRow,
     MethodologyViolation,
     MissingMarkerError,
     NoReferenceCurveError,
+    PayerFriction,
     Ratio,
     RemitLine,
     RulePackError,
     ScoredEncounter,
     SourceRef,
+    Stratum,
     UnlinkedEncounterError,
     WorthComplexityError,
 )
 from worth_complexity.money import WORTH_CONTEXT, Money, money_context, to_cents
-from worth_complexity.pipeline import Run, run
-from worth_complexity.rulepack import MarkerRule, RulePack
+from worth_complexity.pipeline import ClassRun, Run, run
+from worth_complexity.rulepack import MarkerRule, PackInfo, RulePack, available, load_path
 from worth_complexity.sampling import Distribution, Interval
 from worth_complexity.scoring import score
 from worth_complexity.version import __version__ as __version__
@@ -64,6 +68,7 @@ __all__ = [
     "SUPPRESSION_THRESHOLD",
     "WORTH_CONTEXT",
     "Adequacy",
+    "ClassRun",
     "Cohort",
     "ComplexityScore",
     "Distribution",
@@ -75,6 +80,7 @@ __all__ = [
     "Linkage",
     "LinkedEncounter",
     "Marker",
+    "MarkerRow",
     "MarkerRule",
     "MethodologyViolation",
     "MissingMarkerError",
@@ -82,6 +88,8 @@ __all__ = [
     "Multiplier",
     "NoReferenceCurveError",
     "Observation",
+    "PackInfo",
+    "PayerFriction",
     "PricedEncounter",
     "PricingError",
     "Ratio",
@@ -95,8 +103,10 @@ __all__ = [
     "UnlinkedEncounterError",
     "WorthComplexityError",
     "adequacy",
+    "available",
     "fit",
     "link",
+    "load_path",
     "method_zero_slopes",
     "money_context",
     "payer_multipliers",

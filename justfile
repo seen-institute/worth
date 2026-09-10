@@ -23,9 +23,41 @@ complexity-encounter ID *ARGS:
 complexity-cases *ARGS:
     uv run worth-complexity cases {{ARGS}}
 
-# Rebuild the synthetic partner dataset. Second argument scales the cohort.
-build-dataset DIR="packages/worth-complexity/worth_complexity/fixtures/mssm-synthetic" SCALE="1":
-    uv run python packages/worth-complexity/tools/make_synthetic_dataset.py {{DIR}} {{SCALE}}
+# Rebuild a synthetic partner dataset. CLASS picks surgical|visit|episode|mixed
+# (CONTRACT-PACKS.md / CONTRACT-PACKS-MC.md); DIR defaults to that class's own
+# fixture directory. SCALE scales the cohort. The visit and episode generators
+# are agent V's and E's (`tools/make_visit_dataset.py`,
+# `tools/make_episode_dataset.py`); `mixed` (agent MC) composes all three via
+# `tools/make_mixed_dataset.py` into `fixtures/mixed-synthetic/` without
+# regenerating any of the three single-class fixtures.
+build-dataset CLASS="surgical" DIR="" SCALE="1":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    case "{{CLASS}}" in
+      surgical)
+        script=packages/worth-complexity/tools/make_synthetic_dataset.py
+        default_dir=packages/worth-complexity/worth_complexity/fixtures/mssm-synthetic
+        ;;
+      visit)
+        script=packages/worth-complexity/tools/make_visit_dataset.py
+        default_dir=packages/worth-complexity/worth_complexity/fixtures/visit-synthetic
+        ;;
+      episode)
+        script=packages/worth-complexity/tools/make_episode_dataset.py
+        default_dir=packages/worth-complexity/worth_complexity/fixtures/episode-synthetic
+        ;;
+      mixed)
+        script=packages/worth-complexity/tools/make_mixed_dataset.py
+        default_dir=packages/worth-complexity/worth_complexity/fixtures/mixed-synthetic
+        ;;
+      *)
+        echo "build-dataset: unknown CLASS '{{CLASS}}' (want surgical|visit|episode|mixed)" >&2
+        exit 1
+        ;;
+    esac
+    dir="{{DIR}}"
+    if [ -z "$dir" ]; then dir="$default_dir"; fi
+    uv run python "$script" "$dir" {{SCALE}}
 
 test:
     uv run pytest

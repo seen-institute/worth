@@ -124,3 +124,78 @@ def test_an_unsupported_type_nested_inside_a_dataclass_names_the_full_path() -> 
 def test_a_bare_unsupported_object_at_the_top_raises_too() -> None:
     with pytest.raises(TypeError, match=r"\$: cannot convert object"):
         to_jsonable(object())
+
+
+def test_to_jsonable_of_a_full_run_round_trips_through_json_dumps() -> None:
+    """Every new W3 type reachable from ``Run`` — ``CodeCard``, ``CompareRow``,
+    ``QueueItem`` (and its opaquely-typed ``flags``), ``Witness``, ``Claim``,
+    the per-encounter ``Adequacy`` with its ``Method3``/``DollarSpine``/
+    ``Decomposition``/``Signature``/``PayerFriction`` — has to be something
+    :func:`to_jsonable` actually knows how to convert, or a real run's
+    ``--json`` output would raise ``TypeError`` naming exactly the field that
+    was missed. This is the guard against that omission.
+
+    ``run.classes[0]`` (a real dataclass field ``to_jsonable`` walks on its
+    own) already carries ``records``/``cards``/``compare``/``queue`` for a
+    single-class run (decision 2, CONTRACT-PACKS-MC.md: those now live on
+    ``ClassRun``, not ``Run`` itself); ``run_document`` is what a real
+    ``worth-cli run --json`` actually prints, flattened fields and all, so
+    that is what this round-trips against, not a bare ``to_jsonable(r)``.
+    """
+    from worth_cli.cli import run_document
+    from worth_complexity.cli import FIXTURE, FIXTURE_LOCALITY
+    from worth_complexity.pipeline import run
+
+    r = run(FIXTURE / "clinical", FIXTURE / "remittance", locality=FIXTURE_LOCALITY)
+    doc = run_document(r)
+    text = json.dumps(doc, allow_nan=False)
+    reloaded = json.loads(text)
+    assert reloaded["run"]["records"]
+    assert reloaded["run"]["cards"]
+    assert reloaded["run"]["classes"][0]["records"]
+    assert reloaded["run"]["witness"]["digest"]
+    assert "NaN" not in text
+    assert "Infinity" not in text
+
+
+def test_to_jsonable_of_a_full_run_round_trips_the_seed_suite_additions() -> None:
+    """Decision 6/7 (CONTRACT-SEEDS.md) additions specifically: default-to-
+    zero scoring's ``missing``/``marker_rows``, ``Linkage.reasons``, and the
+    over-time ``trends`` series, all reachable from ``run_document`` and all
+    still plain JSON on the other side of ``json.dumps``/``json.loads``.
+    """
+    from worth_cli.cli import run_document
+    from worth_complexity.cli import FIXTURE, FIXTURE_LOCALITY
+    from worth_complexity.pipeline import run
+
+    r = run(FIXTURE / "clinical", FIXTURE / "remittance", locality=FIXTURE_LOCALITY)
+    reloaded = json.loads(json.dumps(run_document(r), allow_nan=False))["run"]
+
+    scored = reloaded["observations"][0]["scored"]
+    assert "missing" in scored and isinstance(scored["missing"], list)
+    assert scored["marker_rows"]
+    row = scored["marker_rows"][0]
+    assert {
+        "marker_id",
+        "provenance",
+        "weight",
+        "value",
+        "contribution",
+        "missing",
+        "reason",
+    } <= set(row)
+
+    assert "reasons" in reloaded["linkage"]
+    assert isinstance(reloaded["linkage"]["reasons"], dict)
+
+    assert reloaded["trends"]
+    series = reloaded["trends"][0]
+    assert {"code", "granularity", "points", "pre", "post", "by_payer", "policy_date"} <= set(
+        series
+    )
+    assert series["points"]
+    point = series["points"][0]
+    assert {"period", "n", "ratio", "interval", "suppressed"} <= set(point)
+    # No policy_date was given to this run, so every series' pre/post is None.
+    assert series["pre"] is None
+    assert series["post"] is None

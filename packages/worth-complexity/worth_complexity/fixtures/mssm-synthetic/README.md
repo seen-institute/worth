@@ -53,9 +53,15 @@ line, CPT, modifier and charge on a claim is the same value the matching 835
 carries; nothing about the money differs between the two, only which side of
 the transaction is speaking.
 
-**The pipeline does not read this directory yet.** Nothing in `worth_complexity`
-parses an 837. It is here so the dataset is the complete linked record a
-partner would actually deliver.
+**The pipeline reads this directory.** `worth_complexity.claims` parses every
+837P here, `pipeline.run` links each encounter to its claim by
+`billing_account_id`, and Method 1's documented-vs-submitted cross-check
+reads `claim.codes` as "what was actually submitted" wherever a claim is
+linked, falling back to the OR log's own procedure panel only when it is not
+— a partner extract that has not started delivering the 837 side yet still
+gets a complete Method 1 pass, just against the OR log's own coding rather
+than the claim's. `run(..., claims_dir=...)` defaults to this directory
+(`extract_dir.parent / "claims"`) when it exists.
 
 ## The two cohorts
 
@@ -73,6 +79,12 @@ urology.** Not padding. The payment adequacy ratio is defined against what a
 payer already pays for equivalent measured complexity *elsewhere in medicine*,
 and that curve has to be fitted from somewhere. Without this cohort there is no
 expected payment and therefore no ratio.
+
+Both cohorts are scored with the same `surgical` Layer A rule pack: it is the
+instrument for the whole surgical encounter class, and it has to score this
+urology/general-surgery/orthopaedics comparator cohort with the identical
+markers and weights it scores the benign-GYN study cohort with, which is why
+the pack is not named for gynaecology alone.
 
 ## What the generator puts in, and what that means
 

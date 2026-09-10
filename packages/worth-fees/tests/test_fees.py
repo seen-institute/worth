@@ -201,8 +201,11 @@ def test_na_practice_expense_indicator_refuses_to_price(code: str, setting: Plac
 
 
 def test_unknown_code_names_the_fixture_limit() -> None:
+    # 99406 (smoking/tobacco cessation counseling) is not one of the codes
+    # any pack's comparators or work rules need, so it stays outside
+    # FIXTURE_CODES on purpose, as a code guaranteed to exercise this path.
     with pytest.raises(UnknownCodeError, match="fixture"):
-        expected_allowed("99215", [], "CA18", NON_FACILITY, 2026, 1)
+        expected_allowed("99406", [], "CA18", NON_FACILITY, 2026, 1)
 
 
 def test_unknown_modifier_variant_lists_what_exists() -> None:

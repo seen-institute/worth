@@ -27,7 +27,12 @@ from typing import TYPE_CHECKING, Literal
 from worth_complexity.money import money_context
 
 if TYPE_CHECKING:
+    from worth_complexity.method1 import Method1Flag
+    from worth_complexity.method3 import Method3
+    from worth_complexity.population import CodeCard
     from worth_complexity.sampling import Distribution, Interval
+    from worth_complexity.signature import Decomposition, DollarSpine, Signature
+    from worth_complexity.witness import Witness
 
 _CPT = re.compile(r"\d{4}[\dA-Z]")
 
@@ -124,11 +129,17 @@ class RulePackError(WorthComplexityError):
 
 
 class MissingMarkerError(WorthComplexityError):
-    """A marker the rule pack requires was not present for an encounter.
+    """Every structured marker the rule pack requires was absent or rejected
+    for an encounter, so nothing about its complexity could be measured at
+    all (decision 6, CONTRACT-SEEDS.md).
 
-    Scoring refuses rather than substituting a default. A missing operative
-    time is not a fast case, and silently treating it as one biases the index
-    downward on exactly the encounters whose documentation failed.
+    A single missing or implausible marker no longer raises: ``scoring.score``
+    scores it at zero and records it as missing instead (see
+    ``ScoredEncounter.missing``), because a small documentation gap is common
+    and refusing to score the whole encounter over it would drop exactly the
+    encounters whose paperwork is thinnest, the same bias the old blanket
+    refusal was meant to avoid but produced instead. This error is reserved
+    for the one case where nothing structured survived to be scored.
     """
 
 
@@ -278,6 +289,27 @@ class Encounter:
     procedures: tuple[tuple[str, str], ...]
     """``(cpt, modifier)`` for every code billed on this log, in panel order."""
     inpatient: bool
+    surgeon_id: str | None = None
+    """The OR log's primary surgeon id, when the extract carries one. Used by
+    ``worth-cli code --by surgeon`` and the work queue; ``None`` for an
+    extract that does not deliver ``primary_surgeon_id``."""
+    encounter_class: str = "surgical"
+    """Which extract shape and rule pack this encounter belongs to:
+    ``"surgical"``, ``"visit"`` or ``"episode"`` (decision 3, CONTRACT-PACKS).
+    Raw complexity scores are never compared across classes. Defaults to
+    ``"surgical"`` so every existing constructor call, all of which predate
+    this field, keeps meaning what it always meant."""
+    clinician_id: str | None = None
+    """The billing or rendering clinician for a visit or episode encounter.
+    ``None`` for the surgical extract, which identifies its clinician via
+    ``surgeon_id`` instead."""
+    window_start: date | None = None
+    """The start of the encounter's clinical window: the visit's own service
+    date for a visit, or the first day of a monitoring episode. ``None`` for
+    a surgical encounter, which has no window beyond ``service_date``."""
+    window_end: date | None = None
+    """The end of the encounter's clinical window, e.g. a 30-day episode's
+    last day. ``None`` for a surgical encounter."""
 
     def __post_init__(self) -> None:
         if not _CPT.fullmatch(self.primary_cpt):
@@ -325,6 +357,18 @@ class RemitLine:
     adjustments: tuple[tuple[str, str, Decimal], ...]
     """``(group, reason, amount)`` from the CAS segments, e.g. ``("CO", "45", ...)``."""
     source_ref: SourceRef
+    rarc: tuple[str, ...] = ()
+    """Remark codes from ``LQ*HE*<code>`` segments, if the 835 carries them
+    (decision 11). Empty when the transaction carries none."""
+    claim_seq: int = 0
+    """Which CLP occurrence, across the whole remittance directory, this line
+    came from. Assigned in file-then-segment order (decision 6,
+    CONTRACT-SEEDS.md: ``x12.read_directory`` renumbers each file's local
+    count by a running offset so two CLPs for the same account, whether in
+    one file or two, compare in the order they were actually received).
+    Lines from the same CLP occurrence share this value; ``linkage.link``
+    uses it to net a reversal (``CLP02 == 22``) against the claim occurrence
+    it reverses."""
 
     @property
     def is_reversal(self) -> bool:
@@ -336,6 +380,32 @@ class RemitLine:
         if self.allowed != 0:
             return ()
         return tuple(reason for group, reason, _ in self.adjustments if group == "CO")
+
+
+@dataclass(frozen=True, slots=True)
+class MarkerRow:
+    """One rule pack marker's status on one scored encounter: present and
+    scored, or missing and defaulted to zero (decision 6).
+
+    What ``explain``/JSON renders per marker, one row per marker the rule
+    pack lists under the provenance filter the encounter was scored with —
+    unlike ``ScoredEncounter.markers``, which carries only the ``Marker``
+    objects that were actually admitted and contributed a nonzero term.
+    """
+
+    marker_id: str
+    provenance: Provenance
+    weight: Decimal
+    """This marker's share of the rule pack's weight total, renormalised
+    over the admitted rules the same way ``scoring.score`` renormalises it."""
+    value: Decimal | None
+    """The raw marker value, or ``None`` when ``missing``."""
+    contribution: Decimal
+    """This marker's points on the 0-100 scale; ``0`` when ``missing``."""
+    missing: bool
+    reason: str | None
+    """``None`` when present; ``"absent"`` or ``"rejected: <why>"`` when
+    ``missing``."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -352,6 +422,18 @@ class ScoredEncounter:
     rule_pack_version: str
     rule_pack_digest: str
     provenance_filter: tuple[str, ...]
+    missing: tuple[str, ...] = ()
+    """Marker ids the rule pack lists (under this provenance filter) that
+    were absent from the extract, or present but rejected by a plausibility
+    guard, and so scored at zero (decision 6, CONTRACT-SEEDS.md). The reason
+    for each lives on the matching row of :attr:`marker_rows` and in
+    :attr:`trace`, not encoded into this tuple, so it stays a plain id list a
+    caller can test set-membership against (e.g. ``population.EncounterRow.
+    missing_markers``)."""
+    marker_rows: tuple[MarkerRow, ...] = ()
+    """One :class:`MarkerRow` per rule the pack admits under this provenance
+    filter, present or missing, in rule-pack order — what ``explain``/JSON
+    exposes per marker (decision 6)."""
 
     def render(self) -> str:
         e = self.encounter
@@ -370,6 +452,31 @@ class ScoredEncounter:
 
 
 @dataclass(frozen=True, slots=True)
+class PayerFriction:
+    """One encounter's 835 friction, decision 11.
+
+    Whether the payer's own processing, not the structural fee-schedule
+    question the ratio answers, cost this encounter money. Never merged into
+    the adequacy ratio: a denial and a genuinely inadequate rate are different
+    problems with different remedies, and folding one into the other would
+    make the published ratio unreadable as either.
+    """
+
+    denied: bool
+    """The primary line was allowed ``0`` with a CO adjustment attached."""
+    downcoded: bool
+    """The 835's paid CPT on the account differs from the 837's submitted
+    line, or a CO reason in ``{"59", "97", "234", "236"}`` fired with
+    ``allowed > 0``."""
+    carc: tuple[str, ...]
+    """Every CO-group adjustment reason code on this encounter's remittance."""
+    rarc: tuple[str, ...]
+    """Every ``LQ*HE`` remark code, if the 835 carried any."""
+    vehicle_existed: bool
+    """Any Method 1 flag on this encounter names a candidate code."""
+
+
+@dataclass(frozen=True, slots=True)
 class Adequacy:
     """One encounter's payment adequacy, with everything needed to re-check it."""
 
@@ -382,16 +489,32 @@ class Adequacy:
     """The 835 allowed amount on the primary procedure's line."""
     schedule_expected: Decimal
     """What the fee schedule's complexity relation pays at this score, in
-    Medicare PFS dollars, before the payer's multiple."""
+    Medicare PFS dollars, before the payer's multiple. Method 2's figure; kept
+    for the spine and no longer the adequacy ratio's denominator."""
     multiplier: Decimal
     """The payer's contract level as a multiple of the schedule, from its own
     comparator encounters. Stays with the partner; never in an index record."""
     expected: Decimal
-    """``multiplier x schedule_expected``: the complexity-matched expected
-    payment in this payer's dollars."""
+    """The Method 3 band-expected payment (``m3.expected``): the complexity-
+    matched expected payment in this payer's dollars, and the ratio's
+    denominator (decision 2)."""
     ratio: Ratio
     curve_id: str
     trace: tuple[str, ...]
+    m3: Method3
+    """The band-expected derivation behind ``expected``."""
+    spine: DollarSpine
+    decomposition: Decomposition
+    signature: Signature
+    method1_flags: tuple[Method1Flag, ...]
+    payer_friction: PayerFriction
+    ratio_interval: Interval
+    """Realized over the Method 3 bootstrap CI, low-expected paired with
+    high-ratio (decision 2's band arithmetic, method ``m3-band-bootstrap``)."""
+    witness: Witness
+    rulebook_version: str
+    weights_version: str
+    encounter_class: str
 
     def render(self) -> str:
         lines = [
@@ -401,7 +524,12 @@ class Adequacy:
             "----------",
         ]
         lines.extend(f"  {step}".rstrip() for step in self.trace)
-        lines += ["", f"Payment adequacy ratio: {self.ratio}"]
+        lines += [
+            "",
+            f"Payment adequacy ratio: {self.ratio}  95% CI {self.ratio_interval.render(4)}",
+            f"Method 3 band expected: {self.m3.expected:.2f}  "
+            f"(band [{self.m3.band.low}, {self.m3.band.high}], n={self.m3.band.n})",
+        ]
         return "\n".join(lines)
 
 
@@ -478,6 +606,10 @@ class IndexRecord:
     rule_pack_id: str
     rule_pack_digest: str
     rule_pack_status: str
+    rule_pack_source: str
+    """``"packaged"`` or ``"external"``. A record is only ever publishable when
+    both this is ``"packaged"`` and ``rule_pack_status`` is ``"ratified"``:
+    published packs are the only source a ratified pack may come from."""
     provenance_filter: tuple[str, ...]
     package_version: str
     locality: str
@@ -486,13 +618,34 @@ class IndexRecord:
     """``facility`` or ``non-facility``."""
     reference_release: str
     """The CMS release the schedule curve was fitted at, e.g. ``RVU26D``."""
+    rulebook_version: str
+    """``"{rule_pack_id}@{version}"`` (decision 5)."""
+    weights_version: str
+    encounter_class: str
+    card: CodeCard
+    """The full population-level card for this code: histogram, deciles,
+    shortfall, signature mix, instrument health and the rest. ``IndexRecord``
+    stays the published unit; ``card`` is what a reader drills into."""
     suppressed: bool
     suppression_reason: str | None = None
 
     @property
     def publishable(self) -> bool:
-        """Whether this record may leave the partner's environment."""
-        return not self.suppressed and self.rule_pack_status == "ratified"
+        """Whether this record may leave the partner's environment.
+
+        A ``ratified`` status alone is not enough: an external pack is capped
+        at ``provisional`` on load (see ``rulepack.loads``), but that cap is
+        the loader refusing to trust a file's own claim, not a promise that
+        every other path is closed. Requiring ``rule_pack_source ==
+        "packaged"`` here as well is the second, independent lock — a
+        published pack is the only source a publishable record may ever
+        trace to.
+        """
+        return (
+            not self.suppressed
+            and self.rule_pack_status == "ratified"
+            and self.rule_pack_source == "packaged"
+        )
 
     def render(self) -> str:
         window = f"{self.period_start.isoformat()} to {self.period_end.isoformat()}"
@@ -502,7 +655,9 @@ class IndexRecord:
             f"  complexity        {self.distribution.render()}",
             f"  linkage           {self.linkage_rate * 100:.2f}%",
             f"  rule pack         {self.rule_pack_id} [{self.rule_pack_digest[:12]}] "
-            f"{self.rule_pack_status}",
+            f"{self.rule_pack_status}   source: {self.rule_pack_source}",
+            f"  rulebook          {self.rulebook_version}   weights {self.weights_version}   "
+            f"class {self.encounter_class}",
             f"  filter            {'+'.join(self.provenance_filter)}",
             f"  priced in         {self.locality}, {self.setting}, "
             f"schedule curve at {self.reference_release}",
@@ -521,4 +676,5 @@ class IndexRecord:
                 f"  Adequacy          {self.adequacy}  95% CI {interval}  "
                 f"({self.scored} scored, {self.excluded} outside curve range)"
             )
+        lines.append(f"  {self.card.headline}")
         return "\n".join(lines)

@@ -1,0 +1,29 @@
+MOUNT SINAI HEALTH SYSTEM
+OPERATIVE NOTE
+
+PATIENT: Z0005491
+DATE OF SERVICE: 11/20/2026
+SURGEON: S00817
+SERVICE: GYN
+ASA CLASS: 4
+
+PREOPERATIVE DIAGNOSIS:
+N80.531
+
+PROCEDURE PERFORMED:
+Laparoscopic excision of pelvic lesions.
+
+INDICATION:
+She has a history of appendectomy and a prior cystotomy repair, both without complication. There is no prior operative diagnosis on file.
+
+FINDINGS:
+Laparoscopic excision of pelvic lesions was undertaken. The rectosigmoid colon was involved by infiltrating disease along the anterior serosa. The left ureter was dissected free along its pelvic course and ureterolysis was performed. Disease was noted overlying the bladder peritoneum at the vesicouterine fold. Nodular implants were identified on the right pelvic sidewall. Dense pelvic adhesions were encountered, with an obliterated posterior cul-de-sac requiring extensive adhesiolysis. There was no evidence of diaphragmatic involvement.
+
+DESCRIPTION OF PROCEDURE:
+The patient was placed in the standard position and prepped and draped in the usual sterile fashion. Access was obtained and the abdomen inspected systematically. A second surgical service was consulted intraoperatively and assisted with the dissection. A small serosal tear was identified and repaired primarily in two layers. The patient was transfused two units of packed red blood cells. Haemostasis was confirmed and instruments were removed under direct vision.
+
+ESTIMATED BLOOD LOSS: 660 mL
+TOTAL OPERATIVE TIME: 293 minutes
+COMPLICATIONS: As described above.
+SPECIMENS: Sent to pathology.
+DISPOSITION: The patient was taken to recovery in stable condition.

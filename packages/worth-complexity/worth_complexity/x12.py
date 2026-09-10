@@ -15,17 +15,26 @@ and element it came from. A referee is entitled to ask where a particular
 dollar amount originated and get an answer precise enough to find by eye in the
 raw file. A parser that returns nested dictionaries cannot answer that.
 
-Not handled here, deliberately, because the synthetic dataset is a happy path:
-reversals paired with their forward claim, replacement claims, split
-professional and facility remits for one encounter, secondary-payer
-coordination of benefits, capitated zero-dollar remits, and provider-level
-adjustments that claw back across claims. Each needs its own modelling
-decision, and each is a place the index can be wrong in a way nobody notices
-for a year. Reversals are detected and refused rather than silently summed.
+Not handled here, deliberately, because the synthetic dataset is mostly a
+happy path: split professional and facility remits for one encounter,
+secondary-payer coordination of benefits, capitated zero-dollar remits, and
+provider-level adjustments that claw back across claims. Each needs its own
+modelling decision, and each is a place the index can be wrong in a way
+nobody notices for a year.
+
+A reversal (``CLP02 == 22``) is no longer refused at parse time (decision 6,
+CONTRACT-SEEDS.md): it parses like any other claim, tagged with its
+``claim_seq`` -- the ordinal of the CLP occurrence it came from, across the
+whole remittance directory (see :func:`read_directory`) -- so
+``linkage.link`` can net it against the earlier remit for the same account
+and recognise the later corrected claim, if any, as the one that counts.
+Netting the money is ``linkage``'s job, not this reader's; this module's own
+job stays "read the segments and say where each value came from."
 """
 
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
@@ -115,10 +124,15 @@ def parse_835(text: str, filename: str, sha256: str) -> tuple[RemitLine, ...]:
     allowed: Decimal | None = None
     svc_date: date | None = None
     adjustments: list[tuple[str, str, Decimal]] = []
+    rarc: list[str] = []
     svc_ref: SourceRef | None = None
+    claim_seq = -1
+    """Ordinal of the current CLP occurrence within this file, 0-based.
+    Incremented on every CLP; :func:`read_directory` renumbers these to be
+    unique and order-preserving across every file it reads."""
 
     def flush() -> None:
-        nonlocal line_open, allowed, svc_date, adjustments, svc_ref
+        nonlocal line_open, allowed, svc_date, adjustments, rarc, svc_ref
         if not line_open:
             return
         if allowed is None:
@@ -142,13 +156,16 @@ def parse_835(text: str, filename: str, sha256: str) -> tuple[RemitLine, ...]:
                 paid=paid,
                 service_date=svc_date or claim_date,
                 adjustments=tuple(adjustments),
+                rarc=tuple(rarc),
                 source_ref=svc_ref,
+                claim_seq=claim_seq,
             )
         )
         line_open = False
         allowed = None
         svc_date = None
         adjustments = []
+        rarc = []
         svc_ref = None
 
     for seg in segments(text):
@@ -159,15 +176,9 @@ def parse_835(text: str, filename: str, sha256: str) -> tuple[RemitLine, ...]:
             payer_id = seg.get(2)
         elif seg.tag == "CLP":
             flush()
+            claim_seq += 1
             account = seg.get(1)
             status = seg.get(2)
-            if status == "22":
-                msg = (
-                    f"{filename}: claim {account} is a reversal (CLP02=22). Reversal and "
-                    "replacement handling is not modelled; summing it as a forward claim "
-                    "would double-count."
-                )
-                raise X12Error(msg)
         elif seg.tag == "DTM" and seg.get(1) in {"232", "233"} and not line_open:
             claim_date = _x12_date(seg.get(2), f"{filename}:{seg.index}")
         elif seg.tag == "SVC":
@@ -194,6 +205,10 @@ def parse_835(text: str, filename: str, sha256: str) -> tuple[RemitLine, ...]:
                     )
                 )
                 position += 3
+        elif seg.tag == "LQ" and seg.get(1) == "HE" and line_open:
+            code = seg.get(2)
+            if code:
+                rarc.append(code)
     flush()
 
     if not out:
@@ -203,10 +218,21 @@ def parse_835(text: str, filename: str, sha256: str) -> tuple[RemitLine, ...]:
 
 
 def read_directory(directory: Path) -> tuple[RemitLine, ...]:
-    """Read every ``.edi`` file in a directory, in sorted order."""
+    """Read every ``.edi`` file in a directory, in sorted order.
+
+    Each file's own ``claim_seq`` starts at 0; here they are renumbered by a
+    running offset so two CLP occurrences for the same account -- an
+    original in one file, a same-day correction or a later reversal in
+    another -- compare in the order the files were actually received,
+    sorted-filename order being the closest thing to a received-order
+    timestamp this reader has (decision 6, CONTRACT-SEEDS.md).
+    """
     lines: list[RemitLine] = []
+    offset = 0
     for path in sorted(directory.glob("*.edi")):
-        lines.extend(read_835(path))
+        file_lines = read_835(path)
+        lines.extend(dataclasses.replace(rl, claim_seq=rl.claim_seq + offset) for rl in file_lines)
+        offset += max((rl.claim_seq for rl in file_lines), default=-1) + 1
     if not lines:
         msg = f"no .edi remittance files in {directory}"
         raise X12Error(msg)

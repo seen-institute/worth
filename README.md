@@ -13,15 +13,21 @@ reference implementation.
   amounts, with derivation traces and source provenance.
 - **[`worth-complexity`](packages/worth-complexity)**. Layer A complexity scoring,
   the Method 0 slope, the fee schedule's complexity relation fitted on the
-  comparator cohort, each payer's multiple of the schedule, and the payment
-  adequacy ratio, computed from a partner's operative extract and 835 remittance.
+  comparator cohort (Method 2), the Method 3 band-expected payment (now the
+  payment adequacy ratio's denominator), Method 1's documented-vs-submitted
+  cross-check against the 837 claim, the dollar spine and signature read off
+  all three, the per-code population card, and a sha256/HMAC witness over
+  every run's outputs — computed from a partner's operative extract, 835
+  remittance and 837 claims.
 - **[`worth-db`](packages/worth-db)**. The database half of what used to be
   `worth-api`: applies `worth-fees`' schema to Postgres, loads the pinned CMS
   vintages into it, and rebuilds a `FeeSchedule` from the rows it wrote. The
   one package in the workspace with a runtime dependency, `psycopg`.
-- **[`worth-cli`](packages/worth-cli)**. The umbrella command: `worth-cli run`,
-  `worth-cli price`, `worth-cli db`, `worth-cli version`, over the three
-  packages above. Standard library only in its own code.
+- **[`worth-cli`](packages/worth-cli)**. The umbrella command (also installed
+  as `worth`): `run`, `score`, `explain`, `slope`, `code`, `compare`, `queue`,
+  `price`, `db`, `version`, over the three packages above, each of the seven
+  view subcommands in `--json` (default), `--table` or `--csv`. Standard
+  library only in its own code.
 - More to come soon!
 
 The console and the HTTP API that served it have moved to Meridian, which

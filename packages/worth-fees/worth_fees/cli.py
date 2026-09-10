@@ -46,6 +46,39 @@ FIXTURE_CODES = [
     # cohort offline: five benign-GYN study codes and eight comparators.
     "58558", "58563", "58570", "58661", "58662",
     "49505", "44970", "47562", "52601", "27447", "50543", "55866",
+    # Method 1's candidate code for documented adhesiolysis, so a mismatched or
+    # missed flag can be priced at what the fee schedule pays for it.
+    "58660",
+    # CONTRACT-PACKS.md decision 5: the visit and episode classes' comparators
+    # and their work-rule candidates, so those packs can score offline too.
+    # E/M levels (visit-em-v1's threshold rules and its
+    # ENDOCRINOLOGY/CARDIOLOGY/NEPHROLOGY comparators). 99417 (prolonged
+    # service) is deliberately absent: CMS carries it at status I, "not valid
+    # for Medicare purposes", in every 2026 quarter, so `build-fixture`
+    # refuses it and it was dropped rather than invented (decision 5's own
+    # rule). G2212 is Medicare's replacement code for time-based prolonged
+    # service and prices normally; a pack wanting a candidate for that rule
+    # should use G2212 instead of 99417.
+    "99212", "99215", "G2212",
+    # Care management and complexity add-on:
+    "99490", "99439", "99491", "G2211",
+    # Digital E/M (online patient portal messages):
+    "99421", "99422", "99423",
+    # RPM device supply and management (episode-rpm-v1's study codes):
+    "99453", "99454", "99457", "99458", "99091",
+    # Cardiac-device remote monitoring (episode comparator, tiered by intensity):
+    "93294", "93295", "93296", "93297",
+    # CGM interpretation (episode comparator):
+    "95250", "95251",
+    # Home dialysis (episode comparator, 90960-family intensity variation):
+    "90960", "90966",
+    # worth track S1, CONTRACT-SEEDS.md: the policy-change scenario's
+    # maternity antepartum bundle (one 59426 claim per pregnancy before the
+    # policy date, billed instead of a per-visit 99214). 59400 and 59510
+    # (global OB packages) were tried too but both carry an NA non-facility
+    # practice-expense indicator -- not payable at NY01 non-facility, the
+    # visit class's setting -- so they were dropped rather than kept unpriceable.
+    "59426", "59425",
 ]  # fmt: skip
 
 # CA18 is the demo locality. AL00 is here because its work GPCI differs with

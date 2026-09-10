@@ -42,12 +42,14 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import date
 from decimal import Decimal
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
 from worth_fees import PlaceOfService, WorthFeesError, expected_allowed
-from worth_fees.sources import load, vintage_for_date
+from worth_fees.models import VintageError
+from worth_fees.sources import PINNED_VINTAGES, load, vintage_for_date
 
 from worth_complexity.curve import Fit, fit
 from worth_complexity.models import (
@@ -57,6 +59,7 @@ from worth_complexity.models import (
     ComplexityScore,
     IndexRecord,
     NoReferenceCurveError,
+    PayerFriction,
     Ratio,
     ScoredEncounter,
     Stratum,
@@ -73,7 +76,12 @@ if TYPE_CHECKING:
     from worth_fees.sources import FeeSchedule, Vintage
 
     from worth_complexity.linkage import LinkedEncounter
+    from worth_complexity.method1 import Method1Flag
+    from worth_complexity.method3 import Method3
+    from worth_complexity.population import CodeCard
     from worth_complexity.rulepack import RulePack
+    from worth_complexity.signature import Decomposition, DollarSpine, Signature
+    from worth_complexity.witness import Witness
 
 type SchedulePool = Callable[[int, int], FeeSchedule]
 """Where the fee schedule for a (rule year, quarter) comes from.
@@ -139,6 +147,30 @@ class PricedEncounter:
     """Priced at the release in force on the service date. Feeds the multiplier."""
     at_reference: FeeDerivation
     """Priced at the run's reference release. Feeds the schedule curve."""
+    beyond_pinned: bool = False
+    """True when the service date falls after the newest pinned CMS release
+    and ``at_date`` was priced at that release instead (see
+    :func:`vintage_in_force`). Reported, never hidden."""
+
+
+def vintage_in_force(service_date: date) -> tuple[Vintage, bool]:
+    """The pinned release governing a service date, carried forward past the
+    newest one.
+
+    A date inside a pinned range gets that release. A date after the newest
+    pinned release gets the newest release and ``True``: the schedule a
+    biller applies the day CMS's next release is late, and the only honest
+    choice for a service window that runs past what is pinned. A date before
+    the oldest pinned release is still an error, because pricing it with a
+    later schedule would be a guess in the direction that hides nothing.
+    """
+    try:
+        return vintage_for_date(service_date), False
+    except VintageError:
+        newest = max(PINNED_VINTAGES.values(), key=lambda v: v.effective)
+        if service_date >= newest.effective[1]:
+            return newest, True
+        raise
 
 
 @dataclass(frozen=True, slots=True)
@@ -187,7 +219,7 @@ def price_comparators(
             continue
         enc = obs.scored.encounter
         try:
-            in_force = vintage_for_date(enc.service_date)
+            in_force, beyond = vintage_in_force(enc.service_date)
             at_date = expected_allowed(
                 enc.primary_cpt,
                 enc.pricing_modifiers,
@@ -212,7 +244,7 @@ def price_comparators(
                 f"{enc.service_date.isoformat()}) cannot be priced: {exc}"
             ) from exc
         out[enc.encounter_id] = PricedEncounter(
-            enc.encounter_id, enc.primary_cpt, at_date, at_reference
+            enc.encounter_id, enc.primary_cpt, at_date, at_reference, beyond_pinned=beyond
         )
     return out
 
@@ -292,35 +324,50 @@ def payer_multipliers(
 
 def adequacy(
     obs: Observation,
+    m3: Method3,
     curve: Fit,
     multiplier: Multiplier,
     *,
-    reference: Vintage,
-    locality: str,
-    setting: PlaceOfService,
-    allow_extrapolation: bool = False,
+    spine: DollarSpine,
+    decomposition: Decomposition,
+    signature: Signature,
+    method1_flags: tuple[Method1Flag, ...],
+    payer_friction: PayerFriction,
+    witness: Witness,
+    rulebook_version: str,
+    weights_version: str,
+    encounter_class: str,
 ) -> Adequacy:
-    """Compute one encounter's payment adequacy ratio, with its derivation."""
-    schedule_expected = curve.predict(
-        Decimal(obs.score.value), allow_extrapolation=allow_extrapolation
+    """Compute one encounter's payment adequacy ratio, with its derivation.
+
+    Decision 2: the ratio's denominator is the Method 3 band expected payment,
+    not the Method 2 schedule curve read at this encounter's own score.
+    ``schedule_expected`` (Method 2) is still computed and carried, always
+    extrapolated (the compression component in ``spine`` needs it at every
+    score, including the code's own median, which can sit outside the curve's
+    fitted range) — Method 3 is the one that can refuse: see
+    ``method3.band_expected``, which raises rather than widening past the
+    whole 0-100 scale.
+    """
+    schedule_expected = curve.predict(Decimal(obs.score.value), allow_extrapolation=True)
+    ratio = ratio_of(obs.realized, m3.expected)
+    ratio_interval = Interval(
+        ratio_of(obs.realized, m3.interval.high).value,
+        ratio_of(obs.realized, m3.interval.low).value,
+        "m3-band-bootstrap",
     )
-    with money_context():
-        expected = (multiplier.value * schedule_expected).quantize(CENTS)
-    ratio = ratio_of(obs.realized, expected)
     enc = obs.scored.encounter
     trace = (
         f"Layer A complexity score               = {obs.score.value}",
-        f"schedule curve                         = {curve.render()}",
-        f"  comparator PFS amounts at CMS {reference.label}, {locality} {setting.value}, "
-        f"archive sha256 {reference.archive_sha256}",
-        f"schedule expected = {curve.intercept:.4f} + {curve.slope:.6f} x {obs.score.value}"
-        f"          = {schedule_expected:.2f}   (Medicare PFS dollars)",
+        *m3.trace,
+        f"realized (835 allowed, primary line)   = {obs.realized:.2f}",
+        f"adequacy = realized / m3 expected      = {obs.realized:.2f} / {m3.expected:.2f}"
+        f" = {ratio}",
+        f"ratio interval = realized / m3 CI, low expected -> high ratio "
+        f"= [{obs.realized:.2f}/{m3.interval.high:.2f}, {obs.realized:.2f}/{m3.interval.low:.2f}]"
+        f" = {ratio_interval.render(4)}",
         f"payer multiplier ({multiplier.payer_label}, n={multiplier.n})   "
         f"= median realized / PFS over comparators = {multiplier.value}",
-        f"expected = multiplier x schedule       = {multiplier.value} x {schedule_expected:.2f}"
-        f" = {expected:.2f}",
-        f"realized (835 allowed, primary line)   = {obs.realized:.2f}",
-        f"adequacy = realized / expected         = {obs.realized:.2f} / {expected:.2f} = {ratio}",
     )
     return Adequacy(
         encounter_id=enc.encounter_id,
@@ -331,10 +378,21 @@ def adequacy(
         realized=obs.realized,
         schedule_expected=schedule_expected,
         multiplier=multiplier.value,
-        expected=expected,
+        expected=m3.expected,
         ratio=ratio,
         curve_id=curve.curve_id,
         trace=trace,
+        m3=m3,
+        spine=spine,
+        decomposition=decomposition,
+        signature=signature,
+        method1_flags=method1_flags,
+        payer_friction=payer_friction,
+        ratio_interval=ratio_interval,
+        witness=witness,
+        rulebook_version=rulebook_version,
+        weights_version=weights_version,
+        encounter_class=encounter_class,
     )
 
 
@@ -370,6 +428,53 @@ def method_zero_slopes(
     return out, tuple(dropped)
 
 
+def code_strata(
+    cohort: list[Observation], code: str, labels: dict[str, str]
+) -> tuple[Stratum, ...]:
+    """One Method 0 fit per payer, for one code's study cohort.
+
+    Shared between :func:`index_records` and the population stage's per-code
+    card (``population.CodeCard.strata``, decision 8's context for the compare
+    view): both need the identical per-payer fit, and computing it twice from
+    the same points would only risk the two disagreeing.
+    """
+    strata: list[Stratum] = []
+    by_payer: dict[str, list[Observation]] = defaultdict(list)
+    for obs in cohort:
+        by_payer[obs.payer_id].append(obs)
+    for payer in sorted(by_payer, key=lambda p: labels[p]):
+        group = by_payer[payer]
+        points = tuple((Decimal(o.score.value), o.realized) for o in group)
+        thin = len(group) < SUPPRESSION_THRESHOLD
+        try:
+            f = fit(f"method0/{code}/{labels[payer]}", points)
+        except NoReferenceCurveError:
+            strata.append(
+                Stratum(
+                    labels[payer],
+                    len(group),
+                    Decimal(0),
+                    Interval(Decimal(0), Decimal(0), "none"),
+                    Decimal(0),
+                    False,
+                    True,
+                )
+            )
+            continue
+        strata.append(
+            Stratum(
+                payer_label=labels[payer],
+                n=len(group),
+                slope=f.slope,
+                slope_interval=f.slope_interval,
+                r_squared=f.r_squared,
+                differentiates=f.differentiates,
+                suppressed=thin,
+            )
+        )
+    return tuple(strata)
+
+
 def index_records(
     observations: tuple[Observation, ...],
     adequacies: tuple[Adequacy, ...],
@@ -383,6 +488,7 @@ def index_records(
     locality: str,
     setting: PlaceOfService,
     reference: Vintage,
+    cards: dict[str, CodeCard],
 ) -> tuple[IndexRecord, ...]:
     """Build one published record per study code.
 
@@ -409,40 +515,7 @@ def index_records(
         scores = tuple(Decimal(o.score.value) for o in cohort)
         dates = sorted(o.scored.encounter.service_date for o in cohort)
 
-        strata: list[Stratum] = []
-        by_payer: dict[str, list[Observation]] = defaultdict(list)
-        for obs in cohort:
-            by_payer[obs.payer_id].append(obs)
-        for payer in sorted(by_payer, key=lambda p: labels[p]):
-            group = by_payer[payer]
-            points = tuple((Decimal(o.score.value), o.realized) for o in group)
-            thin = len(group) < SUPPRESSION_THRESHOLD
-            try:
-                f = fit(f"method0/{code}/{labels[payer]}", points)
-            except NoReferenceCurveError:
-                strata.append(
-                    Stratum(
-                        labels[payer],
-                        len(group),
-                        Decimal(0),
-                        Interval(Decimal(0), Decimal(0), "none"),
-                        Decimal(0),
-                        False,
-                        True,
-                    )
-                )
-                continue
-            strata.append(
-                Stratum(
-                    payer_label=labels[payer],
-                    n=len(group),
-                    slope=f.slope,
-                    slope_interval=f.slope_interval,
-                    r_squared=f.r_squared,
-                    differentiates=f.differentiates,
-                    suppressed=thin,
-                )
-            )
+        strata = code_strata(cohort, code, labels)
 
         priced = [
             ratios[o.scored.encounter.encounter_id]
@@ -469,7 +542,7 @@ def index_records(
                 period_end=dates[-1],
                 n=len(cohort),
                 distribution=describe(scores),
-                slopes=tuple(strata),
+                slopes=strata,
                 adequacy=ratio,
                 adequacy_interval=interval,
                 scored=len(priced),
@@ -478,11 +551,16 @@ def index_records(
                 rule_pack_id=pack.rule_pack_id,
                 rule_pack_digest=pack.digest,
                 rule_pack_status=pack.status,
+                rule_pack_source=pack.source,
                 provenance_filter=provenance_filter,
                 package_version=package_version,
                 locality=locality,
                 setting=setting.value,
                 reference_release=reference.label,
+                rulebook_version=pack.rulebook_version,
+                weights_version=pack.weights_version,
+                encounter_class=pack.encounter_class,
+                card=cards[code],
                 suppressed=suppressed,
                 suppression_reason=(
                     f"n = {len(cohort)}, below the suppression threshold of {SUPPRESSION_THRESHOLD}"

@@ -1,0 +1,123 @@
+{
+  "rule_pack_id": "episode-rpm",
+  "version": "1",
+  "weights_version": "1",
+  "encounter_class": "episode",
+  "status": "provisional",
+  "status_note": "Weights and anchors below are a mine and Claude's placeholder. The methodology requires that weights be set by clinical advisory input and statistical analysis of which markers predict resource intensity, not by assertion. Until that work is done, no index computed with this pack should be published.",
+  "scope_note": "This pack is the instrument for the whole 30-day monitoring episode class, not a postpartum-hypertension-specific one: it scores the cardiac-device, home-dialysis and CGM comparator programs with the same markers and weights it scores the study cohort with, so every marker must be reachable in every program, and it scores every 30-day monitoring episode regardless of which device or condition drives it. Markers are counts and outcomes read off the device and alert logs -- readings taken, exceptions raised, interventions logged, the outcome delivered -- deliberately not clinician minutes at the top: oversight_minutes carries the smallest weight of the six (0.10), because remote monitoring's whole premise is that most of the surveillance work happens without a clinician's clock running, and an instrument that led with minutes would score the same way the billing codes it is meant to check already do. Open question for advisors, not resolved here: whether outcome_delivered belongs inside a process-of-care index at all, or whether an episode that never had an exception to catch should score the same on it as one that averted an ED visit -- recorded so the choice is visible, not decided by omission.",
+  "normalisation": "fixed-anchor",
+  "normalisation_note": "Each marker is normalised against fixed anchors published in this file, never against percentiles of the observed cohort. An empirically normalised score changes every time an encounter is added, which would make a published value non-comparable with itself a month later. Fixed anchors cost some dynamic range and buy stability.",
+  "lanes_note": "No notes dataset is required for this class (the methodology: \"from device and alert logs alone\"), so every marker below is structured, read from a discrete field a monitoring platform already populates for its own operational reasons.",
+  "markers": [
+    {
+      "marker_id": "monitoring_intensity",
+      "provenance": "structured",
+      "weight": "0.15",
+      "anchor_low": "0",
+      "anchor_high": "4",
+      "note": "Total device_readings rows for the episode, divided by the 30-day window length: readings per day, averaged over the whole episode rather than only the days a reading arrived, so a patient who transmits reliably in week one and drops off in week three does not score the same as one who never dropped off."
+    },
+    {
+      "marker_id": "exception_burden",
+      "provenance": "structured",
+      "weight": "0.25",
+      "anchor_low": "0",
+      "anchor_high": "16",
+      "note": "Sum of alerts.severity (1-3) over every alert the episode raised, autonomous or clinician-handled alike. The largest single weight in the pack: an episode's clinical difficulty is read off how much its monitoring stream had to flag, not off who resolved the flag."
+    },
+    {
+      "marker_id": "clinician_interventions",
+      "provenance": "structured",
+      "weight": "0.20",
+      "anchor_low": "0",
+      "anchor_high": "4",
+      "note": "Count of interventions.txt rows: medication titrations, evaluations, orders and messages a clinician actually took in response to the monitoring stream, distinct from the exceptions that prompted them."
+    },
+    {
+      "marker_id": "oversight_minutes",
+      "provenance": "structured",
+      "weight": "0.10",
+      "anchor_low": "0",
+      "anchor_high": "60",
+      "note": "Sum of time_log.minutes for the episode. Deliberately the smallest weight in the pack (see scope_note): clinician clock time is what the RPM treatment-management codes already bill by the minute, and an index that led with it would just be re-deriving the billing threshold rather than measuring the work the codes were meant to capture."
+    },
+    {
+      "marker_id": "patient_risk_tier",
+      "provenance": "structured",
+      "weight": "0.15",
+      "anchor_low": "0",
+      "anchor_high": "1",
+      "note": "The patient's highest active problem_list tier (0-3), divided by 3. Not restricted to a single flag family: PREECLAMPSIA_RISK, HF and CKD are this cohort's most common drivers, but any active flag's tier counts, the same convention the visit pack's patient_context marker uses for PREGNANCY*."
+    },
+    {
+      "marker_id": "outcome_delivered",
+      "provenance": "structured",
+      "weight": "0.15",
+      "anchor_low": "0",
+      "anchor_high": "1",
+      "note": "0.5 x day30_controlled + 0.25 x (no ED visit) + 0.25 x (no readmission), from outcomes.txt. ed_visit_averted counts as a clean ED leg (0.25) even when ed_visit itself is Y: a visit the monitoring program's own escalation caught and redirected before it became an admission is the outcome the program exists to produce, not a failure of it."
+    }
+  ],
+  "work_rules": [
+    {
+      "id": "device-supply-threshold",
+      "when": {"fact": "reading_days", "min": "16"},
+      "candidate_codes": ["99454"],
+      "bucket_if_absent": "missed",
+      "bucket_if_present": null,
+      "statement": "{reading_days} distinct days of device-transmitted readings in the 30-day episode meet the 16-day threshold for remote physiologic monitoring device supply",
+      "section": "device readings log",
+      "evidence_strength": "strong",
+      "note": "16 or more days with at least one transmitted reading is CMS's own bright-line threshold for 99454; a day count that clears it with no 99454 on the claim is a device-supply charge the episode earned and did not capture."
+    },
+    {
+      "id": "management-increment-first-20",
+      "when": {"fact": "interactive_minutes", "min": "20"},
+      "candidate_codes": ["99457"],
+      "bucket_if_absent": "missed",
+      "bucket_if_present": null,
+      "statement": "{interactive_minutes} interactive minutes of clinical staff time were logged against the monitoring stream in the 30-day period, meeting the first 20-minute remote monitoring treatment-management threshold",
+      "section": "time log",
+      "evidence_strength": "strong",
+      "note": "99457 is CMS's first 20 minutes of clinical staff/physician time managing the monitoring data in a calendar month, at least one interactive communication with the patient or caregiver required; time_log.interactive is exactly that flag."
+    },
+    {
+      "id": "management-increment-additional-20",
+      "when": {"fact": "interactive_minutes", "min": "40"},
+      "billed_any_of": ["99457"],
+      "candidate_codes": ["99458"],
+      "bucket_if_absent": "missed",
+      "bucket_if_present": null,
+      "statement": "{interactive_minutes} interactive minutes clear a second 20-minute increment of remote monitoring treatment management beyond the first",
+      "section": "time log",
+      "evidence_strength": "strong",
+      "note": "99458 is an add-on to 99457 for each additional 20 minutes in the same calendar month, so it is only ever a candidate when 99457 is itself on the claim (billed_any_of); an episode that cleared 40 interactive minutes without 99457 already billed is a device-supply-threshold-shaped gap one level up, not this rule's concern."
+    },
+    {
+      "id": "sub-threshold-exception-handling",
+      "when": {"all_of": [
+        {"fact": "exceptions_handled", "min": "1"},
+        {"fact": "interactive_minutes", "max": "19.99"}
+      ]},
+      "candidate_codes": [],
+      "bucket_if_absent": "mismatched",
+      "bucket_if_present": null,
+      "statement": "{exceptions_handled} alert(s) required clinician handling this episode, but only {interactive_minutes} interactive minutes were logged against the 20-minute treatment-management threshold",
+      "section": "alerts log",
+      "evidence_strength": "moderate",
+      "note": "A clinician resolved at least one exception but the episode never crossed the 20-minute floor either code is billed against: the work is real and documented, but no candidate code exists at this volume, so it reports mismatched against the treatment-management ladder rather than missed -- there is nothing here to submit yet, only a pattern to watch."
+    },
+    {
+      "id": "autonomous-oversight",
+      "when": {"fact": "autonomous_exceptions", "min": "1"},
+      "candidate_codes": [],
+      "bucket_if_absent": "no_code",
+      "bucket_if_present": null,
+      "statement": "{autonomous_exceptions} alert(s) this episode were resolved by the escalation protocol's own rule logic without reaching a clinician",
+      "section": "alerts log",
+      "evidence_strength": "weak",
+      "note": "Autonomous monitoring oversight -- the escalation-rule governance that decides an alert does not need a human, and the delivered outcome that governance produces -- has no CPT code in the RPM family or anywhere else in this fee schedule. Structurally identical to the surgical pack's ureterolysis and serosal-tear-repair entries: real work, no candidate to check the claim against, reported so it stays visible rather than because pricing can touch it."
+    }
+  ]
+}

@@ -16,7 +16,7 @@ from worth_complexity import (
 from worth_complexity.models import Cohort, Encounter, Marker, SourceRef
 from worth_complexity.rulepack import load
 
-PACK = load("gyn-surgical-v1")
+PACK = load("surgical-v1")
 REF = SourceRef("or_log.txt", "0" * 64, 2, "c")
 
 ENCOUNTER = Encounter(
@@ -111,12 +111,72 @@ def test_scoring_is_deterministic() -> None:
     assert a.trace == b.trace
 
 
-def test_a_missing_marker_refuses_rather_than_defaulting() -> None:
-    """A missing operative time is not a fast case. Defaulting it to zero biases
-    the index downward on exactly the encounters whose documentation failed."""
+def test_a_missing_marker_defaults_to_zero_and_is_reported() -> None:
+    """Decision 6 (CONTRACT-SEEDS.md): a missing marker contributes zero and
+    is named on ``missing``, not a whole-encounter refusal -- a single
+    documentation gap is common, and refusing the encounter over it would
+    drop exactly the thinly-documented cases the index most needs to see."""
     partial = tuple(m for m in CEILING if m.marker_id != "operative_minutes")
-    with pytest.raises(MissingMarkerError, match="operative_minutes"):
-        score(ENCOUNTER, partial, PACK, LAYER_A_STRUCTURED_ONLY)
+    result = score(ENCOUNTER, partial, PACK, LAYER_A_STRUCTURED_ONLY)
+    assert result.missing == ("operative_minutes",)
+    assert result.score.value < score(ENCOUNTER, CEILING, PACK, LAYER_A_STRUCTURED_ONLY).score.value
+    row = next(r for r in result.marker_rows if r.marker_id == "operative_minutes")
+    assert row.missing and row.reason == "absent" and row.value is None and row.contribution == 0
+
+
+def test_every_structured_marker_missing_is_unscorable() -> None:
+    """A single gap defaults to zero; every structured marker gone at once
+    leaves nothing measurable, and that still refuses (decision 6)."""
+    with pytest.raises(MissingMarkerError, match="every structured marker"):
+        score(ENCOUNTER, (), PACK, LAYER_A_STRUCTURED_ONLY)
+
+
+def test_an_out_of_range_operative_minutes_is_rejected_as_missing() -> None:
+    """A 40-hour case is a timestamp error, not a long one: the guard rejects
+    it rather than clamping it into the scale."""
+    corrupt = (
+        *(m for m in CEILING if m.marker_id != "operative_minutes"),
+        Marker(
+            ENCOUNTER.encounter_id, "operative_minutes", Decimal(2401), "structured", REF, "t", "1"
+        ),
+    )
+    result = score(ENCOUNTER, corrupt, PACK, LAYER_A_STRUCTURED_ONLY)
+    assert result.missing == ("operative_minutes",)
+    row = next(r for r in result.marker_rows if r.marker_id == "operative_minutes")
+    assert row.reason is not None and row.reason.startswith("rejected:")
+
+
+def test_an_out_of_range_asa_class_is_rejected_as_missing() -> None:
+    corrupt = (
+        *(m for m in CEILING if m.marker_id != "asa_class"),
+        Marker(ENCOUNTER.encounter_id, "asa_class", Decimal(9), "structured", REF, "t", "1"),
+    )
+    result = score(ENCOUNTER, corrupt, PACK, LAYER_A_STRUCTURED_ONLY)
+    assert "asa_class" in result.missing
+
+
+def test_an_out_of_range_ebl_is_rejected_as_missing() -> None:
+    corrupt = (
+        *(m for m in CEILING if m.marker_id != "estimated_blood_loss_ml"),
+        Marker(
+            ENCOUNTER.encounter_id,
+            "estimated_blood_loss_ml",
+            Decimal(5001),
+            "structured",
+            REF,
+            "t",
+            "1",
+        ),
+    )
+    result = score(ENCOUNTER, corrupt, PACK, LAYER_A_STRUCTURED_ONLY)
+    assert "estimated_blood_loss_ml" in result.missing
+
+
+def test_marker_rows_cover_every_admitted_rule_present_or_missing() -> None:
+    result = score(ENCOUNTER, CEILING, PACK, LAYER_A_STRUCTURED_ONLY)
+    ids = {row.marker_id for row in result.marker_rows}
+    assert ids == {r.marker_id for r in PACK.markers if r.provenance == "structured"}
+    assert all(not row.missing for row in result.marker_rows)
 
 
 def test_an_ml_marker_cannot_reach_a_layer_a_score() -> None:
@@ -174,10 +234,15 @@ RULE_EVENTS = Marker(
 NARRATIVE = (RULE_EXTENT, RULE_ADHESION, RULE_EVENTS)
 
 
-def test_layer_a_needs_the_markers_only_the_notes_carry() -> None:
-    """Structured fields alone cannot satisfy the pack under the Layer A filter."""
-    with pytest.raises(MissingMarkerError, match="anatomic_extent"):
-        score(ENCOUNTER, CEILING, PACK, LAYER_A)
+def test_layer_a_defaults_the_narrative_markers_the_notes_did_not_carry() -> None:
+    """Decision 6: structured fields alone no longer refuse under the Layer A
+    filter -- the three note-only markers default to zero and are named on
+    ``missing``, so the encounter still scores, just lower than a case whose
+    notes actually supplied them (see the note-raises-the-score test below)."""
+    result = score(ENCOUNTER, CEILING, PACK, LAYER_A)
+    assert set(result.missing) == {"anatomic_extent", "adhesion_severity", "intraoperative_events"}
+    ceiling_with_notes = score(ENCOUNTER, (*CEILING, *NARRATIVE), PACK, LAYER_A)
+    assert result.score.value < ceiling_with_notes.score.value
 
 
 def test_the_note_raises_the_score_of_a_case_the_fields_call_ordinary() -> None:
